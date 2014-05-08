@@ -1,0 +1,8 @@
+include="{$include,.ftpssh_settings}"
+include="{$include,.ruby-version}"
+include="{$include,.ruby-gemset}"
+include="{$include,.vagrant}"
+include="{$include,.chef}"
+include="{$include,.gitkeep}"
+include="{$include,.svn}"
+include="{$include,.git}"
