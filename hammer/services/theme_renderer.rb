@@ -17,7 +17,7 @@ require "../hammer/services/theme_context.rb"
 
 class ThemeRenderer
   
-  attr_accessor :config, :content, :layout_content, :output, :theme, :file_path, :layout_file
+  attr_accessor :config, :content, :layout_content, :output, :theme, :file_path, :layout_file, :request, :server
 
   def initialize(options)
     @theme = options[:theme]

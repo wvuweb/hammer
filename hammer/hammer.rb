@@ -90,8 +90,8 @@ module Hammer
             puts "#{get_mime(req)}".colorize(:blue)
             puts "Loading file: #{req}".colorize(:blue)
             puts " "
-        
-            file = WEBrick::HTTPServlet::FileHandler.new(@server, @theme_directory, { :FancyIndexing =>false })
+            
+            file = WEBrick::HTTPServlet::FileHandler.new(@server, req, { :FancyIndexing =>false })
             file.do_GET(request, response)
           end
       end

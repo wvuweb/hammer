@@ -8,73 +8,88 @@ module Tags
     end
     
     tag 'root' do |tag|
-      tag.locals.page = tag.globals.site.root_page
-      tag.expand
+      # tag.locals.page = tag.globals.site.root_page
+      # tag.expand
+      "fix root tag"
     end
     
     # Reset the page context to the current (global) page.
     tag 'current_page' do |tag|
-      tag.locals.page = tag.globals.page
-      tag.expand
+      # tag.locals.page = tag.globals.page
+      # tag.expand
+      "fix current_page tag"
     end
     
     tag 'if_current_page' do |tag|
-      tag.expand if tag.locals.page.id === tag.globals.page.id
+      # tag.expand if tag.locals.page.id === tag.globals.page.id
+      "fix if_current_page"
     end
     
     tag 'unless_current_page' do |tag|
-      tag.expand if tag.locals.page.id != tag.globals.page.id
+      # tag.expand if tag.locals.page.id != tag.globals.page.id
+      "fix unless_current_page tag"
     end
     
     tag 'parent' do |tag|
-      tag.locals.page = decorated_page tag.locals.page.parent
-      tag.expand
+      # tag.locals.page = decorated_page tag.locals.page.parent
+      # tag.expand
+      "fix parent tag"
     end
     
     tag 'if_parent' do |tag|
-      parent = tag.locals.page.parent
-      tag.expand if parent && !parent.root?
+      # parent = tag.locals.page.parent
+      # tag.expand if parent && !parent.root?
+      "fix if_parent tag"
     end
     
     tag 'unless_parent' do |tag|
-      parent = tag.locals.page.parent
-      tag.expand unless parent && !parent.root?
+      # parent = tag.locals.page.parent
+      # tag.expand unless parent && !parent.root?
+      "fix unless_parent tag"
     end
     
     tag 'if_children' do |tag|
-      tag.expand if tag.locals.page.has_children?
+      # tag.expand if tag.locals.page.has_children?
+      "fix if_children tag"
     end
     
     tag 'if_childless' do |tag|
-      tag.expand if tag.locals.page.is_childless?
+      # tag.expand if tag.locals.page.is_childless?
+      "fix if_childless tag"
     end
     
     tag 'if_has_siblings' do |tag|
-      tag.expand if tag.locals.page.has_siblings?
+      # tag.expand if tag.locals.page.has_siblings?
+      "fix if_has_siblings"
     end
     
     tag 'if_only_child' do |tag|
-      tag.expand if tag.locals.page.is_only_child?
+      # tag.expand if tag.locals.page.is_only_child?
+      "fix if_only_child"
     end
     
     tag 'if_ancestor' do |tag|
-      tag.expand if (tag.globals.page.ancestor_ids + [tag.globals.page.id]).include?(tag.locals.page.id)
+      # tag.expand if (tag.globals.page.ancestor_ids + [tag.globals.page.id]).include?(tag.locals.page.id)
+      "fix if_ancestor tag"
     end
     
     tag 'if_page_depth_eq' do |tag|
-      allowed_options = %w(page_depth)
-      options = tag.attr.select { |k,v| allowed_options.include?(k) }
-      tag.expand if options['page_depth'].to_i.abs === tag.globals.page.depth
+      # allowed_options = %w(page_depth)
+      # options = tag.attr.select { |k,v| allowed_options.include?(k) }
+      # tag.expand if options['page_depth'].to_i.abs === tag.globals.page.depth
+      "fix if_page_depth_eq"
     end
     
     tag 'if_page_depth_gt' do |tag|
-      allowed_options = %w(page_depth)
-      options = tag.attr.select { |k,v| allowed_options.include?(k) }
-      tag.expand if tag.globals.page.depth > options['page_depth'].to_i.abs 
+      # allowed_options = %w(page_depth)
+      # options = tag.attr.select { |k,v| allowed_options.include?(k) }
+      # tag.expand if tag.globals.page.depth > options['page_depth'].to_i.abs 
+      "fix if_page_depth_gt tag"
     end
     
     tag 'unless_ancestor' do |tag|
-      tag.expand unless (tag.globals.page.ancestor_ids + [tag.globals.page.id]).include?(tag.locals.page.id)
+      # tag.expand unless (tag.globals.page.ancestor_ids + [tag.globals.page.id]).include?(tag.locals.page.id)
+      "fix unless_ancestor tag"
     end
     
     tag 'page' do |tag|
@@ -85,59 +100,69 @@ module Tags
     
     [:id, :name, :path, :slug, :meta_description, :title, :alternate_name, :depth].each do |attr|
       tag "page:#{attr.to_s}" do |tag|
-        tag.locals.page.send(attr)
+        # tag.locals.page.send(attr)
+        "fix page#{attr.to_s} tag"
       end
     end
     
     tag 'page:url' do |tag|
-      tag.locals.page.url(tag.globals.mode)
+      # tag.locals.page.url(tag.globals.mode)
+      "fix page:url tag"
     end
     
     # Retrieve an attribute from the current page.
     tag 'page:attr' do |tag|
-      attr = tag.attr['name'].to_sym
-      page = tag.locals.page
-      page.send(attr) if page.radius_attributes.include?(attr)
+      # attr = tag.attr['name'].to_sym
+      # page = tag.locals.page
+      # page.send(attr) if page.radius_attributes.include?(attr)
+      "fix page:attr tag"
     end
     
     # Retrieve the value of the first attribute, from the list of comma separated attributes given in the 'names' tag attribute, that has does not have a blank value.
     tag 'page:first_non_blank_attr' do |tag|
-      attrs = (tag.attr['names'] || '').split(',').map{ |a| a.strip.to_sym }
-      page = tag.locals.page
-      page.first_present_attribute(attrs.select{ |attr| page.radius_attributes.include?(attr) }.uniq)
+      # attrs = (tag.attr['names'] || '').split(',').map{ |a| a.strip.to_sym }
+      # page = tag.locals.page
+      # page.first_present_attribute(attrs.select{ |attr| page.radius_attributes.include?(attr) }.uniq)
+      "fix page:first_non_blank_attr tag"
     end
     
     tag 'page:content' do |tag|
-      rname = tag.attr['name'].strip
-      page = tag.locals.page
-      
-      page.content_hash(tag.globals.mode)[rname]
+      # rname = tag.attr['name'].strip
+      # page = tag.locals.page
+      # 
+      # page.content_hash(tag.globals.mode)[rname]
+      "fix page:content tag"
     end
     
     # Page template tags
     tag 'page:template' do |tag|
-      tag.locals.page_template = tag.locals.page.template
-      tag.expand
+      # tag.locals.page_template = tag.locals.page.template
+      # tag.expand
+      "fix page:template tag"
     end
     
     tag 'page:template:name' do |tag|
-      tag.locals.page_template.name
+      # tag.locals.page_template.name
+      "fix page:template:name tag"
     end
     
     
     # Page tree navigation tags
     [:descendants, :ancestors, :children, :siblings].each do |method|
       tag method.to_s do |tag|
-        tag.locals.send("#{method.to_s}=", find_with_options(tag, tag.locals.page.send(method)))
-        tag.expand
+        # tag.locals.send("#{method.to_s}=", find_with_options(tag, tag.locals.page.send(method)))
+        # tag.expand
+        "fix #{method.to_s} tag"
       end
       
       tag "#{method.to_s}:count" do |tag| 
-        count_items tag, tag.locals.send(method)
+        # count_items tag, tag.locals.send(method)
+        "fix #{method.to_s}:count tag"
       end
       
       tag "#{method.to_s}:each" do |tag| 
-        loop_over tag, tag.locals.send(method)
+        # loop_over tag, tag.locals.send(method)
+        "fix #{method.to_s}:each tag"
       end
     end
     
