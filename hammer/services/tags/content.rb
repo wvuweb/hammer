@@ -57,7 +57,7 @@ module Tags
             content = tag.globals.context.data['editable_region'][tag.attr['name']]
           end
         else
-          content = "<strong>Hammer:</strong> Set data for key: <em>#{tag.attr['name']}</em> in the mock_data file"
+          content = "<strong>Hammer:</strong> Set data for key: <em>#{tag.attr['name']}</em> under <em>editable_region</em> in the mock_data file"
         end
       else
         content = Faker::Lorem.paragraph(rand(2..10))
