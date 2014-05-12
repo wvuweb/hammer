@@ -20,7 +20,6 @@ class ThemeRenderer
     @theme_root = theme_root
     @data = load_data
     @content = file_contents
-    @parsed_content = ''
     @output = ''
   end
   
@@ -70,6 +69,9 @@ class ThemeRenderer
   
   def render
     parse_yaml(@content)
+    unless @content
+      @content = file_contents
+    end
     render_with_radius
   end
   
@@ -82,7 +84,7 @@ class ThemeRenderer
     regex = /^(---\s*\n.*?\n?)^(---\s*$\n?)/m
     match = regex.match(content)
     if match
-      @parsed_content = match.post_match
+      @content = match.post_match
       begin
         self.config = YAML.load(match[1])
       rescue => e
@@ -94,7 +96,7 @@ class ThemeRenderer
   
   def render_with_radius
     context = ThemeContext.new(self)
-    parsed_content = radius_parser(context).parse(@parsed_content)
+    parsed_content = radius_parser(context).parse(@content)
     radius_parser.context.globals.layout = false
     
     if has_layout?
