@@ -22,12 +22,22 @@
     }
     
 
-
 ## Mock Data Example
+
+Mock data can use Faker objects: https://github.com/stympy/faker
 
     editable_region:
       department-summary__header--how-do-i: "Spread the Word to End the Word."
-      department-summary__main--how-do-i: "As the Division for Diversity, Equity and Inclusion, we are responsible for ensuring students and employees with disabilities have equal access to all aspects of the University which makes us an integral part of the disability community. We are joining with various organizations dedicated to improving the lives of individuals with intellectual disabilities by joining the national campaign called “Spread the Word to End the Word.” This campaign is an ongoing effort by two organizations, Special Olympics and Best Buddies, to raise the consciousness of society about the demeaning and hurtful effects of the word “retard(ed)”. The campaign asks people to pledge to stop saying the R-word as a starting point toward creating more accepting attitudes and communities for all people."
+      department-summary__main--how-do-i: 1
+      department-summary__header--oas: "Some other random headline..."
+      department-summary__main--oas: 5
+      news: |
+        <ul>
+          <li><a href="#"><%= Faker::Business.credit_card_number %></a></li>
+          <li><a href="#">Some Article link</a></li>
+          <li><a href="#">Another Article link</a></li>
+          <li><a href="#">An Amazing story</a></li>
+        </ul>
       contact: |
         <p>1085 Van Voorhis Road Suite 250 | P.O. Box 6202<br>Morgantown,
         <span class="caps">WV 26506</span>-6202<br>Phone: 304.293.5600 | Fax: 304.293.8279<br>Email:

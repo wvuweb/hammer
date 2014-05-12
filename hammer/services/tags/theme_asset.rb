@@ -22,7 +22,18 @@ module Tags
       # site = tag.globals.site
       # theme = tag.globals.theme
       # site.javascript_link(tag.attr['name'], tag.globals.mode, { :theme => theme })
-      "fix include_javascript tag"
+      
+      output = ""
+      if tag.attr['name'].split(',').length > 0
+        tag.attr['name'].split(',').each do |t|
+          name = t.strip
+          output << self.build_js_tag(name,tag)
+        end
+      else
+        output << self.build_js_tag(tag.attr['name'],tag)
+      end
+      
+      output
     end
     
     tag 'image_url' do |tag|
@@ -30,6 +41,20 @@ module Tags
       # theme = tag.globals.theme
       # site.image_url(tag.attr['name'], tag.globals.mode, { :theme => theme })
       "fix image_url tag"
+    end
+    
+    
+    def self.build_js_tag(name, context)
+      doc_root = context.globals.context.server.config[:DocumentRoot]
+      
+      if doc_root.split('/').last == "cleanslate_themes"
+        url = "/#{context.globals.context.request.path.split('/')[1]}/javascripts/#{name}.js"
+      else
+        url = "/javascripts/#{name}.js"
+      end
+      
+      %{<script src="#{url}" type="text/javascript"></script>}
+      
     end
   end
 end

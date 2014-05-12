@@ -1,57 +1,47 @@
+require 'active_support/all'
+require 'faker'
 require "../hammer/services/theme_partial_renderer.rb"
 
 module Tags  
   class Content < TagContainer
     tag 'yield' do |tag|
-      # name = tag.attr['name']
-      # tag.globals.yield ||= ''
-      # tag.globals.content_for ||= {}
-      # 
-      # # If a name is given, retrieve the saved content by name; otherwise, retrieve the default stored content.
-      # tag.locals.content = if name 
-      #   tag.globals.content_for[name]
-      # else
-      #   tag.globals.yield
-      # end
-      # 
-      # return nil unless tag.locals.content.present?
-      # 
-      # if tag.double?
-      #   tag.expand
-      # else
-      #   tag.locals.content
-      # end
+      name = tag.attr['name']
+      tag.globals.yield ||= ''
+      tag.globals.content_for ||= {}
       
-      unless tag.attr['name']
-        tag.globals.yield
+      # If a name is given, retrieve the saved content by name; otherwise, retrieve the default stored content.
+      tag.locals.content = if name 
+        tag.globals.content_for[name]
       else
-        "fix named yeilds"
+        tag.globals.yield
       end
-      # binding.pry
       
-      # "fix yeild tag"
+      return nil unless tag.locals.content.present?
+      
+      if tag.double?
+        tag.expand
+      else
+        tag.locals.content
+      end
+      
     end
     
     tag 'yield:content' do |tag|
-      # tag.locals.content
-      "fix yeild:content tag"
+      tag.locals.content
     end
     
     # Only evaluate/output the tag's content if content has be set via content_for for the given name.
     tag 'if_content_for' do |tag|
-      # content_for = tag.globals.content_for ||= {}
-      # tag.expand if content_for[tag.attr['name']].present?
-      "fix if_content_for tag"
+      content_for = tag.globals.content_for ||= {}
+      tag.expand if content_for[tag.attr['name']].present?
     end
     
     tag 'content_for' do |tag|
-      # tag.globals.content_for ||= {}
-      # name = tag.attr['name']
-      # (tag.globals.content_for[name] ||= '') << tag.expand
-      # 
-      # # We return nil here because we've stored the rendered content for future use.
-      # nil
-      "fix content region tag"
+      tag.globals.content_for ||= {}
+      name = tag.attr['name']
+      (tag.globals.content_for[name] ||= '') << tag.expand
+      # We return nil here because we've stored the rendered content for future use.
+      nil
     end
 
     tag 'editable_region' do |tag|
@@ -71,8 +61,14 @@ module Tags
       content = "fix editable region tag to generate Lorem Ipsum"
       if tag.globals.context.data
         if tag.globals.context.data['editable_region'][tag.attr['name']]
-          content = tag.globals.context.data['editable_region'][tag.attr['name']]
-        end 
+          if is_num?(tag.globals.context.data['editable_region'][tag.attr['name']])
+            content = Faker::Lorem.paragraph(tag.globals.context.data['editable_region'][tag.attr['name']].to_i)
+          else
+            content = tag.globals.context.data['editable_region'][tag.attr['name']]
+          end
+        else
+          content = "set data for key: <em>#{tag.attr['name']}</em> in the mock_data file"
+        end
       end
       content
 
@@ -130,6 +126,14 @@ module Tags
       else
         parts[-1] = '_'+parts.last+'.html'
         Pathname.new(parts.join('/'))
+      end
+    end
+    
+    def self.is_num?(str)
+      begin
+        !!Integer(str)
+      rescue ArgumentError, TypeError
+        false
       end
     end
     
