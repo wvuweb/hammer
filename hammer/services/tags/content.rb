@@ -44,25 +44,15 @@ module Tags
       nil
     end
 
-    tag 'editable_region' do |tag|
-      # @tag = tag
-      # @page = tag.globals.page
-      # @site = tag.globals.site
-      # @mode = tag.globals.mode
-      # @area = find_area(tag.attr['name'])
-      # 
-      # content = get_content @area
-      # 
-      # if @mode == Slate::ViewModes::EDIT
-      #   render_editable(content)
-      # else
-      #   content
-      # end
-      
+    tag 'editable_region' do |tag|    
       if tag.globals.context.data
         if tag.globals.context.data['editable_region'] && tag.globals.context.data['editable_region'][tag.attr['name']]
           if is_num?(tag.globals.context.data['editable_region'][tag.attr['name']])
-            content = Faker::Lorem.paragraphs(rand(1..5),tag.globals.context.data['editable_region'][tag.attr['name']].to_i)
+            content = ""
+            content_array = Faker::Lorem.paragraphs(tag.globals.context.data['editable_region'][tag.attr['name']].to_i)
+            content_array.each do |c|
+              content << "<p>"+c+"</p>"
+            end
           else
             content = tag.globals.context.data['editable_region'][tag.attr['name']]
           end
@@ -77,28 +67,6 @@ module Tags
     end
     
     tag 'partial' do |tag|
-      # options = tag.attr.with_indifferent_access
-      # name = options.delete(:name)
-      # theme = options.delete(:theme)
-      # 
-      # # If the 'preview' flag is set in the query string, attempt to render the preview version of the partial.
-      # if %w(1 t true on).include?((tag.globals.vars['preview'] || '').downcase)
-      #   opts = options.dup
-      #   opts[:version] = 'preview'
-      #   
-      #   content = ThemePartialRenderer.new(template: tag.globals.page_template, theme: theme).render(name, opts) rescue nil
-      # end
-      # 
-      # # Render the partial, unless the preview version was already rendered.
-      # content ||= begin
-      #   ThemePartialRenderer.new(template: tag.globals.page_template, theme: theme).render(name, options)
-      # rescue Slate::Errors::TemplateNotFound => e
-      #   e.message
-      # end
-      # 
-      # content
-      # binding.pry
-      #ThemePartialRenderer.new(template: tag.attr['name'], context: tag.globals.context).render()
       
       if tag.attr['theme']
         tag_name = tag.attr['name'].split('/').join('__')
