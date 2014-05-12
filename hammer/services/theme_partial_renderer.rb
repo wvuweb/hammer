@@ -1,52 +1,45 @@
 class ThemePartialRenderer
   
-  def initialize(args)
-    @template = args[:template]
-    @context = args[:context]
+  def initialize(options)
+    @context = options[:context]
+    @partial_path = options[:partial_path]
+    @filesystem_path = options[:filesystem_path]
+    @content = ""
   end
   
-  def partial_name
-    partial_parts = @template.split('/')
-    if partial_parts.length > 1
-      template = partial_parts.first+'/_'+partial_parts.last+'.html'
+  def render
+    @content = ""
+    
+    if @filesystem_path.exist?
+      puts "Partial Found at: ".colorize(:green)+@filesystem_path.to_s.colorize(:green)
+      @content = @filesystem_path.read
+      render_with_radius
     else
-      folder = @context.layout_file.split("/").reverse.drop(1).reverse.last
-      'views/'+folder+'/_'+partial_parts.first+'.html'
-    end
-  end
-  
-  def file_path
-    [@context.theme,partial_name].join('/')
-  end
-  
-  def shared_file
-    shared_folder = @context.theme.split('/').reverse.drop(1).reverse.join('/')
-    shared = [shared_folder,'code/views',partial_name].join('/')
-    puts "Checking for partial in shared folder: #{shared}".colorize(:yellow)
-    shared
-  end
-  
-  def render()
-    if File.exists?(file_path)
-      content = File.read file_path
-      @context.radius_parser.parse content
-    else
+      shared_file_path = shared_theme_path(@filesytem_path)
       
-      if File.exists?(shared_file)
-        content = File.read shared_file
-        @context.radius_parser.parse content
+      puts '####'.colorize(:green)
+      puts shared_file_path
+      puts '####'.colorize(:green)
+      
+      if shared_file_path.exist?
+        @content = shared_file_path.read
+        render_with_radius
       else
-        
-        puts "Not Found:".colorize(:red)
-        puts file_path.colorize(:black).on_red
-        puts " "
-      
-        "Partial not found"
-        
+        @content = 'Partial Not Found: '+@filesystem_path.to_s
       end
-
     end
     
+  end
+  
+  def shared_theme_path(path)
+    themes_root = @context.theme_root.parent
+    code_path = Pathname.new('code/views')
+    themes_root.join(code_path, @partial_path)
+  end
+  
+  protected
+  def render_with_radius
+    @context.radius_parser.parse @content
   end
   
 end

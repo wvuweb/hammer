@@ -22,7 +22,11 @@ module Tags
       #   tag.locals.content
       # end
       
-      tag.globals.context.content
+      unless tag.attr['name']
+        tag.globals.yield
+      else
+        "fix named yeilds"
+      end
       # binding.pry
       
       # "fix yeild tag"
@@ -90,39 +94,67 @@ module Tags
       # 
       # content
       # binding.pry
-      ThemePartialRenderer.new(template: tag.attr['name'], context: tag.globals.context).render()
+      #ThemePartialRenderer.new(template: tag.attr['name'], context: tag.globals.context).render()
       
-      # "fix partial tag"
-    end
-    
-    def self.find_area(key)
-      area = nil
-      [@page, @site].each do |target|
-        area = target.areas.includes(:snippets).find_by_key(key)
-        break if area
-      end
-      area
-    end
-    
-    def self.get_content(area)
-      if area
-        ContentAreaDecorator.decorate(area).rendered_content(:mode => @mode, :context => @tag.globals.context)
+      partial_path = self.partial_file_path(tag.attr['name'])
+      partial_dir = tag.globals.context.filesystem_path.dirname
+      test_dir = partial_dir
+      
+      if tag.globals.context.radius_parser.context.globals.layout
+        parent_dir = tag.globals.context.layout_file_path.dirname
+        test_dir = parent_dir
+        partial_request_path = parent_dir.join(partial_path)
       else
-        if @mode == Slate::ViewModes::EDIT
-          @tag.double? ? @tag.expand : ''
-        else
-          nil
-        end
+        partial_request_path = partial_dir.join(partial_path)
+      end
+      
+      content = ThemePartialRenderer.new(
+        {
+          :context => tag.globals.context,
+          :filesystem_path => partial_request_path,
+          :partial_path => partial_path
+        }
+      ).render
+    end
+    
+    def self.partial_file_path(name)
+      parts = name.split('/')
+      if parts.length == 1
+        Pathname.new('_'+parts.first+'.html')
+      else
+        parts[-1] = '_'+parts.last+'.html'
+        Pathname.new(parts.join('/'))
       end
     end
     
-    def self.render_editable(content)
-      scope = @tag.attr['scope'] || ContentArea::PAGE_SCOPE
-      status = @area && @area.has_draft_content? ? 'draft' : nil
-      region_type = @tag.attr['type'] || 'full'
-      id = Mercury::Area.prepare_key(@tag.attr['name'])
-      div_class = [scope, status].compact.join(' ')
-      content_tag :div, content.strip.html_safe, :id => id, :class => div_class, :data => { :mercury => region_type, :scope => scope }
-    end
+    # def self.find_area(key)
+    #   area = nil
+    #   [@page, @site].each do |target|
+    #     area = target.areas.includes(:snippets).find_by_key(key)
+    #     break if area
+    #   end
+    #   area
+    # end
+    # 
+    # def self.get_content(area)
+    #   if area
+    #     ContentAreaDecorator.decorate(area).rendered_content(:mode => @mode, :context => @tag.globals.context)
+    #   else
+    #     if @mode == Slate::ViewModes::EDIT
+    #       @tag.double? ? @tag.expand : ''
+    #     else
+    #       nil
+    #     end
+    #   end
+    # end
+    # 
+    # def self.render_editable(content)
+    #   scope = @tag.attr['scope'] || ContentArea::PAGE_SCOPE
+    #   status = @area && @area.has_draft_content? ? 'draft' : nil
+    #   region_type = @tag.attr['type'] || 'full'
+    #   id = Mercury::Area.prepare_key(@tag.attr['name'])
+    #   div_class = [scope, status].compact.join(' ')
+    #   content_tag :div, content.strip.html_safe, :id => id, :class => div_class, :data => { :mercury => region_type, :scope => scope }
+    # end
   end
 end

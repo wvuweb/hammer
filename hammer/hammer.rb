@@ -6,105 +6,68 @@ module Hammer
   
   def initialize(server, *options)
     super(server, *options)
-    @server = @config = server
-    @logger = @server[:Logger]
-    @options = options
-    @theme_directory = theme
-  end
-  
-  def file_path(theme_dir,request)
-    doc_root = document_root.split("/")
-    req_path = request.path.split("/")
-    File.join(doc_root,req_path)
-  end
-  
-  def document_root
-    @server.config[:DocumentRoot]
-  end
-  
-  def is_directory?(req)
-    File.directory?(req)
-  end
-  
-  def is_html?(req)
-    get_mime(req) == "text/html"
-  end
-  
-  def get_mime(req)
-    WEBrick::HTTPUtils::mime_type(req, @server.config[:MimeTypes])
-  end
-  
-  def theme
-    parts = document_root.split("/")
-    if parts.last == "cleanslate_themes"
-      false
-    else
-      document_root
-    end
-  end
-  
-  def theme_from_request(request)
-    theme_folder = request.path.split('/')[1]
-    @theme_directory = File.join(document_root.split('/'),theme_folder)
+    @server = server
+    @document_root = document_root
+    @filesystem_path = {}
+    @request_path = {}
   end
   
   def do_GET(request, response)
-
-    begin
+    request_path(request)
+    
+    puts "Requesting system path: ".colorize(:yellow)
+    puts map_request.to_s.colorize(:yellow)
+    
+    if @filesystem_path.directory?
+      puts "Path is a Directory".colorize(:light_magenta)
       
-      req = file_path(document_root,request)
+      directory = WEBrick::HTTPServlet::FileHandler.new(@server, @document_root, { :FancyIndexing =>true })
+      directory.do_GET(request, response)      
       
-      if is_directory?(req)
+    else
+      if request_html?
+        puts "Path is a Template HTML file".colorize(:green)
         
-        puts " "
-        puts "Loading directory: #{req}".colorize(:red)
-        puts " "
+        response.status = 200
+        response.body = ThemeRenderer.new(
+          {
+            :server => @server,
+            :request => request,
+            :document_root => @document_root,
+            :filesystem_path => @filesystem_path,
+            :request_path => @request_path
+          }
+        ).render
+        response['content-type'] = get_mime_type
         
-        if theme
-          theme_dir = @theme_directory
-        else
-          theme_dir = @server.config[:DocumentRoot]
-        end
+      else
+        puts "Path is some other File".colorize(:blue)
         
-        directory = WEBrick::HTTPServlet::FileHandler.new(@server, theme_dir, { :FancyIndexing =>true })
-        directory.do_GET(request, response)
-      
-        else
-          
-          if !theme
-            theme_from_request(request)
-          end
-          
-          if is_html?(req)
-        
-            puts " "
-            puts "Loading html: #{req}".colorize(:green)
-            puts " "
-        
-            response.status = 200
-            response.body = ThemeRenderer.new({:theme => @theme_directory, :request => request, :response => response, :server => @server}).render
-            response['content-type'] = get_mime(req)
-      
-          else
-            puts " "
-            puts "#{get_mime(req)}".colorize(:blue)
-            puts "Loading file: #{req}".colorize(:blue)
-            puts " "
-            
-            file = WEBrick::HTTPServlet::FileHandler.new(@server, req, { :FancyIndexing =>false })
-            file.do_GET(request, response)
-          end
+        file = WEBrick::HTTPServlet::FileHandler.new(@server, @document_root, { :FancyIndexing =>true })
+        file.do_GET(request, response)  
       end
-      
-    rescue StandardError => exception
-      raise
-    rescue Exception => exception
-      raise
     end
+    
   end
   
-  def self.const_missing(c)
-    Object.const_get(c)
+  def document_root
+    Pathname.new(@server.config[:DocumentRoot]).realpath
+  end
+  
+  def request_path(request)
+    @request_path = Pathname.new(request.path)
+  end
+  
+  def request_html?
+    get_mime_type == "text/html"
+  end
+  
+  def map_request
+    @filesystem_path = @document_root.join(Pathname.new(@request_path.to_s.split('/').drop(1).join('/')))
+  end
+  
+  def get_mime_type
+    WEBrick::HTTPUtils::mime_type(@filesystem_path.to_s, @server.config[:MimeTypes])
   end
   
 end

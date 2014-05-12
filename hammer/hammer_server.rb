@@ -41,8 +41,6 @@ httpd = WEBrick::HTTPServer.new(
 )
 
 httpd.mount("/", HammerServlet, doc_root, true)
-# httpd.mount("/", WEBrick::HTTPServlet::FileHandler, doc_root, true)
-
 
 trap(:INT){ httpd.shutdown }
 httpd.start

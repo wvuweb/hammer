@@ -1,8 +1,5 @@
 # encoding: utf-8
-
-
 require "../hammer/services/tag_container.rb"
-#require '../hammer/services/tags/basic.rb'
 Dir["../hammer/services/tags/*.rb"].each {|file|
   require file 
 }
