@@ -8,7 +8,15 @@ module Tags
     # Site tags
     tag 'site_name' do |tag|
       # tag.globals.site.name
-      "fix site_name tag"
+      if tag.globals.context.data
+        if tag.globals.context.data['site_name']
+          tag.globals.context.data['site_name']
+        else
+          "<strong>Hammer: </strong> Set key: <em>site_name</em> in mock_data file"
+        end
+      else
+        Faker::Company.name
+      end
     end
     
     tag 'current_url' do |tag|

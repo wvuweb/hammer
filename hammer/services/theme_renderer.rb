@@ -93,7 +93,6 @@ class ThemeRenderer
   end
   
   def render_with_radius
-    
     context = ThemeContext.new(self)
     parsed_content = radius_parser(context).parse(@parsed_content)
     radius_parser.context.globals.layout = false

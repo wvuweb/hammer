@@ -26,6 +26,13 @@
 
 Mock data can use Faker objects: https://github.com/stympy/faker
 
+    shared_themes:
+      layouts__masthead--v1: "code"
+      layouts__footer__contact--v1: "code"
+      layouts__footer__credits--v1: "code"
+      layouts__footer__icons--v1: "code"
+      layouts__browser-update-org--v1: "code"
+
     editable_region:
       department-summary__header--how-do-i: "Spread the Word to End the Word."
       department-summary__main--how-do-i: 1
