@@ -68,8 +68,14 @@ module Tags
       # else
       #   content
       # end
-      
-      "fix editable region tag"
+      content = "fix editable region tag to generate Lorem Ipsum"
+      if tag.globals.context.data
+        if tag.globals.context.data['editable_region'][tag.attr['name']]
+          content = tag.globals.context.data['editable_region'][tag.attr['name']]
+        end 
+      end
+      content
+
     end
     
     tag 'partial' do |tag|

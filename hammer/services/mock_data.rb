@@ -1,17 +1,14 @@
 # encoding: utf-8
+require 'erb'
 
 class MockData
   
-  def self.load(theme)
-    
-    basename = 'mock_data.yml'
-    yml = File.join(theme, basename)
-    if File.exists?(yml)    
-      file = File.open(yml)
-      erb = ERB.new(file.read, nil, '-')
-      file.close
-      yml_data = erb.result(binding)
-      YAML::load(yml_data)
+  def self.load(theme_root)
+    yml_path = theme_root.join(Pathname.new('mock_data.yml'))
+    if yml_path.exist?
+      erb = ERB.new(yml_path.read, nil, '-')
+      data = erb.result(binding)
+      YAML::load(data)
     else
       puts ' '
       puts 'WARNING:'.red
@@ -19,10 +16,7 @@ class MockData
       puts '!     Your theme does not include a mock_data.yml    !'.black.on_red
       puts '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'.black.on_red
       puts ' '
-      
-      false
     end
-    
   end
   
 end

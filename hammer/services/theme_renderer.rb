@@ -9,7 +9,7 @@ require "../hammer/services/theme_context.rb"
 class ThemeRenderer
   
   attr_accessor :config, :server, :request, :document_root, :filesystem_path, :request_root, :theme_root, :output
-  attr_accessor :content, :layout_file_path
+  attr_accessor :content, :layout_file_path, :data
   
   def initialize(options)
     @server = options[:server]
@@ -18,6 +18,7 @@ class ThemeRenderer
     @filesystem_path = options[:filesystem_path]
     @request_path = options[:request_path]
     @theme_root = theme_root
+    @data = load_data
     @content = file_contents
     @parsed_content = ''
     @output = ''
@@ -34,6 +35,10 @@ class ThemeRenderer
         end
       end
     }
+  end
+  
+  def load_data
+    MockData.load(@theme_root)
   end
   
   def file_contents
@@ -91,10 +96,7 @@ class ThemeRenderer
     
     context = ThemeContext.new(self)
     parsed_content = radius_parser(context).parse(@parsed_content)
-    
     radius_parser.context.globals.layout = false
-    
-    coder = HTMLEntities.new
     
     if has_layout?
       
