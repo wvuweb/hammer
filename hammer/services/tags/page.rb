@@ -10,19 +10,19 @@ module Tags
     tag 'root' do |tag|
       # tag.locals.page = tag.globals.site.root_page
       # tag.expand
-      Faker::Lorem.word
+      "fix root tag"
     end
     
     # Reset the page context to the current (global) page.
     tag 'current_page' do |tag|
       # tag.locals.page = tag.globals.page
       # tag.expand
-      Faker::Lorem.word
+      "fix current_page"
     end
     
     tag 'if_current_page' do |tag|
       # tag.expand if tag.locals.page.id === tag.globals.page.id
-      false
+      "fix if_current_page"
     end
     
     tag 'unless_current_page' do |tag|
