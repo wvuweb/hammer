@@ -58,7 +58,7 @@ module Tags
       # else
       #   content
       # end
-      content = "fix editable region tag to generate Lorem Ipsum"
+      
       if tag.globals.context.data
         if tag.globals.context.data['editable_region'][tag.attr['name']]
           if is_num?(tag.globals.context.data['editable_region'][tag.attr['name']])
@@ -69,6 +69,8 @@ module Tags
         else
           content = "set data for key: <em>#{tag.attr['name']}</em> in the mock_data file"
         end
+      else
+        content = Faker::Lorem.paragraph(rand(2..10))
       end
       content
 
