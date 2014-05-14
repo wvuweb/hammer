@@ -13,7 +13,11 @@ module Tags
       tag.locals.content = if name 
         tag.globals.content_for[name]
       else
-        tag.globals.yield
+        if tag.globals.yield.empty?
+          "<strong>Hammer:</strong> No Yield Data"
+        else
+          tag.globals.yield
+        end
       end
       
       return nil unless tag.locals.content.present?
