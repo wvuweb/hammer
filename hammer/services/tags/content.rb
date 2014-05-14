@@ -86,9 +86,8 @@ module Tags
             return "<strong>Hammer:</strong> Add key: <em>#{tag_name}</em> under <em>shared_themes:</em> with a local path of <em>#{tag.attr['theme'].downcase}</em> in the mock_data file"
           end
         else
-          return "<strong>Hammer:</strong>Add key: <em>#{tag_name}</em> under <em>shared_themes:</em> with a local path of <em>#{tag.attr['theme'].downcase}</em> in the mock_data file"
+          return "<strong>Hammer:</strong> Add key: <em>#{tag_name}</em> under <em>shared_themes:</em> with a local path of <em>#{tag.attr['theme'].downcase}</em> in the mock_data file"
         end
-        
       else 
         partial_path = self.partial_file_path(tag.attr['name'])
         partial_dir = tag.globals.context.filesystem_path.dirname

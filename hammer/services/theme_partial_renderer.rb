@@ -11,7 +11,7 @@ class ThemePartialRenderer
     @content = ""
     
     if @filesystem_path.exist?
-      puts "Partial Found at: ".colorize(:green)+@filesystem_path.to_s.colorize(:green)
+      puts "Partial Loaded from: ".colorize(:green)+@filesystem_path.to_s.colorize(:green)
       @content = @filesystem_path.read
       render_with_radius
     else

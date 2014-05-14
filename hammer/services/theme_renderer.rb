@@ -29,7 +29,7 @@ class ThemeRenderer
     @filesystem_path.ascend { |parent|
       if parent.directory?
         if parent.join(config_path).exist?
-          puts "Theme directory: ".colorize(:light_magenta)+@theme_root.to_s.colorize(:green)
+          puts "Theme directory: ".colorize(:light_magenta)+parent.to_s.split('/').last.to_s.colorize(:light_blue)
           return parent
         end
       end

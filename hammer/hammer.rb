@@ -15,18 +15,18 @@ module Hammer
   def do_GET(request, response)
     request_path(request)
     
-    puts "Requesting system path: ".colorize(:yellow)
+    puts "Requesting system path: ".colorize(:light_magenta)
     puts map_request.to_s.colorize(:yellow)
     
     if @filesystem_path.directory?
-      puts "Path is a Directory".colorize(:light_magenta)
+      puts "Path is a Directory".colorize(:blue)
       
       directory = WEBrick::HTTPServlet::FileHandler.new(@server, @document_root, { :FancyIndexing =>true })
       directory.do_GET(request, response)      
       
     else
       if request_html?
-        puts "Path is a Template HTML file".colorize(:green)
+        puts "Path is a Template HTML file".colorize(:blue)
         
         response.status = 200
         response.body = ThemeRenderer.new(
@@ -41,7 +41,7 @@ module Hammer
         response['content-type'] = get_mime_type
         
       else
-        puts "Path is some other File".colorize(:blue)
+        puts "Path is a File".colorize(:blue)
         
         file = WEBrick::HTTPServlet::FileHandler.new(@server, @document_root, { :FancyIndexing =>true })
         file.do_GET(request, response)  
