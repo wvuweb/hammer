@@ -13,6 +13,7 @@ module Hammer
   end
   
   def do_GET(request, response)
+    
     request_path(request)
     
     puts "Requesting system path: ".colorize(:light_magenta)
@@ -68,6 +69,10 @@ module Hammer
   
   def get_mime_type
     WEBrick::HTTPUtils::mime_type(@filesystem_path.to_s, @server.config[:MimeTypes])
+  end
+  
+  def self.error(message)
+    "<strong>Hammer: </strong> #{message}"
   end
   
 end

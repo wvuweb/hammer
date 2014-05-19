@@ -4,13 +4,19 @@ module Tags
     # Page tags
     tag 'page_name' do |tag|
       # tag.globals.page.name
-      Faker::Lorem.word
+      if tag.globals.context.data && tag.globals.context.data['page_name']
+        tag.globals.context.data['page_name']
+      else
+        'Page Name'
+      end
     end
     
     tag 'root' do |tag|
       # tag.locals.page = tag.globals.site.root_page
       # tag.expand
-      "fix root tag"
+      # "fix root tag"
+      tag.locals.page = @page = get_page(tag)
+      tag.expand
     end
     
     # Reset the page context to the current (global) page.
@@ -74,17 +80,29 @@ module Tags
     end
     
     tag 'if_page_depth_eq' do |tag|
-      # allowed_options = %w(page_depth)
-      # options = tag.attr.select { |k,v| allowed_options.include?(k) }
+      allowed_options = %w(page_depth)
+      options = tag.attr.select { |k,v| allowed_options.include?(k) }
       # tag.expand if options['page_depth'].to_i.abs === tag.globals.page.depth
-      "fix if_page_depth_eq tag"
+      
+      if tag.globals.context.data && tag.globals.context.data['if_page_depth_eq']
+        tag.expand if options['page_depth'].to_i.abs === tag.globals.context.data['if_page_depth_eq']
+      else
+        tag.expand
+      end
+      
+      #"fix if_page_depth_eq tag"
     end
     
     tag 'if_page_depth_gt' do |tag|
-      # allowed_options = %w(page_depth)
-      # options = tag.attr.select { |k,v| allowed_options.include?(k) }
-      # tag.expand if tag.globals.page.depth > options['page_depth'].to_i.abs 
-      "fix if_page_depth_gt tag"
+      allowed_options = %w(page_depth)
+      options = tag.attr.select { |k,v| allowed_options.include?(k) }
+      # tag.expand if tag.globals.page.depth > options['page_depth'].to_i.abs
+      if tag.globals.context.data && tag.globals.context.data['if_page_depth_eq']
+        tag.expand if tag.globals.context.data['if_page_depth_gt'] > options['page_depth'].to_i.abs
+      else
+        tag.expand
+      end
+
     end
     
     tag 'unless_ancestor' do |tag|
@@ -116,16 +134,20 @@ module Tags
     end
     
     tag 'page' do |tag|
-      # tag.locals.page ||= decorated_page(tag.globals.page)
-      # tag.expand
-      "fix page tag"
+      tag.locals.page ||= decorated_page(tag.globals.page)
+      tag.expand
     end
     
     [:id, :name, :path, :slug, :meta_description, :title, :alternate_name, :depth].each do |attr|
-      # tag "page:#{attr.to_s}" do |tag|
-      #   tag.locals.page.send(attr)
-      # end
-      "fix page:#{attr.to_s} tag"
+      tag "page:#{attr.to_s}" do |tag|
+        # tag.locals.page.send(attr)
+        #{"}fix page:#{attr.to_s} tag"
+        if tag.globals.context.data && tag.globals.context.data['page'] && tag.globals.context.data['page'][attr.to_s]
+          tag.globals.context.data['page'][attr.to_s]
+        else
+          "page:#{attr}"
+        end
+      end
     end
     
     tag 'page:url' do |tag|
@@ -149,9 +171,9 @@ module Tags
     
     # Retrieve the value of the first attribute, from the list of comma separated attributes given in the 'names' tag attribute, that has does not have a blank value.
     tag 'page:first_non_blank_attr' do |tag|
-      attrs = (tag.attr['names'] || '').split(',').map{ |a| a.strip.to_sym }
-      page = tag.locals.page
-      page.first_present_attribute(attrs.select{ |attr| page.radius_attributes.include?(attr) }.uniq)
+      # attrs = (tag.attr['names'] || '').split(',').map{ |a| a.strip.to_sym }
+      # page = tag.locals.page
+      # page.first_present_attribute(attrs.select{ |attr| page.radius_attributes.include?(attr) }.uniq)
       "fix page:first_non_blank_attr tag"
     end
     
@@ -185,13 +207,11 @@ module Tags
       end
       
       tag "#{method.to_s}:count" do |tag| 
-        # count_items tag, tag.locals.send(method)
-        "fix #{method.to_s}:count tag"
+        count_items tag, tag.locals.send(method)
       end
       
       tag "#{method.to_s}:each" do |tag| 
-        # loop_over tag, tag.locals.send(method)
-        "fix #{method.to_s}:each tag"
+        loop_over tag, tag.locals.send(method)
       end
     end
     
@@ -209,29 +229,65 @@ module Tags
       "fix get_ancestor tag"
     end
     
-    def self.decorated_page(page)
-      unless page.is_a? ApplicationDecorator
-        PageDecorator.decorate(page)
+    def self.get_pages(tag)
+      unless tag.globals.context.data == nil || tag.globals.context.data['pages'].class == NilClass
+        @pages = []
+        tag.globals.context.data['pages'].each do |page|
+          @pages << Hammer::Page.new(page['page'])
+        end
+      else
+        false
       end
     end
     
+    def self.get_page(tag)
+      self.get_pages(tag)
+      
+      if @pages
+        page_id = tag.globals.context.request.query['id'].to_i
+        
+        page = nil
+        @pages.each do |p|
+          if p.id == page_id 
+            page = p
+          end
+        end
+        
+        if page.class == NilClass
+          page = Hammer.error("Page ID: #{page_id} not found in mock data")
+        end
+      else
+        page = Hammer.error("Page Tags will not function without appropriate mock data")
+      end
+      
+      return page
+    end
+    
+    
+    def self.decorated_page(page)
+      # unless page.is_a? ApplicationDecorator
+      #   PageDecorator.decorate(page)
+      # end
+    end
+    
     def self.find_with_options(tag, target)
-      conditions = tag.attr.symbolize_keys
+      # conditions = tag.attr.symbolize_keys
       
-      filter = {
-        :published => tag.globals.mode == Slate::ViewModes::VIEW, # Always limit to published pages in the public view.
-        :name => conditions[:name],
-        :types => conditions[:types] || [],
-        :template => conditions[:with_template],
-        :tags => conditions[:labels] || [],
-        :tags_op => conditions[:labels_match] || 'any',
-        :order => conditions[:by] || 'sort_order ASC, id',
-        :reverse_order => conditions[:order] == 'desc' ? '1' : '0'
-        #:page => conditions[:page].present? ? conditions[:page] : 1,
-        #:limit => conditions[:per_page].present? ? conditions[:per_page] : 50
-      }
+      # filter = {
+      #   :published => tag.globals.mode == Slate::ViewModes::VIEW, # Always limit to published pages in the public view.
+      #   :name => conditions[:name],
+      #   :types => conditions[:types] || [],
+      #   :template => conditions[:with_template],
+      #   :tags => conditions[:labels] || [],
+      #   :tags_op => conditions[:labels_match] || 'any',
+      #   :order => conditions[:by] || 'sort_order ASC, id',
+      #   :reverse_order => conditions[:order] == 'desc' ? '1' : '0'
+      #   #:page => conditions[:page].present? ? conditions[:page] : 1,
+      #   #:limit => conditions[:per_page].present? ? conditions[:per_page] : 50
+      # }
       
-      pages = Filter::Pages.new(target, filter).all
+      # pages = Filter::Pages.new(target, filter).all
+      @pages
     end
     
     def self.count_items(tag, target)
@@ -262,225 +318,3 @@ module Tags
     end
   end
 end
-
-# module Tags  
-#   class Page < TagContainer
-# 
-#     # Page tags
-#     tag 'page_name' do |tag|
-#       # tag.globals.page.name
-#       "fix page_name tag"
-#     end
-#     
-#     tag 'root' do |tag|
-#       # tag.locals.page = tag.globals.site.root_page
-#       # tag.expand
-#       "fix root tag"
-#     end
-#     
-#     # Reset the page context to the current (global) page.
-#     tag 'current_page' do |tag|
-#       # tag.locals.page = tag.globals.page
-#       # tag.expand
-#       "fix current_page tag"
-#     end
-#     
-#     tag 'if_current_page' do |tag|
-#       # tag.expand if tag.locals.page.id === tag.globals.page.id
-#       "fix if_current_page"
-#     end
-#     
-#     tag 'unless_current_page' do |tag|
-#       # tag.expand if tag.locals.page.id != tag.globals.page.id
-#       "fix unless_current_page tag"
-#     end
-#     
-#     tag 'parent' do |tag|
-#       # tag.locals.page = decorated_page tag.locals.page.parent
-#       # tag.expand
-#       "fix parent tag"
-#     end
-#     
-#     tag 'if_parent' do |tag|
-#       # parent = tag.locals.page.parent
-#       # tag.expand if parent && !parent.root?
-#       "fix if_parent tag"
-#     end
-#     
-#     tag 'unless_parent' do |tag|
-#       # parent = tag.locals.page.parent
-#       # tag.expand unless parent && !parent.root?
-#       "fix unless_parent tag"
-#     end
-#     
-#     tag 'if_children' do |tag|
-#       # tag.expand if tag.locals.page.has_children?
-#       "fix if_children tag"
-#     end
-#     
-#     tag 'if_childless' do |tag|
-#       # tag.expand if tag.locals.page.is_childless?
-#       "fix if_childless tag"
-#     end
-#     
-#     tag 'if_has_siblings' do |tag|
-#       # tag.expand if tag.locals.page.has_siblings?
-#       "fix if_has_siblings"
-#     end
-#     
-#     tag 'if_only_child' do |tag|
-#       # tag.expand if tag.locals.page.is_only_child?
-#       "fix if_only_child"
-#     end
-#     
-#     tag 'if_ancestor' do |tag|
-#       # tag.expand if (tag.globals.page.ancestor_ids + [tag.globals.page.id]).include?(tag.locals.page.id)
-#       "fix if_ancestor tag"
-#     end
-#     
-#     tag 'if_page_depth_eq' do |tag|
-#       # allowed_options = %w(page_depth)
-#       # options = tag.attr.select { |k,v| allowed_options.include?(k) }
-#       # tag.expand if options['page_depth'].to_i.abs === tag.globals.page.depth
-#       "fix if_page_depth_eq"
-#     end
-#     
-#     tag 'if_page_depth_gt' do |tag|
-#       # allowed_options = %w(page_depth)
-#       # options = tag.attr.select { |k,v| allowed_options.include?(k) }
-#       # tag.expand if tag.globals.page.depth > options['page_depth'].to_i.abs 
-#       "fix if_page_depth_gt tag"
-#     end
-#     
-#     tag 'unless_ancestor' do |tag|
-#       # tag.expand unless (tag.globals.page.ancestor_ids + [tag.globals.page.id]).include?(tag.locals.page.id)
-#       "fix unless_ancestor tag"
-#     end
-#     
-#     tag 'page' do |tag|
-#       # tag.locals.page ||= decorated_page(tag.globals.page)
-#       # tag.expand
-#       "fix page tag"
-#     end
-#     
-#     [:id, :name, :path, :slug, :meta_description, :title, :alternate_name, :depth].each do |attr|
-#       tag "page:#{attr.to_s}" do |tag|
-#         # tag.locals.page.send(attr)
-#         "fix page#{attr.to_s} tag"
-#       end
-#     end
-#     
-#     tag 'page:url' do |tag|
-#       # tag.locals.page.url(tag.globals.mode)
-#       "fix page:url tag"
-#     end
-#     
-#     # Retrieve an attribute from the current page.
-#     tag 'page:attr' do |tag|
-#       # attr = tag.attr['name'].to_sym
-#       # page = tag.locals.page
-#       # page.send(attr) if page.radius_attributes.include?(attr)
-#       "fix page:attr tag"
-#     end
-#     
-#     # Retrieve the value of the first attribute, from the list of comma separated attributes given in the 'names' tag attribute, that has does not have a blank value.
-#     tag 'page:first_non_blank_attr' do |tag|
-#       # attrs = (tag.attr['names'] || '').split(',').map{ |a| a.strip.to_sym }
-#       # page = tag.locals.page
-#       # page.first_present_attribute(attrs.select{ |attr| page.radius_attributes.include?(attr) }.uniq)
-#       "fix page:first_non_blank_attr tag"
-#     end
-#     
-#     tag 'page:content' do |tag|
-#       # rname = tag.attr['name'].strip
-#       # page = tag.locals.page
-#       # 
-#       # page.content_hash(tag.globals.mode)[rname]
-#       "fix page:content tag"
-#     end
-#     
-#     # Page template tags
-#     tag 'page:template' do |tag|
-#       # tag.locals.page_template = tag.locals.page.template
-#       # tag.expand
-#       "fix page:template tag"
-#     end
-#     
-#     tag 'page:template:name' do |tag|
-#       # tag.locals.page_template.name
-#       "fix page:template:name tag"
-#     end
-#     
-#     
-#     # Page tree navigation tags
-#     [:descendants, :ancestors, :children, :siblings].each do |method|
-#       tag method.to_s do |tag|
-#         # tag.locals.send("#{method.to_s}=", find_with_options(tag, tag.locals.page.send(method)))
-#         # tag.expand
-#         "fix #{method.to_s} tag"
-#       end
-#       
-#       tag "#{method.to_s}:count" do |tag| 
-#         # count_items tag, tag.locals.send(method)
-#         "fix #{method.to_s}:count tag"
-#       end
-#       
-#       tag "#{method.to_s}:each" do |tag| 
-#         # loop_over tag, tag.locals.send(method)
-#         "fix #{method.to_s}:each tag"
-#       end
-#     end
-#     
-#     def self.decorated_page(page)
-#       unless page.is_a? ApplicationDecorator
-#         PageDecorator.decorate(page)
-#       end
-#     end
-#     
-#     def self.find_with_options(tag, target)
-#       conditions = tag.attr.symbolize_keys
-#       
-#       filter = {
-#         :published => tag.globals.mode == Slate::ViewModes::VIEW, # Always limit to published pages in the public view.
-#         :name => conditions[:name],
-#         :types => conditions[:types] || [],
-#         :template => conditions[:with_template],
-#         :tags => conditions[:labels] || [],
-#         :tags_op => conditions[:labels_match] || 'any',
-#         :order => conditions[:by] || 'sort_order ASC, id',
-#         :reverse_order => conditions[:order] == 'desc' ? '1' : '0'
-#         #:page => conditions[:page].present? ? conditions[:page] : 1,
-#         #:limit => conditions[:per_page].present? ? conditions[:per_page] : 50
-#       }
-#       
-#       pages = Filter::Pages.new(target, filter).all
-#     end
-#     
-#     def self.count_items(tag, target)
-#       items = find_with_options(tag, target)
-#       items.reorder(nil).count # Order is irrelevant for counting
-#     end
-#     
-#     def self.loop_over(tag, target)
-#       items = find_with_options(tag, target)
-#       output = []
-#       
-#       items.each_with_index do |item, index|
-#         tag.locals.child = decorated_page item
-#         tag.locals.page = decorated_page item
-#         output << tag.expand
-#       end
-#       
-#       output.flatten.join('')
-#     end
-#   end
-#   
-#   module Basic1
-#     class << self
-#       def tag_page_title(tag)
-#         page = tag.globals.page
-#         page.title.present? ? page.title : page.name
-#       end
-#     end
-#   end
-# end
