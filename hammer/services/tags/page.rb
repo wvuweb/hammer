@@ -171,9 +171,13 @@ module Tags
     
     # Retrieve the value of the first attribute, from the list of comma separated attributes given in the 'names' tag attribute, that has does not have a blank value.
     tag 'page:first_non_blank_attr' do |tag|
-      attrs = (tag.attr['names'] || '').split(',').map{ |a| a.strip.to_sym }
-      attr = self.first_present_attribute(attrs.select{ |attr|  tag.globals.context.data["page"].include?(attr.to_s) }.uniq)
-      tag.globals.context.data["page"][attr]
+      if tag.globals.context.data && tag.globals.context.data["page"]
+        attrs = (tag.attr['names'] || '').split(',').map{ |a| a.strip.to_sym }
+        attr = self.first_present_attribute(attrs.select{ |attr| tag.globals.context.data["page"].include?(attr.to_s) }.uniq)
+        tag.globals.context.data["page"][attr]
+      else
+        Hammer.error("Set key <em>page</em> in mock_data file")
+      end
       #binding.pry#"fix page:first_non_blank_attr tag"
     end
     
