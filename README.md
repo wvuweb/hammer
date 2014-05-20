@@ -65,7 +65,9 @@ function hammer {
 
 If you are familar with [Mock Builder v2](https://github.com/wvuweb/mock_builder "Mock Builder v2") this mock_data.yml file will look familar if not identical to your previous usage.  
 
-There are some fundemental differences however.  
+There are some fundemental differences however.
+
+***livereload*** key is an Advanced topic covered in further detail the [Wiki](http://github.com/wvuweb/hammer/wiki "Link this to the wiki").  With this key you can enable javascript task runners such as grunt and gulp, to reload the page as you develop and save files.
 
 ***shared_themes*** key refers to the *partial* radius tag:
 
@@ -79,15 +81,26 @@ In this use case layouts/masthead--v1 partial exists in the Theme "Code"  The th
 
 In this use case the name of the editable region must exist under a editable_region parent key.  Unlike mock_builder hammer uses these parent keys to enable more flexibility in keys names for future radius tags that may later exist.
 
+***site_name*** key refers to the site name of the theme. (ie. Diversity, ITS, English)
+
 ***page*** key refers to the current page being viewed in hammer.  The keys under *page* mimic the basic radius tag accessible attributes of a cleanslate page:
 
 `id:, name:, slug:, meta_description:, title:, alternate_name:, depth:`
+
+***if_page_depth_eq*** & ***if_page_depth_gt*** keys refer to their counterpart tags:
+
+`<r:if_page_depth_gt page_depth="1">`
+and
+`<r:if_page_depth_eq page_depth="1">`
+often times used to generate different menus based on the user navigating child and parent pages within a site.  These keys will allow you to manipulate Hammers rendering of the current template view as if the user was ascending or descending pages.
 
 Hammer mock_data.yml can also use Ruby code (see ancestor menu example below) to [manipulate strings](http://www.tutorialspoint.com/ruby/ruby_strings.htm "Ruby Strings") or create menus as well as Faker objects: <https://github.com/stympy/faker> to auto generate words, paragraphs and sentences.
 
 **Example:** Mock data file for cleanslate/hammer
 
 ```
+livereload: true
+
 shared_themes:
   layouts__masthead--v1: "code"
   layouts__footer__contact--v1: "code"
@@ -112,6 +125,8 @@ editable_region:
     <span class="caps">WV 26506</span>-6202<br>Phone: 304.293.5600 | Fax: 304.293.8279<br>Email:
     <a href="mailto:diversity@mail.wvu.edu">diversity@mail.wvu.edu</a></p>
     
+site_name: "Test Site"
+
 page:
   id: 2
   name: "Test Page 2"
