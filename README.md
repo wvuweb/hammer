@@ -25,7 +25,7 @@ If you already have RVM installed due to a previous installation of [Mock Builde
 
     `git clone git@github.com:wvuweb/hammer.git hammer`
 
-3. Change directory to mock builder install 
+3. Change directory to hammer install director
 
     `cd ~/Sites/hammer/`
 
