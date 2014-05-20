@@ -113,7 +113,13 @@ editable_region:
     <a href="mailto:diversity@mail.wvu.edu">diversity@mail.wvu.edu</a></p>
     
 page:
+  id: 2
   name: "Test Page 2"
+  slug: "test_page_2"
+  meta_description: "Hello World"
+  title: "This is the best Test page ever!"
+  alternate_name: "Some other name"
+  depth: 1
 
 if_page_depth_eq: 1
 if_page_depth_gt: 1
