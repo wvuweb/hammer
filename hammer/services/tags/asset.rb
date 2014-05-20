@@ -8,36 +8,36 @@ module Tags
     %w(id title name alt_text description).each do |mthd|
       tag "file:#{mthd}" do |tag|
         # tag.locals.asset.send(mthd.to_sym)
-        "fix file:#{mthd} tag"
+        Hammer.error "file:#{mthd} tag is not implemented yet"
       end
     end
     
     tag 'file:filename' do |tag|
       # tag.locals.asset.try(:filename)
-      "fix file:filename tag"
+      Hammer.error "file:filename tag is not implemented yet"
     end
     
     tag 'file:download_url' do |tag|
       # asset = tag.locals.asset
       # asset.public_download_url
-      "fix file:download_url tag"
+      Hammer.error "file:download_url tag is not implemented yet"
     end
     
     # <r:files labels="foo,bar" labels_match="any|all|none" by="name|title|size|etc" order="asc|desc"/>
     tag 'files' do |tag|
       # tag.locals.assets = find_with_options(tag, tag.globals.site.assets)
       # tag.expand
-      "fix files tag"
+      Hammer.error "files tag is not implemented yet"
     end
     
     tag 'files:count' do |tag|
       # count_items tag, tag.locals.assets
-      "fix files:count tag"
+      Hammer.error "files:count tag is not implemented yet"
     end
     
     tag 'files:each' do |tag|
       # loop_over tag, tag.locals.assets
-      "fix files:each tag"
+      Hammer.error "files:each tag is not implemented yet"
     end
     
     def self.decorated_asset(asset)

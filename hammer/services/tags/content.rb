@@ -14,7 +14,7 @@ module Tags
         tag.globals.content_for[name]
       else
         if tag.globals.yield.empty?
-          "<strong>Hammer:</strong> No Yield Data"
+          Hammer.error "No yield data.  Are you displaying a layout?"
         else
           tag.globals.yield
         end
@@ -61,7 +61,7 @@ module Tags
             content = tag.globals.context.data['editable_region'][tag.attr['name']]
           end
         else
-          content = "<strong>Hammer:</strong> Set data for key: <em>#{tag.attr['name']}</em> under <em>editable_region</em> in the mock_data file"
+          content = Hammer.error "Set data for key: <em>#{tag.attr['name']}</em> under <em>editable_region</em> in the mock_data file"
         end
       else
         content = Faker::Lorem.paragraph(rand(2..10))
@@ -83,10 +83,10 @@ module Tags
             partial_request_path = partial_dir.join(partial_path)
             
           else
-            return "<strong>Hammer:</strong> Add key: <em>#{tag_name}</em> under <em>shared_themes:</em> with a local path of <em>#{tag.attr['theme'].downcase}</em> in the mock_data file"
+            return Hammer.error "Add key: <em>#{tag_name}</em> under <em>shared_themes:</em> with a local directory value of <em>#{tag.attr['theme'].downcase}</em> in the mock_data file"
           end
         else
-          return "<strong>Hammer:</strong> Add key: <em>#{tag_name}</em> under <em>shared_themes:</em> with a local path of <em>#{tag.attr['theme'].downcase}</em> in the mock_data file"
+          return Hammer.error "Add key: <em>#{tag_name}</em> under <em>shared_themes:</em> with a local directory value of <em>#{tag.attr['theme'].downcase}</em> in the mock_data file"
         end
       else 
         partial_path = self.partial_file_path(tag.attr['name'])

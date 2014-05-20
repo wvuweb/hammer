@@ -4,10 +4,14 @@ module Tags
     # Page tags
     tag 'page_name' do |tag|
       # tag.globals.page.name
-      if tag.globals.context.data && tag.globals.context.data['page_name']
-        tag.globals.context.data['page_name']
+      if tag.globals.context.data 
+        if tag.globals.context.data['page_name']
+          tag.globals.context.data['page_name']
+        else
+          Hammer.error "Add key <em>name</em> under page"
+        end
       else
-        'Page Name'
+        "Page Name"
       end
     end
     
@@ -15,7 +19,7 @@ module Tags
       # tag.locals.page = tag.globals.site.root_page
       # tag.expand
       # "fix root tag"
-      tag.locals.page = @page = get_page(tag)
+      Hammer.error "root tag is not yet implemented"
       tag.expand
     end
     

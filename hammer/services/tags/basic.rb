@@ -12,10 +12,10 @@ module Tags
         if tag.globals.context.data['site_name']
           tag.globals.context.data['site_name']
         else
-          "<strong>Hammer: </strong> Set key: <em>site_name</em> in mock_data file"
+          Hammer.error "Set key: <em>site_name</em> in mock_data file"
         end
       else
-        Faker::Company.name
+        "Site Name"
       end
     end
     
@@ -26,7 +26,7 @@ module Tags
       # when 'absolute' then tag.globals.page.request_path
       # when 'full' then tag.globals.page.request_url
       # end
-      "fix current_url tag"
+      Hammer.error "current_url tag is not implemented yet"
     end
     
     # Renders an unordered list (<ul>) of HTML links to the pages leading to the current page. If the 'text_only'
@@ -51,7 +51,7 @@ module Tags
       # 
       # options['text_only'] ? page.breadcrumb_text(options) : page.breadcrumb_list(options)
       
-      "fix breadcrumb tag"
+      Hammer.error "breadcrumb tag is not implemented yet"
       
       
     end
@@ -69,7 +69,7 @@ module Tags
       # 
       # value = tag.globals.vars[name]
       # value.blank? && default.present? ? default : value
-      "fix var tag"
+      Hammer.error "var tag is not implemented yet"
     end
     
     # Set the value of a variable.
@@ -92,7 +92,7 @@ module Tags
       # value = default if value.blank? && default.present?
       # tag.globals.vars[name] = value
       # nil
-      "fix set_var tag"
+      Hammer.error "set_var tag is not implemented yet"
     end
     
     # Replace content contained within the tag that matches the 'match' attribute with
@@ -112,7 +112,7 @@ module Tags
       # content = tag.expand
       # content.send rmethod, /#{match}/, value
       
-      "fix replace tag"
+      Hammer.error "replace tag is not implemented yet"
     end
     
     # Parse a date string and return a new string with the given format. The string to parse
@@ -142,7 +142,7 @@ module Tags
       # Chronic.time_class = Time.zone
       # date = Chronic.parse(date_str) || DateTime.parse(date_str) rescue nil
       # date.present? ? date.send(*format_method) : error_msg
-      "fix date_format tag"
+      Hammer.error "date_format tag is not implemented yet"
     end
     
     tag 'select_html' do |tag|
@@ -160,13 +160,13 @@ module Tags
       # end
       # 
       # output
-      "fix select_html tag"
+      Hammer.error "select_html tag is not implemented yet"
     end
     
     tag 'escape_xml' do |tag|
       # content = tag.expand
       # CGI::escapeHTML content
-      "fix escape_xml tag"
+      Hammer.error "escape_xml tag is not implemented yet"
     end
   end
 end

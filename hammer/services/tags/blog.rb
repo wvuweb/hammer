@@ -4,38 +4,38 @@ module Tags
     tag 'blog' do |tag|
       # tag.locals.blog ||= load_blog(tag)
       # tag.expand
-      "fix blog tag"
+      Hammer.error "blog tag is not implemented yet"
     end
     
     tag 'article' do |tag|
       # tag.locals.article ||= load_article(tag)
       # tag.expand
-      "fix article tag"
+      Hammer.error "article tag is not implemented yet"
     end
     
     tag 'article:id' do |tag|
       # tag.locals.article.id
-      "fix article id tag"
+      Hammer.error "rticle id tag is not implemented yet"
     end
     
     tag 'article:name' do |tag|
       # tag.locals.article.name
-      "fix article name tag"
+      Hammer.error "article name tag is not implemented yet"
     end
     
     tag 'article:title' do |tag|
       # tag.locals.article.title
-      "fix article title tag"
+      Hammer.error "article title tag is not implemented yet"
     end
     
     tag 'article:path' do |tag|
       # tag.render 'page:url', tag.attr
-      "fix article path tag"
+      Hammer.error "article path tag is not implemented yet"
     end
     
     tag 'article:content' do |tag|
       # tag.render 'page:content', tag.attr
-      "fix article content tag"
+      Hammer.error "article content tag is not implemented yet"
     end
     
     # TODO: Use a different taggable attribute, such as 'tags', instead of 'labels'. 
@@ -43,40 +43,40 @@ module Tags
     #       for the public.
     tag 'article:tags' do |tag|
       # tag.locals.article.label_list.join(',')
-      "fix article tags tag"
+      Hammer.error "article tags tag is not implemented yet"
     end
     
     tag 'article:published_at' do |tag|
       # tag.locals.article.published_at
-      "fix article published_at tag"
+      Hammer.error "article published_at tag is not implemented yet"
     end
             
     tag 'articles' do |tag|
       # tag.locals.articles = filter_articles(tag, tag.locals.blog.children.published)
       # tag.expand
-      "fix articles tag"
+      Hammer.error "articles tag is not implemented yet"
     end
     
     tag 'articles:each' do |tag|
       # loop_over tag, tag.locals.articles
-      "fix articles each tag"
+      Hammer.error "articles:each tag is not implemented yet"
     end
     
     tag 'articles:count' do |tag|
       # count_items tag, tag.locals.articles
-      "fix articles count tag"
+      Hammer.error "articles:count tag is not implemented yet"
     end
     
     tag 'articles:if_articles' do |tag|
       # cnt = tag.locals.articles.try(:all).try(:count)
       # tag.expand if cnt > 0
-      "fix articles if_articles tag"
+      Hammer.error "articles:if_articles tag is not implemented yet"
     end
     
     tag 'articles:if_no_articles' do |tag|
       # cnt = tag.locals.articles.try(:all).try(:count)
       # tag.expand if cnt.nil? or cnt == 0
-      "fix articles if_no_articles tag"
+      Hammer.error "articles:if_no_articles tag is not implemented yet"
     end
     
     tag 'articles:pagination' do |tag|
@@ -94,29 +94,29 @@ module Tags
       # end
       # tag.locals.article_pagination = data
       # tag.expand if data[:total] > 1
-      "fix articles pagination tag"
+      Hammer.error "articles:pagination tag is not implemented yet"
     end
     
     tag 'articles:pagination:previous_url' do |tag|
       # url_for_page(tag, :previous)
-      "fix article pagination previous_url tag"
+      Hammer.error " article:pagination:previous_url tag is not implemented yet"
     end
     
     tag 'articles:pagination:next_url' do |tag|
       # url_for_page(tag, :next)
-      "fix article pagination next_url tag"
+      Hammer.error "article:pagination:next_url tag is not implemented yet"
     end
     
     tag 'articles:pagination:if_first_page' do |tag|
       # return unless tag.locals.article_pagination.present?
       # tag.expand if tag.locals.article_pagination[:previous].nil?
-      "fix article pagination if_first_page tag"
+      Hammer.error "article:pagination:if_first_page tag is not implemented yet"
     end
     
     tag 'articles:pagination:if_last_page' do |tag|
       # return unless tag.locals.article_pagination.present?
       # tag.expand if tag.locals.article_pagination[:next].nil?
-      "fix article pagination if_last_page tag"
+      Hammer.error "article:pagination:if_last_page tag is not implemented yet"
     end
     
     class << self
