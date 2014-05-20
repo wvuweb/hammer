@@ -73,6 +73,7 @@ class ThemeRenderer
       @content = file_contents
     end
     render_with_radius
+
   end
   
   def radius_parser(context = {})
@@ -107,7 +108,19 @@ class ThemeRenderer
       radius_parser.context.globals.layout_file_path = layout_file_path
       
       layout_content
-      self.output << radius_parser.parse(self.layout_content)
+      
+      output = radius_parser.parse(self.layout_content)
+      
+      if self.data && self.data['livereload']
+        @htmldoc = Nokogiri::HTML::Document.parse(output)
+        script = Nokogiri::XML::Node.new "script", @htmldoc
+        script['src'] = "http://localhost:35729/livereload.js"
+        @htmldoc.at('head').add_child(script)
+        output = @htmldoc.to_html
+      end
+      
+      self.output << output
+      
     else
       self.output << parsed_content
     end

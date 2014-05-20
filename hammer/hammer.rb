@@ -30,6 +30,7 @@ module Hammer
         puts "Path is a Template HTML file".colorize(:blue)
         
         response.status = 200
+        
         response.body = ThemeRenderer.new(
           {
             :server => @server,
