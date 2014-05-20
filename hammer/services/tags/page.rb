@@ -171,10 +171,10 @@ module Tags
     
     # Retrieve the value of the first attribute, from the list of comma separated attributes given in the 'names' tag attribute, that has does not have a blank value.
     tag 'page:first_non_blank_attr' do |tag|
-      # attrs = (tag.attr['names'] || '').split(',').map{ |a| a.strip.to_sym }
-      # page = tag.locals.page
-      # page.first_present_attribute(attrs.select{ |attr| page.radius_attributes.include?(attr) }.uniq)
-      "fix page:first_non_blank_attr tag"
+      attrs = (tag.attr['names'] || '').split(',').map{ |a| a.strip.to_sym }
+      attr = self.first_present_attribute(attrs.select{ |attr|  tag.globals.context.data["page"].include?(attr.to_s) }.uniq)
+      tag.globals.context.data["page"][attr]
+      #binding.pry#"fix page:first_non_blank_attr tag"
     end
     
     tag 'page:content' do |tag|
@@ -307,6 +307,13 @@ module Tags
       
       output.flatten.join('')
     end
+    
+    def self.first_present_attribute(*attrs)
+      attrs ||= []
+      attrs = [attrs] unless attrs.is_a?(Array)
+      values = attrs.flatten.map { |attr| attr.to_s }.reject(&:blank?).first
+    end
+    
   end
   
   module Basic1
