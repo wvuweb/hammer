@@ -98,7 +98,7 @@ Hammer mock_data.yml can also use Ruby code (see ancestor menu example below) to
 
 **Example:** Mock data file for cleanslate/hammer
 
-```
+```yaml
 livereload: true
 
 shared_themes:
