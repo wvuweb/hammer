@@ -56,7 +56,7 @@ class ThemeRenderer
     if @theme_root.is_a?(Pathname)
       layout_file_path = @theme_root.join(layout_config_path)
     else
-      raise 'Config File does not exist in theme '+@theme_root.to_s
+      raise 'Config File does not exist in theme see example: https://github.com/wvuweb/cleanslate-toolkit/blob/master/config.yml'
     end
     begin 
       layout_file_path.exist?
