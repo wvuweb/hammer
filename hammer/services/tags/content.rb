@@ -78,7 +78,12 @@ module Tags
           if tag.globals.context.data['shared_themes'] && tag.globals.context.data['shared_themes'][tag_name]
             partial_path = self.partial_file_path(tag.attr['name'])
             directory_dir = Pathname.new(tag.globals.context.data['shared_themes'][tag_name]+'/views')
-            partial_dir = tag.globals.context.theme_root.parent.join(directory_dir)
+            
+            if tag.globals.context.theme_root
+              partial_dir = tag.globals.context.theme_root.parent.join(directory_dir)
+            else
+              return Hammer.error "theme_root error, you might be missing the config.yml file in the root of your theme"
+            end
             
             partial_request_path = partial_dir.join(partial_path)
             

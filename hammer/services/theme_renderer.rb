@@ -51,14 +51,18 @@ class ThemeRenderer
   def layout_file_path
     file = self.config['layout']+'.html'
     folder = 'views/layouts'
-    parts = [folder, file]  
+    parts = [folder, file]
     layout_config_path = Pathname.new(parts.join('/'))
-    layout_file_path = @theme_root.join(layout_config_path)
+    if @theme_root.is_a?(Pathname)
+      layout_file_path = @theme_root.join(layout_config_path)
+    else
+      raise 'Config File does not exist in theme '+@theme_root.to_s
+    end
     begin 
       layout_file_path.exist?
       layout_file_path
     rescue => e
-      raise 'Layout File does not exist'+layout_file_path.to_s
+      raise 'Layout File does not exist '+layout_file_path.to_s
     end
       
   end
