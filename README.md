@@ -63,6 +63,8 @@ function hammer {
 
 ## Mock Data Example
 
+**Warning:** your text editor must be set to space based tabs at (2 spaces) or you will have issues editing your mock_data.yml file
+
 If you are familar with [Mock Builder v2](https://github.com/wvuweb/mock_builder "Mock Builder v2") this mock_data.yml file will look familar if not identical to your previous usage.  
 
 There are some fundemental differences however.
