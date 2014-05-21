@@ -2,6 +2,7 @@
 
 require 'yaml'
 require 'webrick'
+require 'chronic'
 
 require "../hammer/services/mock_data.rb"
 require "../hammer/services/theme_context.rb"
@@ -122,6 +123,35 @@ class ThemeRenderer
         @htmldoc.at('head').add_child(script)
         output = @htmldoc.to_html
       end
+      
+      if self.data && self.data['browsersync']
+        @htmldoc = Nokogiri::HTML::Document.parse(output)
+        script = Nokogiri::XML::Node.new "script", @htmldoc
+        
+        coder = HTMLEntities.new
+        string = "<script defer src='//HOST:3000/socket.io/socket.io.js'><\/script><script defer src='//HOST:3001/client/browser-sync-client.0.9.1.js'><\/script>"
+        coder.encode(string)
+        
+        script.content = <<-SCRIPT_CONTENT
+          var head= document.getElementsByTagName('head')[0];
+          var script= document.createElement('script');
+          script.type= 'text/javascript';
+          var src= '//HOST:3000/socket.io/socket.io.js';
+          script.src = src.replace(/HOST/g, location.hostname);
+          head.appendChild(script);
+
+          var head= document.getElementsByTagName('head')[0];
+          var script= document.createElement('script');
+          script.type= 'text/javascript';
+          var src= '//HOST:3001/client/browser-sync-client.0.9.1.js';
+          script.src = src.replace(/HOST/g, location.hostname);
+          head.appendChild(script);
+        SCRIPT_CONTENT
+        
+        @htmldoc.at('body').add_child(script)
+        output = @htmldoc.to_html
+      end
+      
       
       self.output << output
       
