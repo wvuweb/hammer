@@ -95,7 +95,7 @@ module Tags
       if tag.globals.context.data && tag.globals.context.data['blog']['articles']
         tag.locals.articles = tag.globals.context.data['blog']['articles']
       end
-      if tag.locals.articles.count.nil? or tag.locals.blog.count == 0
+      if !tag.locals.articles.nil? or tag.locals.articles.count.nil? or tag.locals.blog.count == 0
         tag.expand 
       end
     end
@@ -155,8 +155,24 @@ module Tags
       end
       
       def load_article(tag)
-        page = tag.globals.page
-        page.type == 'ArticlePage' ? decorated_page(page) : nil
+        # page = tag.globals.page
+        #page.type == 'ArticlePage' ? decorated_page(page) : nil
+        if tag.globals.context.data && tag.globals.context.data['blog'] && tag.globals.context.data['blog']['articles']
+          tag.globals.context.data['blog']['articles'].first
+        else
+          content = <<-CONTENT
+            <p>#{ Faker::Lorem.paragraph(2) }</p>
+            <p>#{ Faker::Lorem.paragraph(5) }</p>
+            <p>#{ Faker::Lorem.paragraph(3) }</p>
+          CONTENT
+          article = {
+            :name => Faker::Lorem.sentence(1), 
+            :title => Faker::Lorem.sentence(1),
+            :created_by => { :first_name => Faker::Name.first_name, :last_name =>  Faker::Name.last_name },
+            :content => content,
+            :published_at => Random.rand(11).to_s+ "days ago"
+          }
+        end
       end
     
       def decorated_page(page)

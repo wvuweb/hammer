@@ -69,7 +69,9 @@ If you are familar with [Mock Builder v2](https://github.com/wvuweb/mock_builder
 
 There are some fundemental differences however.
 
-***livereload*** key is an Advanced topic covered in further detail the [Wiki](http://github.com/wvuweb/hammer/wiki "Link this to the wiki").  With this key you can enable javascript task runners such as grunt and gulp, to reload the page as you develop and save files.
+***livereload*** key is an Advanced topic covered in further detail in the [Wiki](http://github.com/wvuweb/hammer/wiki "Link this to the wiki").  With this key you can enable javascript task runners such as grunt and gulp, to reload the page as you develop and save files.
+
+***browsersync*** key is an Advanced topic covered in further detail in the [Wiki](http://github.com/wvuweb/hammer/wiki "Link this to the wiki").  With this key you can enable javascript task runners such as grunt and gulp, to reload the page as you develop.  BrowserSync advantage over livereload is that it allows a connection to other devices through sockets and a shared internet connection allowing you to see your updates on a mobile phone and tablet as you develop. 
 
 ***shared_themes*** key refers to the *partial* radius tag:
 
@@ -109,6 +111,7 @@ Hammer mock_data.yml can also use Ruby code (see ancestor menu example below) to
 
 ```yaml
 livereload: false
+browsersync: false
 
 shared_themes:
   layouts__masthead--v1: "code"
