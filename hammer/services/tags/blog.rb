@@ -43,27 +43,30 @@ module Tags
     end
     
     tag 'article:published_at' do |tag|
-      tag.locals.article['published_at']
+      tag.locals.article[:published_at]
     end
     
     tag 'article:author_first_name' do |tag|
-      tag.locals.article['created_by']['first_name']
+      tag.locals.article[:created_by][:first_name]
     end
     
     tag 'article:author_last_name' do |tag|
-      tag.locals.article['created_by']['last_name']
+      tag.locals.article[:created_by][:last_name]
     end
     
     tag 'article:author_full_name' do |tag|
-      tag.locals.article['created_by']['first_name']+' '+tag.locals.article['created_by']['last_name']
+      tag.locals.article[:created_by][:first_name]+' '+tag.locals.article[:created_by][:last_name]
     end
             
     tag 'articles' do |tag|
       # tag.locals.blog ||= load_blog(tag)
       # tag.locals.articles = filter_articles(tag, tag.locals.blog.children.published)
       # tag.expand
-      if tag.globals.context.data && tag.globals.context.data['blog'] && tag.globals.context.data['blog']['articles']
-        tag.locals.articles = tag.globals.context.data['blog']['articles']
+      if tag.globals.context.data && tag.globals.context.data['blog'] && tag.globals.context.data[:blog][:articles]
+        tag.locals.articles = tag.globals.context.data[:blog][:articles]
+      end
+      if tag.locals.articles == nil
+        tag.locals.articles = []
       end
       tag.expand
     end
@@ -79,23 +82,15 @@ module Tags
     tag 'articles:if_articles' do |tag|
       # cnt = tag.locals.articles.try(:all).try(:count)
       # tag.expand if cnt > 0
-      if tag.globals.context.data && tag.globals.context.data['blog']
-        tag.locals.articles = tag.globals.context.data['blog']['articles']
-      end
       if tag.locals.articles.count > 0
         tag.expand 
-      else
-        Hammer.error "no articles found"
       end
     end
     
     tag 'articles:if_no_articles' do |tag|
       # cnt = tag.locals.articles.try(:all).try(:count)
       # tag.expand if cnt.nil? or cnt == 0
-      if tag.globals.context.data && tag.globals.context.data['blog']['articles']
-        tag.locals.articles = tag.globals.context.data['blog']['articles']
-      end
-      if !tag.locals.articles.nil? or tag.locals.articles.count.nil? or tag.locals.blog.count == 0
+      if tag.locals.articles.count.nil? or tag.locals.articles.count == 0
         tag.expand 
       end
     end
@@ -172,6 +167,8 @@ module Tags
             :content => content,
             :published_at => Random.rand(11).to_s+ "days ago"
           }
+          tag.locals.article = article
+          article
         end
       end
     

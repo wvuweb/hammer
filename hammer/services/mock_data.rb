@@ -1,5 +1,6 @@
 # encoding: utf-8
 require 'erb'
+require 'active_support/all'
 
 class MockData
   
@@ -9,7 +10,8 @@ class MockData
       if yml_path.exist?
         erb = ERB.new(yml_path.read, nil, '-')
         data = erb.result(binding)
-        YAML::load(data)
+        yml = HashWithIndifferentAccess.new(YAML::load(data))
+        
       else
         puts ' '
         puts 'WARNING:'.red

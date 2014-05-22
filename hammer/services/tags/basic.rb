@@ -53,9 +53,8 @@ module Tags
       #   binding.pry
       #   options[i] = options[i].to_s.to_boolean
       # end
-      
-      if tag.globals.context.data && tag.globals.context.data['breadcrumbs']
-        tag.globals.context.data['breadcrumbs']
+      if tag.globals.context.data && tag.globals.context.data[:breadcrumbs]
+        tag.globals.context.data[:breadcrumbs]
       else
         options['text_only'] ? self.breadcrumb_text(options) : self.breadcrumb_list(options)
       end
