@@ -96,6 +96,13 @@ and
 `<r:if_page_depth_eq page_depth="1">`
 often times used to generate different menus based on the user navigating child and parent pages within a site.  These keys will allow you to manipulate Hammers rendering of the current template view as if the user was ascending or descending pages.
 
+***blog*** tags are still a work in progress. With that said the mock data example below will give you basic articles to view your design. Any advanced usage of blog tags may result in less then desirable results. Blog Tags included in this are as follows:
+
+`<r:blog:articles limit="{$limit}" page="{$page}" tags="{$tags}" tags_op="{$tags_op}" year="{$year}" month="{$month}" day="{$day}">`
+`<r:if_no_articles/>` 
+`<r:if_articles/>`
+`<r:select_html/>` `<r:pagination/>` and other related supporing tags.
+
 Hammer mock_data.yml can also use Ruby code (see ancestor menu example below) to [manipulate strings](http://www.tutorialspoint.com/ruby/ruby_strings.htm "Ruby Strings") or create menus as well as Faker objects: <https://github.com/stympy/faker> to auto generate words, paragraphs and sentences.
 
 **Example:** Mock data file for cleanslate/hammer
@@ -166,4 +173,41 @@ ancestor_menu: |
       <li><%= page %></li>
     <% end %>
   </ul>
+  
+blog:
+  name: Blog Name
+  articles:
+    - article: 
+      name: <%= Faker::Lorem.sentence(1) %>
+      title: <%= Faker::Lorem.sentence(1) %>
+      created_by: 
+        first_name: <%= Faker::Name.first_name %>
+        last_name: <%= Faker::Name.last_name %>
+      content: |
+        <p><%= Faker::Lorem.paragraph(2) %></p>
+        <p><%= Faker::Lorem.paragraph(5) %></p>
+        <p><%= Faker::Lorem.paragraph(3) %></p>
+      published_at: 2 days ago
+    - article:
+      name: <%= Faker::Lorem.sentence(1) %>
+      title: <%= Faker::Lorem.sentence(1) %>
+      created_by: 
+        first_name: <%= Faker::Name.first_name %>
+        last_name: <%= Faker::Name.last_name %>
+      content: |
+        <p><%= Faker::Lorem.paragraph(2) %></p>
+        <p><%= Faker::Lorem.paragraph(5) %></p>
+        <p><%= Faker::Lorem.paragraph(3) %></p>
+      published_at: 4 days ago
+    - article:
+      name: <%= Faker::Lorem.sentence(1) %>
+      title: <%= Faker::Lorem.sentence(1) %>
+      created_by: 
+        first_name: <%= Faker::Name.first_name %>
+        last_name: <%= Faker::Name.last_name %>
+      content: |
+        <p><%= Faker::Lorem.paragraph(2) %></p>
+        <p><%= Faker::Lorem.paragraph(5) %></p>
+        <p><%= Faker::Lorem.paragraph(3) %></p>
+      published_at: 5 days ago
 ```

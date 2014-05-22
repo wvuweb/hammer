@@ -191,11 +191,11 @@ module Tags
     end
     
     tag 'page:content' do |tag|
-      # rname = tag.attr['name'].strip
-      # page = tag.locals.page
-      # 
+      rname = tag.attr['name'].strip
+      page = tag.locals.page
+      page['content']
       # page.content_hash(tag.globals.mode)[rname]
-      Hammer.error "page:content tag is not yet implemented"
+      # Hammer.error "page:content tag is not yet implemented"
     end
     
     # Page template tags

@@ -120,6 +120,7 @@ class ThemeRenderer
         @htmldoc = Nokogiri::HTML::Document.parse(output)
         script = Nokogiri::XML::Node.new "script", @htmldoc
         script['src'] = "http://localhost:35729/livereload.js"
+        script['defer'] = "defer"
         @htmldoc.at('head').add_child(script)
         output = @htmldoc.to_html
       end
@@ -128,13 +129,10 @@ class ThemeRenderer
         @htmldoc = Nokogiri::HTML::Document.parse(output)
         script = Nokogiri::XML::Node.new "script", @htmldoc
         
-        coder = HTMLEntities.new
-        string = "<script defer src='//HOST:3000/socket.io/socket.io.js'><\/script><script defer src='//HOST:3001/client/browser-sync-client.0.9.1.js'><\/script>"
-        coder.encode(string)
-        
         script.content = <<-SCRIPT_CONTENT
           var head= document.getElementsByTagName('head')[0];
           var script= document.createElement('script');
+          script.setAttribute("defer", "defer");
           script.type= 'text/javascript';
           var src= '//HOST:3000/socket.io/socket.io.js';
           script.src = src.replace(/HOST/g, location.hostname);
@@ -142,6 +140,7 @@ class ThemeRenderer
 
           var head= document.getElementsByTagName('head')[0];
           var script= document.createElement('script');
+          script.setAttribute("defer", "defer");
           script.type= 'text/javascript';
           var src= '//HOST:3001/client/browser-sync-client.0.9.1.js';
           script.src = src.replace(/HOST/g, location.hostname);

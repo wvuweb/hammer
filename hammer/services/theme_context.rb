@@ -1,5 +1,6 @@
 # encoding: utf-8
 require "../hammer/services/tag_container.rb"
+require "../hammer/services/tag_binding.rb"
 Dir["../hammer/services/tags/*.rb"].each {|file|
   require file 
 }
@@ -10,15 +11,19 @@ class ThemeContext < ::Radius::Context
     super
     @context = data
     
-    globals.context = @context
+    unless @context == {}
+      
+      globals.context = @context
+      globals.vars = @context.request.query || {}
     
-    load_tags_from Tags::ThemeAsset
-    load_tags_from Tags::Basic
-    load_tags_from Tags::Menus
-    load_tags_from Tags::Page
-    load_tags_from Tags::Content
-    load_tags_from Tags::Blog
-    load_tags_from Tags::Asset
+      load_tags_from Tags::ThemeAsset
+      load_tags_from Tags::Basic
+      load_tags_from Tags::Menus
+      load_tags_from Tags::Page
+      load_tags_from Tags::Content
+      load_tags_from Tags::Blog
+      load_tags_from Tags::Asset
+    end
   end
   
   def self.tag(name, &block)
