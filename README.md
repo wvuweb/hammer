@@ -24,7 +24,7 @@ If you already have RVM installed due to a previous installation of [Mock Builde
     
     `rvm requirements`
 
-2. Checkout repo into your ~/Sites/ directory:
+2. Clone repo into your ~/Sites/ directory:
 
     `git clone https://github.com/wvuweb/hammer.git`
 
