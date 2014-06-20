@@ -26,7 +26,7 @@ If you already have RVM installed due to a previous installation of [Mock Builde
 
 2. Checkout repo into your ~/Sites/ directory:
 
-    `git clone git@github.com:wvuweb/hammer.git hammer`
+    `git clone https://github.com/wvuweb/hammer.git`
 
 3. Change directory to hammer install director
 
@@ -34,7 +34,7 @@ If you already have RVM installed due to a previous installation of [Mock Builde
 
 4. If RVM prompts you for a missing ruby install run the following: 
 
-    `rvm install 1.9.3-p484`
+    `rvm install 1.9.3-p484@hammer`
 
 5. Then run 
 
