@@ -110,8 +110,11 @@ often times used to generate different menus based on the user navigating child 
 
 Hammer mock_data.yml can also use Ruby code (see ancestor menu example below) to [manipulate strings](http://www.tutorialspoint.com/ruby/ruby_strings.htm "Ruby Strings") or create menus as well as Faker objects: <https://github.com/stympy/faker> to auto generate words, paragraphs and sentences.
 
+**Example:** Mock data file for cleanslate/hammer
+
+```yaml
 livereload: false
-browsersync: true
+browsersync: false
 browsersync-data: |
   var head = document.getElementsByTagName('head')[0];
   var script = document.createElement('script');
@@ -128,7 +131,7 @@ browsersync-data: |
   var src= '//HOST:3001/client/browser-sync-client.0.9.1.js';
   script.src = src.replace(/HOST/g, location.hostname);
   head.appendChild(script);
-  
+
 shared_themes:
   layouts__masthead--v1: "code"
   layouts__footer__contact--v1: "code"
