@@ -46,9 +46,9 @@ doc_root = options.directory
 puts "Dropping the Hammer on #{doc_root}".colorize(:red)
 
 puts " "
-puts "                                \`.         ".colorize(:light_magenta)
-puts "      .--------------.___________) \        ".colorize(:light_magenta)
-puts "      |//////////////|___________[ ]        ".colorize(:light_magenta)
+puts "                                \\`.         ".colorize(:light_magenta)
+puts "      .--------------.___________) \\        ".colorize(:light_magenta)
+puts "      |//// WVU /////|___________[ ]        ".colorize(:light_magenta)
 puts "      `--------------'           ) (        ".colorize(:light_magenta)
 puts "                                 '-'        ".colorize(:light_magenta)
 puts "############################################".colorize(:yellow)
