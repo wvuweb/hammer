@@ -49,18 +49,8 @@ If you already have RVM installed due to a previous installation of [Mock Builde
 copy and paste the following lines into your .bash_profile or .profile
 
 ```
-ESC_SEQ="\x1b["
-COL_RESET=$ESC_SEQ"39;49;00m"
-COL_RED=$ESC_SEQ"31;01m"
-
 function hammer {
-    if [ $# -eq 0 ]
-        then
-            echo -e "${COL_RED}Dropping the hammer on cleanslate_themes!!!${COL_RESET}";
-        else
-            echo -e "${COL_RED}Dropping the hammer on ${1}!!!${COL_RESET}";
-    fi
-    rvm use ruby-1.9.3-p484@hammer && cd ~/Sites/hammer/hammer/ && ruby hammer_server.rb ~/Sites/cleanslate_themes/$@;
+  rvm use ruby-1.9.3-p484@hammer && cd ~/Sites/hammer/hammer/ && ruby hammer_server.rb $@;
 }
 ```    
 

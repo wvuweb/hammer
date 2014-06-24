@@ -12,13 +12,38 @@ require 'nokogiri'
 require 'sanitize'
 require 'colorize'
 
+require 'optparse'
+require 'ostruct'
+
 require './hammer'
 
 class HammerServlet < WEBrick::HTTPServlet::AbstractServlet
   include Hammer
 end
 
-doc_root = ARGV.shift || Dir::pwd
+options = OpenStruct.new
+options.directory = (Pathname.new(Dir.pwd).parent.parent + "cleanslate_themes").to_s
+options.port = 2000
+
+OptionParser.new do |o|
+  o.on('-d', '--directory directory', String, 'Directory to start hammer in') do |d|
+    options.directory = d
+  end
+  
+  o.on('-q', '--quick directory', String, 'Quick access a default directory') do |q|
+    options.directory = (Pathname.new(Dir.pwd).parent.parent + "cleanslate_themes/#{q}").to_s
+  end
+  
+  o.on('-p', '--port port', Integer, 'Port to start hammer server on') do |p|
+    options.port = p 
+  end
+  
+  o.parse!(ARGV)
+end
+
+doc_root = options.directory
+
+puts "Dropping the Hammer on #{doc_root}".colorize(:red)
 
 puts " "
 puts "                                \`.         ".colorize(:light_magenta)
@@ -35,7 +60,7 @@ puts " "
 puts " "
 
 httpd = WEBrick::HTTPServer.new(
-  :Port => 2000,
+  :Port => options.port,
   :DocumentRoot => doc_root,
   :DirectoryIndex => []
 )
