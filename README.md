@@ -14,45 +14,56 @@ Hammer is similar to [Mock Builder v2](https://github.com/wvuweb/mock_builder "M
 
 ###Mac OSX Installation
 
-If you already have RVM installed due to a previous installation of [Mock Builder v2](https://github.com/wvuweb/mock_builder "Mock Builder"), skip to step 2.
-
-1. Install RVM: [Ruby Version Manager](http://rvm.io/ "Ruby Version Manager")
-
-    `\curl -sSL https://get.rvm.io | bash -s stable`
-    
-    then run
-    
-    `rvm requirements`
-
-2. Clone repo into your ~/Sites/ directory:
-
-    `git clone https://github.com/wvuweb/hammer.git`
-
-3. Change directory to hammer install director
-
+1. If you don't already have one, go to `~/Sites/` and make a folder called `cleanslate_themes`. You can do this via OSX Finder or via the following command in Terminal:
+    *  `cd ~/Sites/ && mkdir cleanslate_themes`
+        * To use Hammer, **all the themes you want to test locally must reside in the `cleanslate_themes` folder**.
+        * If you have miscellaneous CleanSlate themes in your `~/Sites/` directory, it would be best to re-`git clone` those themes into the `cleanslate_themes` folder.
+1. Install [Bundler](http://bundler.io/) if you don't already have it:
+    * `gem install bundler`
+        * If you get a "Permission denied" error of some sort, run `sudo gem install bundler` and enter your computer's password when prompted.
+1. Install RVM: [Ruby Version Manager](http://rvm.io/ "Ruby Version Manager") via Terminal
+    * **Note:** If you already have RVM installed due to a previous installation of [Mock Builder v2](https://github.com/wvuweb/mock_builder "Mock Builder"), skip to the next step.
+  * `\curl -sSL https://get.rvm.io | bash -s stable`
+    * then run 
+  * `rvm requirements`
+        * Installing RVM could take a while (30 minutes to 1.5 hours depending). Please be patient.
+        * Occasionally, RVM will ask you to run a few other commands (like `source` or the like). After installing, if it asks you to run other commands, please do so!
+1. After RVM finishes installing, completely quit and reopen Terminal.
+1. Clone the Hammer repo into your `~/Sites/` directory:
+    * `cd ~/Sites/ && git clone https://github.com/wvuweb/hammer.git`
+        * If you get `-bash: git: command not found` when you run `git clone`, go [install Git](http://git-scm.com/), then re-run the above command after quitting and reopening terminal.
+1. Change directory to the root directory of hammer
     `cd ~/Sites/hammer/`
-
-4. If RVM prompts you for a missing ruby install run the following: 
-
-    `rvm install 1.9.3-p484@hammer`
-
-5. Then run 
-
-    `bundle install`
-
-5. Create a alias in your profile (.bash_profile or .profile)
-
-    see bash configuration below:
+1. If RVM prompts you for a missing ruby install run the following: 
+    * `rvm install 1.9.3-p484@hammer`
+1. Then run 
+    * `bundle install`
+1. Create a alias in your profile (`.bash_profile` or `.profile`)
+    * Run `cd ~ && open -a TextEdit .bash_profile` or `cd ~ && open -a TextEdit .profile` via the Terminal (depending on which one you use). 
+        * If you don't know which file you use, paste the alias listed in the [bash config section](https://github.com/wvuweb/hammer/blob/master/README.md#bash-config) into **both** files.
+    * Copy and paste the alias listed in the [bash config section](https://github.com/wvuweb/hammer/blob/master/README.md#bash-config) into one or both of those files.
+    * Save and quit TextEdit.
+1. Completely quit Terminal. Then reopen Terminal and type `hammer`.
+1. Visit `http://localhost:2000` in your browser. This will show you the root of Hammer.
+1. In your `cleanslate_themes` folder, `git clone` the [code](https://stash.development.wvu.edu/projects/CST/repos/cleanslate-toolkit/browse) and [cleanslate-toolkit](https://stash.development.wvu.edu/projects/CST/repos/code/browse) themes.
+    * `cd ~/Sites/cleanslate_themes`
+    * `git clone https://stash.development.wvu.edu/scm/cst/code.git`
+    * `git clone https://stash.development.wvu.edu/scm/cst/cleanslate-toolkit.git`
+    * If you already have a CleanSlate theme in [Stash](https://stash.development.wvu.edu/projects/CST), go ahead and clone it too.
+1. Refresh `http://localhost:2000` in your browser. You'll see your themes. Navigate to a page template to view it locally in your browser.
+    * You'll notice the WVU masthead and shared footer are missing. A `mock_data.yml` file will fix this.
+1. Congrats, you're up and running! You'll definitely want a `mock_data.yml` file. Keep reading to see how to get that set up.
 
 #### bash config
 
-copy and paste the following lines into your .bash_profile or .profile
+Copy and paste the following lines into your `.bash_profile` or `.profile`
 
 ```
+# Hammer: https://github.com/wvuweb/hammer
 function hammer {
   rvm use ruby-1.9.3-p484@hammer && cd ~/Sites/hammer/hammer/ && ruby hammer_server.rb $@;
 }
-```    
+```
 
 ## Mock Data Example
 
