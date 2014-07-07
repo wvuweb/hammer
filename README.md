@@ -56,9 +56,9 @@ function hammer {
 
 ## Mock Data Example
 
-**Warning:** your text editor must be set to space based tabs at (2 spaces) or you will have issues editing your mock_data.yml file
+**Warning:** your text editor must be set to space based tabs at (2 spaces) or you will have issues editing your `mock_data.yml` file
 
-If you are familar with [Mock Builder v2](https://github.com/wvuweb/mock_builder "Mock Builder v2") this mock_data.yml file will look familar if not identical to your previous usage.  
+If you are familar with [Mock Builder v2](https://github.com/wvuweb/mock_builder "Mock Builder v2") this `mock_data.yml` file will look familar if not identical to your previous usage.  
 
 There are some fundemental differences however.
 
@@ -98,7 +98,7 @@ often times used to generate different menus based on the user navigating child 
 `<r:if_articles/>`
 `<r:select_html/>` `<r:pagination/>` and other related supporing tags.
 
-Hammer mock_data.yml can also use Ruby code (see ancestor menu example below) to [manipulate strings](http://www.tutorialspoint.com/ruby/ruby_strings.htm "Ruby Strings") or create menus as well as Faker objects: <https://github.com/stympy/faker> to auto generate words, paragraphs and sentences.
+Hammer `mock_data.yml` can also use Ruby code (see ancestor menu example below) to [manipulate strings](http://www.tutorialspoint.com/ruby/ruby_strings.htm "Ruby Strings") or create menus as well as Faker objects: <https://github.com/stympy/faker> to auto generate words, paragraphs and sentences.
 
 **Example:** Mock data file for cleanslate/hammer
 
