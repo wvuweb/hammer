@@ -130,22 +130,13 @@ shared_themes:
   layouts__browser-update-org--v1: "code"
 
 editable_region:
-  department-summary__header--how-do-i: "Spread the Word to End the Word."
-  department-summary__main--how-do-i: 1
-  department-summary__header--oas: "Some other random headline..."
-  department-summary__main--oas: 5
-  news: |
-    <ul>
-      <li><a href="#"><%= Faker::Business.credit_card_number %></a></li>
-      <li><a href="#">Some Article link</a></li>
-      <li><a href="#">Another Article link</a></li>
-      <li><a href="#">An Amazing story</a></li>
-    </ul>
+  main: This is content for the main editable region. Change what it says in the mock_data.yml file.
+  sidebar: Sidebar stuff.
   contact: |
-    <p>1085 Van Voorhis Road Suite 250 | P.O. Box 6202<br>Morgantown,
-    <span class="caps">WV 26506</span>-6202<br>Phone: 304.293.5600 | Fax: 304.293.8279<br>Email:
-    <a href="mailto:diversity@mail.wvu.edu">diversity@mail.wvu.edu</a></p>
-    
+    <p><strong>Division of Virginia West Advancement</strong></p>
+    <p>1111 WVU Road Suite 250 | P.O. Box 6202 | Morgantown, WV 26506-6202</p>
+    <p><strong>Phone:</strong> 304.293.5600 | <strong>Fax:</strong> 304.293.8279 | <strong>Email:</strong> <a href="mailto:firstname.lastname@mail.wvu.edu">firstname.lastname@mail.wvu.edu</a></p>
+
 site_name: "Test Site"
 
 page:
