@@ -41,9 +41,9 @@ Hammer is similar to [Mock Builder v2](https://github.com/wvuweb/mock_builder "M
     * `rvm install 1.9.3-p484@hammer`
 1. Then run 
     * `bundle install`
-1. Create a alias in your profile (`.bash_profile` or `.profile`)
-    * Run `cd ~ && open -a TextEdit .bash_profile` or `cd ~ && open -a TextEdit .profile` via the Terminal (depending on which one you use). 
-        * If you don't know which file you use, paste the alias listed in the [bash config section](https://github.com/wvuweb/hammer/blob/master/README.md#bash-config) into **both** files.
+1. Next create a alias in your profile:
+    * Use the following commands in Terminal to open .bash_profile `cd ~ && open -a TextEdit .bash_profile` or .profile `cd ~ && open -a TextEdit .profile` (depending on which one you use). 
+        * If you don't know which file you use, paste the alias listed in the [bash config section](https://github.com/wvuweb/hammer/blob/master/README.md#bash-config) into **both** files (.bash_profile and .profile).
     * Copy and paste the alias listed in the [bash config section](https://github.com/wvuweb/hammer/blob/master/README.md#bash-config) into one or both of those files.
     * Save and quit TextEdit.
 1. Completely quit Terminal. Then reopen Terminal and type `hammer`.
