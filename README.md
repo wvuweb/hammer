@@ -21,10 +21,10 @@ Hammer is similar to [Mock Builder v2](https://github.com/wvuweb/mock_builder "M
         * If you get a "Permission denied" error of some sort, run `sudo gem install bundler` and enter your computer's password when prompted.
 1. Install RVM: [Ruby Version Manager](http://rvm.io/ "Ruby Version Manager") via Terminal
     * **Note:** If you already have RVM installed due to a previous installation of [Mock Builder v2](https://github.com/wvuweb/mock_builder "Mock Builder"), skip to the next step.
-  * `\curl -sSL https://get.rvm.io | bash -s stable`
-    * Now open a new window in Terminal run rvm. Example: `source /Users/yourusername/.rvm/scripts/rvm`
-        * Occasionally, RVM will ask you to run a few other commands (like `source` or the like). After installing, if it asks you to run other commands, please do so!
-  * Next type `rvm requirements` and hit enter.
+    * `\curl -sSL https://get.rvm.io | bash -s stable`
+    * Next, run: `source ~/.rvm/scripts/rvm`
+        * Occasionally, RVM will ask you to run a few other commands. After installing, if it asks you to run other commands, please do so!
+    * Next type `rvm requirements` and hit enter.
         * Installing RVM could take a while (30 minutes to 1.5 hours depending). Please be patient.
 1. After RVM finishes installing, completely quit and reopen Terminal.
 1. Clone the Hammer repo into your `~/Sites/` directory:
