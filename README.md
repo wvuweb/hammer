@@ -42,7 +42,7 @@ Hammer is similar to [Mock Builder v2](https://github.com/wvuweb/mock_builder "M
 1. Then run 
     * `bundle install`
 1. Next create a alias in your profile:
-    * Use the following commands in Terminal to open .bash_profile `cd ~ && open -a TextEdit .bash_profile` or .profile `cd ~ && open -a TextEdit .profile` (depending on which one you use). 
+    * Use the following commands in Terminal to open .bash_profile `cd ~ && open -a TextEdit .bash_profile` or .profile `cd ~ && open -a TextEdit .profile` files (depending on which one you use). 
         * If you don't know which file you use, paste the alias listed in the [bash config section](https://github.com/wvuweb/hammer/blob/master/README.md#bash-config) into **both** files (.bash_profile and .profile).
     * Copy and paste the alias listed in the [bash config section](https://github.com/wvuweb/hammer/blob/master/README.md#bash-config) into one or both of those files.
     * Save and quit TextEdit.
