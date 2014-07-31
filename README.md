@@ -68,6 +68,60 @@ function hammer {
 }
 ```
 
+###Windows Installation
+***WARNING THIS IS SUPER ALPHA PROCEED WITH CAUTION***
+
+1. Install pik using the installer
+
+Download the latest msi file from [github](http://github.com/vertiginous/pik/downloads).
+
+For more information visit [pik's github page](https://github.com/vertiginous/pik)
+
+2. Install ruby 1.9.3-p484 using pik
+
+    `pik install ruby-1.9.3-p484`
+
+3. Confirm your install
+
+    `pik list`
+    should list available rubies
+    
+    `pik use ruby-1.9.3-p484` to switch to correct ruby version
+    
+    `ruby -v` to confirm active ruby version
+
+4. Clone the repo into your C:/Users/{{user}}/Documents/ directory
+
+    `git clone https://github.com/wvuweb/hammer.git`
+
+5. Change directory into hammer and bundle install
+
+    `cd C:/Users/{{user}}/Documents/hammer/hammer`
+    
+    then
+    
+    `bundle install`
+
+6. Create a hammer.bat file in C:/Users/{{user}}/Documents/ root
+
+    copy the following into hammer.bat
+    
+```
+    @echo off
+    echo Loading Hammer...
+    c:
+    cd \Users\steve\Documents\hammer\hammer
+    ruby hammer_server.rb c:\Users\steve\Documents\cleanslate_themes\%theme%
+```
+7. Click start type cmd to load a command prompt
+
+    `cd C:/Users/{{user}}/Documents`
+    
+    then
+    
+    `hammer.bat`
+
+
 ## Mock Data Example
 
 **Warning:** your text editor must be set to space based tabs at (2 spaces) or you will have issues editing your `mock_data.yml` file
