@@ -31,6 +31,10 @@ class ThemeContext < ::Radius::Context
     define_singleton_method "tag:#{name}", &block
   end
   
+  def tag_missing(name, attributes, &block)
+    "OH NOES! Radius tag: #{name} does not yet exist in hammer"
+  end
+  
   private
   def load_tags_from(object)  
     method_regex = /^tag:/
@@ -41,6 +45,7 @@ class ThemeContext < ::Radius::Context
       define_tag mname[4..-1] do |tag_binding|
         if tag_method.arity == 0
           tag_method.call
+         
         else
           tag_method.call tag_binding
         end
