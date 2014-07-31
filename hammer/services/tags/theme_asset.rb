@@ -39,10 +39,12 @@ module Tags
     end
     
     tag 'image_url' do |tag|
-      # site = tag.globals.site
-      # theme = tag.globals.theme
-      # site.image_url(tag.attr['name'], tag.globals.mode, { :theme => theme })
-      "fix image_url tag"
+      doc_root = tag.context.globals.context.server.config[:DocumentRoot]
+      if doc_root.split('/').last == "cleanslate_themes"
+        url = "/#{tag.context.globals.context.request.path.split('/')[1]}/images/#{tag.attr['name']}"
+      else
+        url = "/images/#{tag.attr['name']}"
+      end
     end
     
     def self.build_css_tag(name, context)
