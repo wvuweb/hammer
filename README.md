@@ -77,16 +77,22 @@ Download the latest msi file from [github](http://github.com/vertiginous/pik/dow
 
 For more information visit [pik's github page](https://github.com/vertiginous/pik)
 
-2. Install ruby 1.9.3-p484 using pik
+2. Install ruby 1.9.3-p545 using pik if you already have a Ruby Installed.
 
-    `pik install ruby-1.9.3-p484`
+    `pik install ruby-1.9.3-p545`
+    
+    Otherwise you can install Ruby 1.9.3-p545 using a [RubyInstaller](http://rubyinstaller.org/downloads/) then run the above command to 
 
 3. Confirm your install
 
     `pik list`
     should list available rubies
     
-    `pik use ruby-1.9.3-p484` to switch to correct ruby version
+    `pik use ruby-1.9.3-p545` to switch to correct ruby version
+    
+    You also need to install the [Ruby 1.9.3 Development Kit](http://rubyinstaller.org/downloads/) this package allows you to install some of the gems required by Hammer and isn't installed by Pik
+    
+    Direct link to [Ruby 1.9.3 devkit](https://github.com/downloads/oneclick/rubyinstaller/DevKit-tdm-32-4.5.2-20111229-1559-sfx.exe) (may break so try above link)
     
     `ruby -v` to confirm active ruby version
 
