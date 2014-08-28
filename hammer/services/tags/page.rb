@@ -187,7 +187,12 @@ module Tags
       # url = tag.locals.page.url(tag.globals.mode)
       # url << ".#{format}" if format.present?
       # url
-      Hammer.error "page:url tag is not yet implemented"
+      # Hammer.error "page:url tag is not yet implemented"
+      if tag.globals.context.data && tag.globals.context.data['page'] && tag.globals.context.data['page']['url']
+        tag.globals.context.data['page']['url']
+      else
+        tag.context.globals.context.request.path
+      end
     end
     
     # Retrieve an attribute from the current page.
