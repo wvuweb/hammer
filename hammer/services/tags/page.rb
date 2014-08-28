@@ -19,7 +19,7 @@ module Tags
       # tag.locals.page = tag.globals.site.root_page
       # tag.expand
       # "fix root tag"
-      Hammer.error "root tag is not yet implemented"
+      # Hammer.error "root tag is not yet implemented"
       tag.expand
     end
     
@@ -27,60 +27,83 @@ module Tags
     tag 'current_page' do |tag|
       # tag.locals.page = tag.globals.page
       # tag.expand
-      Hammer.error "current_page tag is not yet implemented"
+      # Hammer.error "current_page tag is not yet implemented"
+      tag.expand
     end
     
     tag 'if_current_page' do |tag|
       # tag.expand if tag.locals.page.id === tag.globals.page.id
-      Hammer.error "if_current_page tag is not yet implemented"
+      # Hammer.error "if_current_page tag is not yet implemented"
+      tag.expand
     end
     
     tag 'unless_current_page' do |tag|
       # tag.expand if tag.locals.page.id != tag.globals.page.id
-      Hammer.error "unless_current_page tag is not yet implemented"
+      # Hammer.error "unless_current_page tag is not yet implemented"
+      tag.expand
     end
     
     tag 'parent' do |tag|
       # tag.locals.page = decorated_page tag.locals.page.parent
       # tag.expand
-      Hammer.error "parent tag is not yet implemented"
+      # Hammer.error "parent tag is not yet implemented"
+      tag.expand
     end
     
     tag 'if_parent' do |tag|
       # parent = tag.locals.page.parent
       # tag.expand if parent && !parent.root?
-      Hammer.error "if_parent tag is not yet implemented"
+      # Hammer.error "if_parent tag is not yet implemented"
+      tag.expand
     end
     
     tag 'unless_parent' do |tag|
       # parent = tag.locals.page.parent
       # tag.expand unless parent && !parent.root?
-      Hammer.error "unless_parent tag is not yet implemented"
+      # Hammer.error "unless_parent tag is not yet implemented"
+      tag.expand
+    end
+    
+    tag 'previous_sibling' do |tag|
+      # tag.locals.page = p = decorated_page(tag.locals.page.previous_sibling)
+      # tag.expand if p.present?
+      tag.expand
+    end
+    
+    tag 'next_sibling' do |tag|
+      # tag.locals.page = p = decorated_page(tag.locals.page.next_sibling)
+      # tag.expand if p.present?
+      tag.expand
     end
     
     tag 'if_children' do |tag|
       # tag.expand if tag.locals.page.has_children?
-       Hammer.error "if_children tag is not yet implemented"
+      # Hammer.error "if_children tag is not yet implemented"
+      tag.expand
     end
     
     tag 'if_childless' do |tag|
       # tag.expand if tag.locals.page.is_childless?
-      Hammer.error "if_childless tag is not yet implemented"
+      # Hammer.error "if_childless tag is not yet implemented"
+      tag.expand
     end
     
     tag 'if_has_siblings' do |tag|
       # tag.expand if tag.locals.page.has_siblings?
-      Hammer.error "if_has_siblings tag is not yet implemented"
+      # Hammer.error "if_has_siblings tag is not yet implemented"
+      tag.expand
     end
     
     tag 'if_only_child' do |tag|
       # tag.expand if tag.locals.page.is_only_child?
-      Hammer.error "if_only_child tag is not yet implemented"
+      # Hammer.error "if_only_child tag is not yet implemented"
+      tag.expand
     end
     
     tag 'if_ancestor' do |tag|
       # tag.expand if (tag.globals.page.ancestor_ids + [tag.globals.page.id]).include?(tag.locals.page.id)
-      Hammer.error "if_ancestor tag is not yet implemented"
+      # Hammer.error "if_ancestor tag is not yet implemented"
+      tag.expand
     end
     
     tag 'if_page_depth_eq' do |tag|
@@ -111,7 +134,8 @@ module Tags
     
     tag 'unless_ancestor' do |tag|
       # tag.expand unless (tag.globals.page.ancestor_ids + [tag.globals.page.id]).include?(tag.locals.page.id)
-      Hammer.error "unless_ancestor tag is not yet implemented"
+      # Hammer.error "unless_ancestor tag is not yet implemented"
+      tag.expand
     end
     
     # The get_page tag allows you to retrieve a site page other than the current page and then use other
@@ -134,7 +158,8 @@ module Tags
       #   tag.locals.page = decorated_page(page)
       #   tag.expand
       # end
-      Hammer.error "get_page tag is not yet implemented"
+      # Hammer.error "get_page tag is not yet implemented"
+      tag.expand
     end
     
     tag 'page' do |tag|
@@ -214,8 +239,8 @@ module Tags
     
     tag 'page:template:name' do |tag|
       # tag.locals.page_template.name
-      if tag.locals.page_template && tag.locals.page_template.name
-        name = tag.local.page_template.name
+      if tag.locals.page_template && tag.locals.page_template["name"]
+        name = tag.locals.page_template["name"]
       else
         name = File.basename(tag.context.globals.context.request.path, ".*")
       end
