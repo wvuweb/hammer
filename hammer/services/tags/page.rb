@@ -202,12 +202,24 @@ module Tags
     tag 'page:template' do |tag|
       # tag.locals.page_template = tag.locals.page.template
       # tag.expand
-      Hammer.error "page:template tag is not yet implemented"
+      if tag.globals.context.data && tag.globals.context.data["page"]
+        # binding.pry
+        if tag.globals.context.data["page"]["template"]
+          tag.locals.page_template = tag.globals.context.data["page"]["template"]
+        end
+      end
+      tag.expand
+      
     end
     
     tag 'page:template:name' do |tag|
       # tag.locals.page_template.name
-      Hammer.error "page:template:name tag is not yet implemented"
+      if tag.locals.page_template && tag.locals.page_template.name
+        name = tag.local.page_template.name
+      else
+        name = File.basename(tag.context.globals.context.request.path, ".*")
+      end
+      name
     end
     
     
