@@ -119,7 +119,6 @@ For more information visit [pik's github page](https://github.com/vertiginous/pi
     cd \{{directory-to-hammer-parent}}\hammer\hammer
     set /P theme=Start Hammer with Theme: %=%
     ruby hammer_server.rb c:\{{directory-to-cleanslate-themes-parent}}\cleanslate_themes\%theme%
-%
 ```
     replace {{directory-to-hammer-parent}} with the path to the parent folder of hammer
     
