@@ -116,9 +116,20 @@ For more information visit [pik's github page](https://github.com/vertiginous/pi
     @echo off
     echo Loading Hammer...
     c:
-    cd \Users\steve\Documents\hammer\hammer
-    ruby hammer_server.rb c:\Users\steve\Documents\cleanslate_themes\%theme%
+    cd \{{directory-to-hammer-parent}}\hammer\hammer
+    set /P theme=Start Hammer with Theme: %=%
+    ruby hammer_server.rb c:\{{directory-to-cleanslate-themes-parent}}\cleanslate_themes\%theme%
+%
 ```
+    replace {{directory-to-hammer-parent}} with the path to the parent folder of hammer
+    
+    example (\Users\steve\Documents\hammer\hammer)
+    
+    replace {{directory-to-cleanslate-themes}} witht the path to the parent folder of cleanslate_themes
+    
+    example (c:\Users\steve\Documents)
+
+
 7. Click start type cmd to load a command prompt
 
     `cd C:/Users/{{user}}/Documents`
