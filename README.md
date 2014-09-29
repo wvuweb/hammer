@@ -88,10 +88,8 @@ This install assumes no other version of ruby installed on your system.
   You also need to install the [Ruby 1.9.3 Development Kit](http://rubyinstaller.org/downloads/) this package allows you to install some of the gems required by Hammer
   
   Direct link to the executable [Ruby 1.9.3 devkit](https://github.com/downloads/oneclick/rubyinstaller/DevKit-tdm-32-4.5.2-20111229-1559-sfx.exe) The above link is to the webpage with a list of download links.
-  
-    **Make Sure to close and reopen command prompt**
     
-  After devkit install follow instructions on: https://github.com/oneclick/rubyinstaller/wiki/Development-Kit
+  After you download the devkit follow instructions on: https://github.com/oneclick/rubyinstaller/wiki/Development-Kit
   
       Extract downloaded file to a directory
       
