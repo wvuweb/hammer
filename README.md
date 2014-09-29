@@ -93,7 +93,7 @@ This install assumes no other version of ruby installed on your system.
   
       Extract downloaded file to a directory
       
-      cd into the extracted location then run:
+      open command prompt and cd into the extracted location then run:
       
       `ruby dk.rb init`
       
