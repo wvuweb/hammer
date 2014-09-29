@@ -109,19 +109,25 @@ This install assumes no other version of ruby installed on your system.
 
 3. Clone the repo into your C:/Users/{{user}}/Documents/ directory
 
+    Depending how you have installed git this may need to be done from the GitBash application.
+
     `git clone https://github.com/wvuweb/hammer.git`
 
 4. Change directory into hammer and bundle install
 
-    `cd C:/Users/{{user}}/Documents/hammer/hammer`
+    Open command prompt and enter change directory into the hammer directory:
+
+    `cd C:/Users/{{user}}/Documents/hammer`
     
     then
     
     `gem install bundler`
     
-    then
+    then enter
     
     `bundle install`
+    
+    If you receive errors, please "COPY" them and put them in a new issue on this github project.
 
 5. Create a hammer.bat file in C:/Users/{{user}}/Documents/ root
 
