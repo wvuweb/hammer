@@ -71,44 +71,61 @@ function hammer {
 ###Windows Installation
 ***WARNING THIS IS SUPER ALPHA PROCEED WITH CAUTION***
 
-1. Install pik using the installer
+This install assumes no other version of ruby installed on your system.
 
-Download the latest msi file from [github](http://github.com/vertiginous/pik/downloads).
+1. Install ruby via RubyInstaller
+  
+  Install Ruby 1.9.3-p545 using a [RubyInstaller](http://rubyinstaller.org/downloads/) then run the above command to 
+  
+      [Installer Options to check]
 
-For more information visit [pik's github page](https://github.com/vertiginous/pik)
+      Allow ruby executables to you PATH
 
-2. Install ruby 1.9.3-p545 using pik if you already have a Ruby Installed.
-
-    `pik install ruby-1.9.3-p545`
+      Associate .rb and .rbw files with this Ruby installation
+  
+      **Make Sure to close and reopen command prompt**
+  
+  You also need to install the [Ruby 1.9.3 Development Kit](http://rubyinstaller.org/downloads/) this package allows you to install some of the gems required by Hammer and isn't installed by Pik
+  
+  Direct link to [Ruby 1.9.3 devkit](https://github.com/downloads/oneclick/rubyinstaller/DevKit-tdm-32-4.5.2-20111229-1559-sfx.exe) (may break so try above link)
+  
+    **Make Sure to close and reopen command prompt**
     
-    Otherwise you can install Ruby 1.9.3-p545 using a [RubyInstaller](http://rubyinstaller.org/downloads/) then run the above command to 
+  After devkit install follow instructions on: https://github.com/oneclick/rubyinstaller/wiki/Development-Kit
+  
+      Extract downloaded file to a directory
+      
+      cd into the extracted location then run:
+      
+      `ruby dk.rb init`
+      
+      then
+      
+      `ruby dk.rb install`
+      
+      **Make Sure to close and reopen command prompt**
 
-3. Confirm your install
+2.  Confirm the ruby version 
 
-    `pik list`
-    should list available rubies
-    
-    `pik use ruby-1.9.3-p545` to switch to correct ruby version
-    
-    You also need to install the [Ruby 1.9.3 Development Kit](http://rubyinstaller.org/downloads/) this package allows you to install some of the gems required by Hammer and isn't installed by Pik
-    
-    Direct link to [Ruby 1.9.3 devkit](https://github.com/downloads/oneclick/rubyinstaller/DevKit-tdm-32-4.5.2-20111229-1559-sfx.exe) (may break so try above link)
-    
     `ruby -v` to confirm active ruby version
 
-4. Clone the repo into your C:/Users/{{user}}/Documents/ directory
+3. Clone the repo into your C:/Users/{{user}}/Documents/ directory
 
     `git clone https://github.com/wvuweb/hammer.git`
 
-5. Change directory into hammer and bundle install
+4. Change directory into hammer and bundle install
 
     `cd C:/Users/{{user}}/Documents/hammer/hammer`
     
     then
     
+    `gem install bundler`
+    
+    then
+    
     `bundle install`
 
-6. Create a hammer.bat file in C:/Users/{{user}}/Documents/ root
+5. Create a hammer.bat file in C:/Users/{{user}}/Documents/ root
 
     copy the following into hammer.bat
     
@@ -128,7 +145,6 @@ For more information visit [pik's github page](https://github.com/vertiginous/pi
     
     example (c:\Users\steve\Documents)
 
-
 7. Click start type cmd to load a command prompt
 
     `cd C:/Users/{{user}}/Documents`
@@ -137,6 +153,7 @@ For more information visit [pik's github page](https://github.com/vertiginous/pi
     
     `hammer.bat`
 
+    You may get a prompt to allow access for ruby.  Please allow it.
 
 ## Mock Data Example
 
