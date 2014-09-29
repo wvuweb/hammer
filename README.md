@@ -127,7 +127,7 @@ This install assumes no other version of ruby installed on your system.
     
     `bundle install`
     
-    If you receive errors, please "COPY" them and put them in a new issue on this github project.
+    If you receive errors, please "COPY" them and put them in a [new issue](https://github.com/wvuweb/hammer/issues) on this github project.
 
 5. Create a hammer.bat file in C:/Users/{{user}}/Documents/ root
 
