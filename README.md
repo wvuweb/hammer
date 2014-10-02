@@ -11,10 +11,10 @@ Hammer is similar to [Mock Builder v2](https://github.com/wvuweb/mock_builder "M
 
 ##MacOSX Install
 
-[MacOSX Install](https://github.com/wvuweb/hammer/wiki/Mac-OSX-Install)
+[MacOSX Install](https://github.com/wvuweb/hammer/wiki/2a.-Mac-OSX-Install)
 
 ##Windows Install
-[Windows Install](https://github.com/wvuweb/hammer/wiki/Windows-Install)
+[Windows Install](https://github.com/wvuweb/hammer/wiki/2b.-Windows-Install)
 
 ### Using Hammer
 
