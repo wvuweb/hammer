@@ -23,6 +23,22 @@ module Tags
       end
     end
     
+    # Returns the number of sites with the given status. Status can be one of: live, development,
+    # archived, active, all. Live and development sites are considered 'active'. 
+    tag 'site_count' do |tag|
+      status = tag.attr['status'] ||= 'all'
+      
+      count = case status
+      when *%w(live development archived active)
+        # ::Site.send(status.to_sym).count
+        Random.rand(0..999)
+      else
+        Random.rand(0..999)
+      end
+      
+      count.to_s
+    end
+    
     tag 'current_url' do |tag|
       # type = tag.attr['type'] || 'absolute'
       # 
