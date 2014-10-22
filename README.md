@@ -2,7 +2,7 @@
 
 Hammer is a theme development tool for the [CleanSlate](http://cleanslate.wvu.edu/ "CleanSlate") CMS template rendering engine. Hammer was created to help you iterate quickly on themes and template markup. Hammer is  NOT for content creation.
 
-Hammer is similar to [Mock Builder v2](https://github.com/wvuweb/mock_builder "Mock Builder v2") for [Slate](http://slatecms.wvu.edu/ "Slate"), but has many differences due to the many differences in [CleanSlate](http://cleanslate.wvu.edu/ "CleanSlate"). If you are familiar with [Mock Builder v2](https://github.com/wvuweb/mock_builder "Mock Builder v2") you should be able to quickly get up and running with Hammer.
+Hammer is similar to [Mock Builder v2](https://github.com/wvuweb/mock_builder "Mock Builder v2") for [Slate](http://slatecms.wvu.edu/ "Slate"), but has many differences due to the different architecture of [CleanSlate](http://cleanslate.wvu.edu/ "CleanSlate"). If you are familiar with [Mock Builder v2](https://github.com/wvuweb/mock_builder "Mock Builder v2") you should be able to quickly get up and running with Hammer.
 
 
 ###Dependencies
