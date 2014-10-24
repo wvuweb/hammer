@@ -32,7 +32,8 @@ module Tags
     end
     
     tag 'article:content' do |tag|
-      tag.render 'page:content', tag.attr
+      # tag.render 'page:content', tag.attr
+      tag.locals.article['content']
     end
     
     # TODO: Use a different taggable attribute, such as 'tags', instead of 'labels'. 
