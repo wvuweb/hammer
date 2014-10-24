@@ -224,10 +224,13 @@ module Tags
     
     tag 'page:content' do |tag|
       rname = tag.attr['name'].strip
-      page = tag.locals.page
-      page['content']
-      # page.content_hash(tag.globals.mode)[rname]
-      # Hammer.error "page:content tag is not yet implemented"
+      if tag.globals.context.data
+        if tag.globals.context.data["page"] && tag.globals.context.data["page"]["content"] && tag.globals.context.data["page"]["content"][rname]
+          tag.globals.context.data["page"]["content"][rname]
+        else
+          Hammer.error "Set key <em>page:content:#{rname}</em> in mock_data file"
+        end
+      end
     end
     
     # Page template tags
