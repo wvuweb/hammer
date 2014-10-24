@@ -5,7 +5,9 @@ module Tags
     tag 'page_name' do |tag|
       # tag.globals.page.name
       if tag.globals.context.data 
-        if tag.globals.context.data['page_name']
+        if tag.globals.context.data['page'] && tag.globals.context.data['page']['name']
+          tag.globals.context.data['page']['name'] 
+        elsif tag.globals.context.data['page_name']
           tag.globals.context.data['page_name']
         else
           Hammer.error "Add key <em>name</em> under page"
