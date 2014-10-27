@@ -32,11 +32,5 @@ Desktop.ini
 ## Recycle Bin used on file shares
 $RECYCLE.BIN/
 
-
-# Sass stuffs
-.sass-cache
-*.sass-cache
-
-
 # SublimeText project files
 *.sublime-workspace
