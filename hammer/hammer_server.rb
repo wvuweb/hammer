@@ -44,10 +44,7 @@ end
 
 g = Git.open("../")
 ref = g.log.first {|l| l.sha }
-remote = g.lib.send(:command, 'rev-parse origin/master')
-
-puts ref.to_s
-puts remote.to_s
+remote = g.lib.send(:command, 'ls-remote').split(/\n/)[1].split(/\t/)[0]
 
 if ref.to_s != remote.to_s
   puts " "
