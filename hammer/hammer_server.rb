@@ -14,6 +14,7 @@ require 'colorize'
 
 require 'optparse'
 require 'ostruct'
+require 'git'
 
 require './hammer'
 
@@ -39,6 +40,30 @@ OptionParser.new do |o|
   end
   
   o.parse!(ARGV)
+end
+
+g = Git.open("../")
+ref = g.log.first {|l| l.sha }
+remote = g.lib.send(:command, 'rev-parse origin/master')
+
+puts ref.to_s
+puts remote.to_s
+
+if ref.to_s != remote.to_s
+  puts " "
+  puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".colorize(:red)
+  puts "!!!".colorize(:red)+" WARNING YOU ARE BEHIND ON HAMMER VERSIONS".colorize(:light_cyan)+" !!!".colorize(:red)
+  puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".colorize(:red)
+  puts " "
+  puts "Repository is currently at ref: ".colorize(:light_white)+(ref.to_s+" ").colorize(:light_magenta)
+  puts "Remote is currently at ref: ".colorize(:light_white)+(remote.to_s+" ").colorize(:light_magenta)
+  puts "Learn to upgrade at: ".colorize(:light_white)+"https://github.com/wvuweb/hammer/wiki/Upgrade".colorize(:light_cyan)
+  puts " "
+  puts "Do you want to continue".colorize(:light_white)+" (Y/n) ?".colorize(:light_green)
+  input = gets.chomp
+  if input == 'n' then
+   exit
+  end
 end
 
 doc_root = options.directory

@@ -15,6 +15,7 @@ GEM
     debug_inspector (0.0.2)
     faker (1.4.3)
       i18n (~> 0.5)
+    git (1.2.8)
     htmlentities (4.3.1)
     i18n (0.6.9)
     json (1.8.1)
@@ -48,6 +49,7 @@ DEPENDENCIES
   chronic
   colorize
   faker (= 1.4.3)
+  git
   htmlentities
   nokogiri
   pry
