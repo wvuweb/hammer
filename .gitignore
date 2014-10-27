@@ -1,0 +1,42 @@
+# A .gitignore file tells git which files not to include or version track in your repository. 
+# Usually, these are silly things like ".DS_Store" or "Thumbs.db".
+# We've included a list of the most common files we don't want to version track here.
+# Much credit goes to: https://github.com/github/gitignore
+
+# Ignore annoying OSX Files
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+
+## Thumbnails
+._*
+
+## Files that might appear on external disk
+.Spotlight-V100
+.Trashes
+*.swp
+
+# Ignore any everlasting SVN files
+*.svn-base
+.svn*
+
+# Windows 
+## Image file caches
+Thumbs.db
+ehthumbs.db
+
+## Folder config file
+Desktop.ini
+
+## Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+
+# Sass stuffs
+.sass-cache
+*.sass-cache
+
+
+# SublimeText project files
+*.sublime-workspace
