@@ -16,6 +16,9 @@ Hammer is similar to [Mock Builder](https://github.com/wvuweb/mock_builder "Mock
 ##Windows Install
 [Windows Install](https://github.com/wvuweb/hammer/wiki/Windows-Install)
 
+### Updating Hammer
+[Updating Instructions](https://github.com/wvuweb/hammer/wiki/Upgrade)
+
 ### Using Hammer
 
 1. Open Terminal and type `hammer`.
