@@ -21,6 +21,10 @@ Hammer is similar to [Mock Builder](https://github.com/wvuweb/mock_builder "Mock
 1. Open Terminal and type `hammer`.
 1. Open your browser and go to [http://localhost:2000](http://localhost:2000).
 
+### Example Mock Data File
+
+[`mock_data.yml`](https://github.com/wvuweb/hammer/wiki/Mock-Data#basic-example-of-a-mock_datayml-file)
+
 
 ## Interested? Need Help? Read more..
 
