@@ -25,6 +25,23 @@ module Tags
       end
     end
     
+    tag 'site' do |tag|
+      tag.locals.site ||= tag.globals.site
+      tag.expand
+    end
+    
+    [:id, :name, :domain].each do |attr|
+      tag "site:#{attr.to_s}" do |tag|
+        # tag.locals.page.send(attr)
+        #{"}fix page:#{attr.to_s} tag"
+        if tag.globals.context.data && tag.globals.context.data['site'] && tag.globals.context.data['site'][attr.to_s]
+          tag.globals.context.data['site'][attr.to_s]
+        else
+          Hammer.error "Add key <em> page:#{attr}</em>"
+        end
+      end
+    end
+    
     # Returns the number of sites with the given status. Status can be one of: live, development,
     # archived, active, all. Live and development sites are considered 'active'. 
     tag 'site_count' do |tag|
