@@ -17,7 +17,7 @@ Hammer is similar to [Mock Builder](https://github.com/wvuweb/mock_builder "Mock
 [Windows Install](https://github.com/wvuweb/hammer/wiki/Windows-Install)
 
 ### Updating Hammer
-[Updating Instructions](https://github.com/wvuweb/hammer/wiki/Upgrade)
+[Updating Instructions](https://github.com/wvuweb/hammer/wiki/Update)
 
 ### Using Hammer
 
