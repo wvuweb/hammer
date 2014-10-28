@@ -53,11 +53,11 @@ DEPENDENCIES
   activesupport
   chronic
   colorize
-  faker (= 1.4.3)
+  faker
   git
   htmlentities
   nokogiri
-  pry (= 0.10.1)
+  pry
   pry-stack_explorer
   rack
   radius
