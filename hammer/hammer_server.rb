@@ -47,7 +47,7 @@ g = Git.open("../")
 ref = g.log.first {|l| l.sha }
 remote = g.lib.send(:command, 'ls-remote').split(/\n/)[1].split(/\t/)[0]
 
-if ref.to_s == remote.to_s
+if ref.to_s != remote.to_s
   puts " "
   puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".colorize(:red)
   puts "!!!".colorize(:red)+" WARNING YOU ARE BEHIND ON HAMMER VERSIONS".colorize(:light_cyan)+" !!!".colorize(:red)
