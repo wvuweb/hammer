@@ -13,10 +13,12 @@ module Tags
     tag 'site_name' do |tag|
       # tag.globals.site.name
       if tag.globals.context.data
-        if tag.globals.context.data['site_name']
+        if tag.globals.context.data['site'] && tag.globals.context.data['site']['name']
+          tag.globals.context.data['site']['name'] 
+        elsif tag.globals.context.data['site_name']
           tag.globals.context.data['site_name']
         else
-          Hammer.error "Set key: <em>site_name</em> in mock_data file"
+          Hammer.error "<strong>Depreciated</strong> tag please use <r:site:name />."
         end
       else
         "Site Name"
