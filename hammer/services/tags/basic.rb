@@ -59,13 +59,18 @@ module Tags
     end
     
     tag 'current_url' do |tag|
-      # type = tag.attr['type'] || 'absolute'
-      # 
-      # case type.downcase
-      # when 'absolute' then tag.globals.page.request_path
-      # when 'full' then tag.globals.page.request_url
-      # end
-      Hammer.error "current_url tag is not implemented yet"
+      type = tag.attr['type'] || 'absolute'
+      case type.downcase
+        when 'absolute' 
+          then
+            #tag.globals.page.request_path
+            tag.context.globals.context.request.path
+        when 'full' 
+          then
+            #tag.globals.page.request_url
+            tag.context.globals.context.request.request_uri.to_s
+      end
+      # Hammer.error "current_url tag is not implemented yet"
     end
     
     # Renders an unordered list (<ul>) of HTML links to the pages leading to the current page. If the 'text_only'
