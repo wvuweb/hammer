@@ -42,11 +42,12 @@ OptionParser.new do |o|
   o.parse!(ARGV)
 end
 
+
 g = Git.open("../")
 ref = g.log.first {|l| l.sha }
 remote = g.lib.send(:command, 'ls-remote').split(/\n/)[1].split(/\t/)[0]
 
-if ref.to_s != remote.to_s
+if ref.to_s == remote.to_s
   puts " "
   puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".colorize(:red)
   puts "!!!".colorize(:red)+" WARNING YOU ARE BEHIND ON HAMMER VERSIONS".colorize(:light_cyan)+" !!!".colorize(:red)
@@ -57,7 +58,11 @@ if ref.to_s != remote.to_s
   puts "Learn to upgrade at: ".colorize(:light_white)+"https://github.com/wvuweb/hammer/wiki/Upgrade".colorize(:light_cyan)
   puts " "
   puts "Do you want to continue".colorize(:light_white)+" (Y/n) ?".colorize(:light_green)
-  input = gets.chomp
+  if Gem.win_platform?
+    input = STDIN.gets.chomp
+  else 
+    input = gets.chomp
+  end
   if input == 'n' then
    exit
   end
