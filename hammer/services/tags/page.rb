@@ -161,7 +161,17 @@ module Tags
       #   tag.expand
       # end
       # Hammer.error "get_page tag is not yet implemented"
-      tag.expand
+      # tag.expand
+      if tag.globals.context.data && tag.globals.context.data['get_page']
+        if tag.globals.context.data['get_page'].include?(tag.attr['id'].to_i)
+          tag.globals.context.data['get_page'][tag.attr['id'].to_i]
+        else
+          Hammer.error "key<em>get_page id</em> of #{tag.attr['id']} not found in mock_data file"
+        end
+      else
+        Hammer.error "Set key <em>get_page</em> in mock_data file"
+      end
+      
     end
     
     tag 'page' do |tag|
@@ -176,7 +186,7 @@ module Tags
         if tag.globals.context.data && tag.globals.context.data['page'] && tag.globals.context.data['page'][attr.to_s]
           tag.globals.context.data['page'][attr.to_s]
         else
-          "page:#{attr}"
+          Hammer.error "page:#{attr}"
         end
       end
     end
@@ -205,7 +215,7 @@ module Tags
       if tag.globals.context.data && tag.globals.context.data['page'][attr]
         tag.globals.context.data['page'][attr]
       else
-        "Page:#{attr}"
+        Hammer.error "Page:#{attr}"
       end
         
     end
