@@ -55,7 +55,7 @@ if ref.to_s != remote.to_s
   puts " "
   puts "Repository is currently at ref: ".colorize(:light_white)+(ref.to_s+" ").colorize(:light_magenta)
   puts "Remote is currently at ref: ".colorize(:light_white)+(remote.to_s+" ").colorize(:light_magenta)
-  puts "Learn to upgrade at: ".colorize(:light_white)+"https://github.com/wvuweb/hammer/wiki/Upgrade".colorize(:light_cyan)
+  puts "Learn how to update Hammer at: ".colorize(:light_white)+"https://github.com/wvuweb/hammer/wiki/Update".colorize(:light_cyan)
   puts " "
   puts "Do you want to continue".colorize(:light_white)+" (Y/n) ?".colorize(:light_green)
   if Gem.win_platform?
