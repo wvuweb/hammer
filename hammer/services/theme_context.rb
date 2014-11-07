@@ -32,7 +32,7 @@ class ThemeContext < ::Radius::Context
   end
   
   def tag_missing(name, attributes, &block)
-    "OH NOES! Radius tag: #{name} does not yet exist in hammer"
+    Hammer.error "OH NOES! <em>&lt;r:#{name} /&gt;</em> does not yet exist in hammer.  Be a good samaritan and <a href=\"https://github.com/wvuweb/hammer/issues\">file a Github issue!</a>"
   end
   
   private
