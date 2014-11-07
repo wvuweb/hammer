@@ -166,7 +166,7 @@ module Tags
         if tag.globals.context.data['get_page'].include?(tag.attr['id'].to_i)
           tag.globals.context.data['get_page'][tag.attr['id'].to_i]
         else
-          Hammer.error "key<em>get_page id</em> of #{tag.attr['id']} not found in mock_data file"
+          Hammer.error "key <em>get_page id</em> of #{tag.attr['id']} not found in mock_data file"
         end
       else
         Hammer.error "Set key <em>get_page</em> in mock_data file"
