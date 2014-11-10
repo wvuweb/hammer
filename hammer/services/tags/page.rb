@@ -179,7 +179,7 @@ module Tags
       tag.expand
     end
     
-    [:id, :name, :path, :slug, :meta_description, :title, :alternate_name, :depth].each do |attr|
+    [:id, :name, :path, :slug, :meta_description, :title, :alternate_name, :depth, :created_at, :updated_at, :published_at].each do |attr|
       tag "page:#{attr.to_s}" do |tag|
         # tag.locals.page.send(attr)
         #{"}fix page:#{attr.to_s} tag"
