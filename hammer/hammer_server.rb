@@ -57,13 +57,14 @@ if ref.to_s != remote.to_s
   puts "Remote is currently at ref: ".colorize(:light_white)+(remote.to_s+" ").colorize(:light_magenta)
   puts "Learn how to update Hammer at: ".colorize(:light_white)+"https://github.com/wvuweb/hammer/wiki/Update".colorize(:light_cyan)
   puts " "
-  puts "Do you want to continue".colorize(:light_white)+" (Y/n) ?".colorize(:light_green)
+  puts "Do you want to continue without upgrading?".colorize(:light_white)+" (Y/n) ?".colorize(:light_green)
   if Gem.win_platform?
     input = STDIN.gets.chomp
   else 
     input = gets.chomp
   end
   if input == 'n' then
+   puts "Vist: ".colorize(:light_white)+"https://github.com/wvuweb/hammer/wiki/Update".colorize(:light_cyan)+" for updating instructions."
    exit
   end
 end
