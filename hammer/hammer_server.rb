@@ -1,7 +1,8 @@
 # encoding: utf-8
 
 require 'rubygems'
-require "bundler/setup"
+require 'bundler/setup'
+require 'rbconfig'
 
 require 'webrick'
 require 'radius'
@@ -20,6 +21,24 @@ require './hammer'
 
 class HammerServlet < WEBrick::HTTPServlet::AbstractServlet
   include Hammer
+end
+
+def os
+  @os ||= (
+    host_os = RbConfig::CONFIG['host_os']
+    case host_os
+    when /mswin|msys|mingw|cygwin|bccwin|wince|emc/
+      :windows
+    when /darwin|mac os/
+      :macosx
+    when /linux/
+      :linux
+    when /solaris|bsd/
+      :unix
+    else
+      raise Error::WebDriverError, "unknown os: #{host_os.inspect}"
+    end
+  )
 end
 
 options = OpenStruct.new
@@ -47,7 +66,8 @@ g = Git.open("../")
 ref = g.log.first {|l| l.sha }
 remote = g.lib.send(:command, 'ls-remote').split(/\n/)[1].split(/\t/)[0]
 
-if ref.to_s != remote.to_s
+if ref.to_s == remote.to_s
+  update_url = "https://github.com/wvuweb/hammer/wiki/Update"
   puts " "
   puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".colorize(:red)
   puts "!!!".colorize(:red)+" WARNING YOU ARE BEHIND ON HAMMER VERSIONS".colorize(:light_cyan)+" !!!".colorize(:red)
@@ -55,7 +75,7 @@ if ref.to_s != remote.to_s
   puts " "
   puts "Repository is currently at ref: ".colorize(:light_white)+(ref.to_s+" ").colorize(:light_magenta)
   puts "Remote is currently at ref: ".colorize(:light_white)+(remote.to_s+" ").colorize(:light_magenta)
-  puts "Learn how to update Hammer at: ".colorize(:light_white)+"https://github.com/wvuweb/hammer/wiki/Update".colorize(:light_cyan)
+  puts "Learn how to update Hammer at: ".colorize(:light_white)+update_url.colorize(:light_cyan)
   puts " "
   puts "Do you want to continue without upgrading?".colorize(:light_white)+" (Y/n) ?".colorize(:light_green)
   if Gem.win_platform?
@@ -64,8 +84,15 @@ if ref.to_s != remote.to_s
     input = gets.chomp
   end
   if input == 'n' then
-   puts "Vist: ".colorize(:light_white)+"https://github.com/wvuweb/hammer/wiki/Update".colorize(:light_cyan)+" for updating instructions."
-   exit
+    if os == :macosx
+      system("open "+update_url)
+    elsif os == :windows
+      system("start "+update_url)
+    elsif os == :linux || :unix
+      system("xdg-open "+update_url)
+    end
+    puts "Opening: ".colorize(:light_white)+update_url.colorize(:light_cyan)+" for updating instructions."
+    exit
   end
 end
 
