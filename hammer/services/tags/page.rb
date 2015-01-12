@@ -1,12 +1,12 @@
-module Tags  
+module Tags
   class Page < TagContainer
 
     # Page tags
     tag 'page_name' do |tag|
       # tag.globals.page.name
-      if tag.globals.context.data 
+      if tag.globals.context.data
         if tag.globals.context.data['page'] && tag.globals.context.data['page']['name']
-          tag.globals.context.data['page']['name'] 
+          tag.globals.context.data['page']['name']
         elsif tag.globals.context.data['page_name']
           tag.globals.context.data['page_name']
         else
@@ -16,7 +16,7 @@ module Tags
         "Page Name"
       end
     end
-    
+
     tag 'root' do |tag|
       # tag.locals.page = tag.globals.site.root_page
       # tag.expand
@@ -24,7 +24,7 @@ module Tags
       # Hammer.error "root tag is not yet implemented"
       tag.expand
     end
-    
+
     # Reset the page context to the current (global) page.
     tag 'current_page' do |tag|
       # tag.locals.page = tag.globals.page
@@ -32,96 +32,96 @@ module Tags
       # Hammer.error "current_page tag is not yet implemented"
       tag.expand
     end
-    
+
     tag 'if_current_page' do |tag|
       # tag.expand if tag.locals.page.id === tag.globals.page.id
       # Hammer.error "if_current_page tag is not yet implemented"
       tag.expand
     end
-    
+
     tag 'unless_current_page' do |tag|
       # tag.expand if tag.locals.page.id != tag.globals.page.id
       # Hammer.error "unless_current_page tag is not yet implemented"
       tag.expand
     end
-    
+
     tag 'parent' do |tag|
       # tag.locals.page = decorated_page tag.locals.page.parent
       # tag.expand
       # Hammer.error "parent tag is not yet implemented"
       tag.expand
     end
-    
+
     tag 'if_parent' do |tag|
       # parent = tag.locals.page.parent
       # tag.expand if parent && !parent.root?
       # Hammer.error "if_parent tag is not yet implemented"
       tag.expand
     end
-    
+
     tag 'unless_parent' do |tag|
       # parent = tag.locals.page.parent
       # tag.expand unless parent && !parent.root?
       # Hammer.error "unless_parent tag is not yet implemented"
       tag.expand
     end
-    
+
     tag 'previous_sibling' do |tag|
       # tag.locals.page = p = decorated_page(tag.locals.page.previous_sibling)
       # tag.expand if p.present?
       tag.expand
     end
-    
+
     tag 'next_sibling' do |tag|
       # tag.locals.page = p = decorated_page(tag.locals.page.next_sibling)
       # tag.expand if p.present?
       tag.expand
     end
-    
+
     tag 'if_children' do |tag|
       # tag.expand if tag.locals.page.has_children?
       # Hammer.error "if_children tag is not yet implemented"
       tag.expand
     end
-    
+
     tag 'if_childless' do |tag|
       # tag.expand if tag.locals.page.is_childless?
       # Hammer.error "if_childless tag is not yet implemented"
       tag.expand
     end
-    
+
     tag 'if_has_siblings' do |tag|
       # tag.expand if tag.locals.page.has_siblings?
       # Hammer.error "if_has_siblings tag is not yet implemented"
       tag.expand
     end
-    
+
     tag 'if_only_child' do |tag|
       # tag.expand if tag.locals.page.is_only_child?
       # Hammer.error "if_only_child tag is not yet implemented"
       tag.expand
     end
-    
+
     tag 'if_ancestor' do |tag|
       # tag.expand if (tag.globals.page.ancestor_ids + [tag.globals.page.id]).include?(tag.locals.page.id)
       # Hammer.error "if_ancestor tag is not yet implemented"
       tag.expand
     end
-    
+
     tag 'if_page_depth_eq' do |tag|
       allowed_options = %w(page_depth)
       options = tag.attr.select { |k,v| allowed_options.include?(k) }
       # tag.expand if options['page_depth'].to_i.abs === tag.globals.page.depth
-      
+
       if tag.globals.context.data && tag.globals.context.data['if_page_depth_eq']
         tag.expand if options['page_depth'].to_i.abs === tag.globals.context.data['if_page_depth_eq']
       else
         tag.expand
       end
-      
+
       #"fix if_page_depth_eq tag"
     end
-    
+
     tag 'if_page_depth_gt' do |tag|
       allowed_options = %w(page_depth)
       options = tag.attr.select { |k,v| allowed_options.include?(k) }
@@ -133,13 +133,13 @@ module Tags
       end
 
     end
-    
+
     tag 'unless_ancestor' do |tag|
       # tag.expand unless (tag.globals.page.ancestor_ids + [tag.globals.page.id]).include?(tag.locals.page.id)
       # Hammer.error "unless_ancestor tag is not yet implemented"
       tag.expand
     end
-    
+
     # The get_page tag allows you to retrieve a site page other than the current page and then use other
     # page related tags within it to interact with it and pull information from it.
     #
@@ -153,7 +153,7 @@ module Tags
     # belongs to the current site.
     tag 'get_page' do |tag|
       # page = tag.globals.site.pages.find(tag.attr['id']) rescue nil
-      # 
+      #
       # unless page.present?
       #   "Could not find the given page."
       # else
@@ -171,14 +171,14 @@ module Tags
       else
         Hammer.error "Set key <em>get_page</em> in mock_data file"
       end
-      
+
     end
-    
+
     tag 'page' do |tag|
       tag.locals.page ||= decorated_page(tag.globals.page)
       tag.expand
     end
-    
+
     [:id, :name, :path, :slug, :meta_description, :title, :alternate_name, :depth, :created_at, :updated_at, :published_at].each do |attr|
       tag "page:#{attr.to_s}" do |tag|
         # tag.locals.page.send(attr)
@@ -190,12 +190,12 @@ module Tags
         end
       end
     end
-    
+
     tag 'page:url' do |tag|
       # format = tag.attr['format'].to_s.strip
-      # format = nil if format.downcase =~ /\Ahtml?\Z/ 
+      # format = nil if format.downcase =~ /\Ahtml?\Z/
       # # No need to append HTML or HTM to URLs since HTML is the default.
-      # 
+      #
       # url = tag.locals.page.url(tag.globals.mode)
       # url << ".#{format}" if format.present?
       # url
@@ -206,7 +206,7 @@ module Tags
         tag.context.globals.context.request.path
       end
     end
-    
+
     # Retrieve an attribute from the current page.
     tag 'page:attr' do |tag|
       attr = tag.attr['name']
@@ -217,9 +217,19 @@ module Tags
       else
         Hammer.error "Page:#{attr}"
       end
-        
+
     end
-    
+
+    #Fake a url for editing a page
+    tag 'page:edit_url' do |tag|
+      if tag.globals.context.data && tag.globals.context.data['page']['edit_url']
+        tag.globals.context.data['page']['edit_url']
+      else
+        # return a hash as a url.
+        "#"
+      end
+    end
+
     # Retrieve the value of the first attribute, from the list of comma separated attributes given in the 'names' tag attribute, that has does not have a blank value.
     tag 'page:first_non_blank_attr' do |tag|
       if tag.globals.context.data && tag.globals.context.data["page"]
@@ -231,7 +241,7 @@ module Tags
       end
       #binding.pry#"fix page:first_non_blank_attr tag"
     end
-    
+
     tag 'page:content' do |tag|
       rname = tag.attr['name'].strip
       if tag.globals.context.data
@@ -242,7 +252,7 @@ module Tags
         end
       end
     end
-    
+
     # Page template tags
     tag 'page:template' do |tag|
       # tag.locals.page_template = tag.locals.page.template
@@ -254,9 +264,9 @@ module Tags
         end
       end
       tag.expand
-      
+
     end
-    
+
     tag 'page:template:name' do |tag|
       # tag.locals.page_template.name
       if tag.locals.page_template && tag.locals.page_template["name"]
@@ -266,8 +276,8 @@ module Tags
       end
       name
     end
-    
-    
+
+
     # Page tree navigation tags
     [:descendants, :ancestors, :children, :siblings].each do |method|
       tag method.to_s do |tag|
@@ -275,23 +285,23 @@ module Tags
         # tag.expand
         Hammer.error "#{method.to_s} tag is not yet implemented"
       end
-      
-      tag "#{method.to_s}:count" do |tag| 
+
+      tag "#{method.to_s}:count" do |tag|
         #count_items tag, tag.locals.send(method)
         Hammer.error "#{method.to_s}:count tag is not yet implemented"
       end
-      
-      tag "#{method.to_s}:each" do |tag| 
+
+      tag "#{method.to_s}:each" do |tag|
         #loop_over tag, tag.locals.send(method)
         Hammer.error "#{method.to_s}:each tag is not yet implemented"
       end
     end
-    
+
     tag 'get_ancestor' do |tag|
       # level = (tag.attr['level'] || 1).to_i
       # id = tag.locals.page.ancestor_ids[level]
       # page = tag.globals.site.pages.find(id) rescue nil
-      # 
+      #
       # unless page.present?
       #   "Could not find the given page."
       # else
@@ -307,10 +317,10 @@ module Tags
       #   PageDecorator.decorate(page)
       # end
     end
-    
+
     def self.find_with_options(tag, target)
       # conditions = tag.attr.symbolize_keys
-      
+
       # filter = {
       #   :published => tag.globals.mode == Slate::ViewModes::VIEW, # Always limit to published pages in the public view.
       #   :name => conditions[:name],
@@ -323,36 +333,36 @@ module Tags
       #   #:page => conditions[:page].present? ? conditions[:page] : 1,
       #   #:limit => conditions[:per_page].present? ? conditions[:per_page] : 50
       # }
-      
+
       # pages = Filter::Pages.new(target, filter).all
     end
-    
+
     def self.count_items(tag, target)
       items = find_with_options(tag, target)
       items.reorder(nil).count # Order is irrelevant for counting
     end
-    
+
     def self.loop_over(tag, target)
       items = find_with_options(tag, target)
       output = []
-      
+
       items.each_with_index do |item, index|
         tag.locals.child = decorated_page item
         tag.locals.page = decorated_page item
         output << tag.expand
       end
-      
+
       output.flatten.join('')
     end
-    
+
     def self.first_present_attribute(*attrs)
       attrs ||= []
       attrs = [attrs] unless attrs.is_a?(Array)
       values = attrs.flatten.map { |attr| attr.to_s }.reject(&:blank?).first
     end
-    
+
   end
-  
+
   module Basic1
     class << self
       def tag_page_title(tag)
