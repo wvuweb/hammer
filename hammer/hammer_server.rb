@@ -44,20 +44,25 @@ end
 options = OpenStruct.new
 options.directory = (Pathname.new(Dir.pwd).parent.parent + "cleanslate_themes").to_s
 options.port = 2000
+options.daemon = 0
 
 OptionParser.new do |o|
   o.on('-d', '--directory directory', String, 'Directory to start hammer in') do |d|
     options.directory = d
   end
-  
+
   o.on('-q', '--quick directory', String, 'Quick access a default directory') do |q|
     options.directory = (Pathname.new(Dir.pwd).parent.parent + "cleanslate_themes/#{q}").to_s
   end
-  
+
   o.on('-p', '--port port', Integer, 'Port to start hammer server on') do |p|
-    options.port = p 
+    options.port = p
   end
-  
+
+  o.on('-da', '--daemon daemon', Integer, 'If the server should run Daemonized') do |da|
+    options.daemon = da == 1 ?  WEBrick::Daemon : WEBrick::SimpleServer
+  end
+
   o.parse!(ARGV)
 end
 
@@ -80,7 +85,7 @@ if ref.to_s != remote.to_s
   puts "Do you want to continue without upgrading?".colorize(:light_white)+" (Y/n) ?".colorize(:light_green)
   if Gem.win_platform?
     input = STDIN.gets.chomp
-  else 
+  else
     input = gets.chomp
   end
   if input == 'n' then
@@ -117,6 +122,7 @@ puts " "
 httpd = WEBrick::HTTPServer.new(
   :Port => options.port,
   :DocumentRoot => doc_root,
+  :ServerType => options.daemon,
   :DirectoryIndex => []
 )
 
