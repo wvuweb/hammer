@@ -13,17 +13,17 @@ Hammer is similar to [Mock Builder](https://github.com/wvuweb/mock_builder "Mock
 
 Please use [Hammer-VM](https://github.com/wvuweb/hammer-vm)
 
-[MacOSX Install](https://github.com/wvuweb/hammer/wiki/Mac-OSX-Install) **DEPRECIATED** 
+~~[MacOSX Install](https://github.com/wvuweb/hammer/wiki/Mac-OSX-Install)~~ **DEPRECIATED** 
 
 ##Windows Install
 Please use [Hammer-VM](https://github.com/wvuweb/hammer-vm)
 
-[Windows Install](https://github.com/wvuweb/hammer/wiki/Windows-Install) **DEPRECIATED**
+~~[Windows Install](https://github.com/wvuweb/hammer/wiki/Windows-Install)~~ **DEPRECIATED**
 
 ### Updating Hammer
 Please use [Hammer-VM](https://github.com/wvuweb/hammer-vm#commands)
 
-[Updating Instructions](https://github.com/wvuweb/hammer/wiki/Update) **DEPRECIATED** 
+~~[Updating Instructions](https://github.com/wvuweb/hammer/wiki/Update)~~ **DEPRECIATED** 
 
 ### Using Hammer
 
