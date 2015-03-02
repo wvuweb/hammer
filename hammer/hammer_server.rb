@@ -44,7 +44,7 @@ end
 options = OpenStruct.new
 options.directory = (Pathname.new(Dir.pwd).parent.parent + "cleanslate_themes").to_s
 options.port = 2000
-options.daemon = 0
+options.daemon = WEBrick::SimpleServer
 
 OptionParser.new do |o|
   o.on('-d', '--directory directory', String, 'Directory to start hammer in') do |d|
