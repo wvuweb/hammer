@@ -2,15 +2,15 @@ require 'active_support/all'
 require 'faker'
 require "../hammer/services/theme_partial_renderer.rb"
 
-module Tags  
+module Tags
   class Content < TagContainer
     tag 'yield' do |tag|
       name = tag.attr['name']
       tag.globals.yield ||= ''
       tag.globals.content_for ||= {}
-      
+
       # If a name is given, retrieve the saved content by name; otherwise, retrieve the default stored content.
-      tag.locals.content = if name 
+      tag.locals.content = if name
         tag.globals.content_for[name]
       else
         if tag.globals.yield.empty?
@@ -19,27 +19,27 @@ module Tags
           tag.globals.yield
         end
       end
-      
+
       return nil unless tag.locals.content.present?
-      
+
       if tag.double?
         tag.expand
       else
         tag.locals.content
       end
-      
+
     end
-    
+
     tag 'yield:content' do |tag|
       tag.locals.content
     end
-    
+
     # Only evaluate/output the tag's content if content has be set via content_for for the given name.
     tag 'if_content_for' do |tag|
       content_for = tag.globals.content_for ||= {}
       tag.expand if content_for[tag.attr['name']].present?
     end
-    
+
     tag 'content_for' do |tag|
       tag.globals.content_for ||= {}
       name = tag.attr['name']
@@ -48,7 +48,7 @@ module Tags
       nil
     end
 
-    tag 'editable_region' do |tag|    
+    tag 'editable_region' do |tag|
       if tag.globals.context.data
         if tag.globals.context.data['editable_region'] && tag.globals.context.data['editable_region'][tag.attr['name']]
           if is_num?(tag.globals.context.data['editable_region'][tag.attr['name']])
@@ -69,51 +69,54 @@ module Tags
       content
 
     end
-    
+
     tag 'partial' do |tag|
-      
       if tag.attr['theme']
-        tag_name = tag.attr['name'].split('/').join('__')
-        if tag.globals.context.data
-          if tag.globals.context.data['shared_themes'] && tag.globals.context.data['shared_themes'][tag_name]
-            partial_path = self.partial_file_path(tag.attr['name'])
-            directory_dir = Pathname.new(tag.globals.context.data['shared_themes'][tag_name]+'/views')
-            
-            if tag.globals.context.theme_root
-              partial_dir = tag.globals.context.theme_root.parent.join(directory_dir)
+        # If the mock data exists
+        if tag.globals.context.data && tag.globals.context.data['shared_themes']
+          if tag.globals.context.data['shared_themes'][tag.attr['theme']]
+            if tag.globals.context.data['shared_themes'][tag.attr['theme']][tag.attr['name']]
+              if tag.globals.context.theme_root
+                # Build the Shared Themes local directory
+                theme_directory = tag.globals.context.data['shared_themes'][tag.attr['theme']][tag.attr['name']]
+                partial_path = [theme_directory,'views',self.partial_file_path(tag.attr['name'])].join('/')
+                partial_full_path = [tag.globals.context.theme_root.parent,partial_path].join('/')
+              else
+                return Hammer.error "theme root error: you might be missing the config.yml file in the root of your theme"
+              end
             else
-              return Hammer.error "theme_root error, you might be missing the config.yml file in the root of your theme"
+              str ="mock_data.yml missing theme path key `#{tag.attr['name']}` under `#{tag.attr['theme']}`"
+              return Hammer.error str
             end
-            
-            partial_request_path = partial_dir.join(partial_path)
-            
           else
-            return Hammer.error "Add key: <em>#{tag_name}</em> under <em>shared_themes:</em> with a local directory value of <em>#{tag.attr['theme'].downcase}</em> in the mock_data file"
+            str ="mock_data.yml missing theme key `#{tag.attr['theme']}` under `shared_themes:`"
+            return Hammer.error str
           end
         else
-          return Hammer.error "Add key: <em>#{tag_name}</em> under <em>shared_themes:</em> with a local directory value of <em>#{tag.attr['theme'].downcase}</em> in the mock_data file"
+          str ="mock_data.yml missing key `shared_themes:`"
+          return Hammer.error str
         end
-      else 
+      else
         partial_path = self.partial_file_path(tag.attr['name'])
         partial_dir = tag.globals.context.filesystem_path.dirname
-        
+
         if tag.globals.context.radius_parser.context.globals.layout
           parent_dir = tag.globals.context.layout_file_path.dirname
-          partial_request_path = parent_dir.join(partial_path)
+          partial_full_path = parent_dir.join(partial_path)
         else
-          partial_request_path = partial_dir.join(partial_path)
+          partial_full_path = partial_dir.join(partial_path)
         end
       end
-      
+
       content = ThemePartialRenderer.new(
         {
           :context => tag.globals.context,
-          :filesystem_path => partial_request_path,
+          :filesystem_path => Pathname.new(partial_full_path),
           :partial_path => partial_path
         }
       ).render
     end
-    
+
     def self.partial_file_path(name)
       parts = name.split('/')
       if parts.length == 1
@@ -123,7 +126,7 @@ module Tags
         Pathname.new(parts.join('/'))
       end
     end
-    
+
     def self.is_num?(str)
       begin
         !!Integer(str)
@@ -131,8 +134,8 @@ module Tags
         false
       end
     end
-    
-    
+
+
     # def self.find_area(key)
     #   area = nil
     #   [@page, @site].each do |target|
@@ -141,7 +144,7 @@ module Tags
     #   end
     #   area
     # end
-    # 
+    #
     # def self.get_content(area)
     #   if area
     #     ContentAreaDecorator.decorate(area).rendered_content(:mode => @mode, :context => @tag.globals.context)
@@ -153,7 +156,7 @@ module Tags
     #     end
     #   end
     # end
-    # 
+    #
     # def self.render_editable(content)
     #   scope = @tag.attr['scope'] || ContentArea::PAGE_SCOPE
     #   status = @area && @area.has_draft_content? ? 'draft' : nil
