@@ -71,7 +71,7 @@ g = Git.open("../")
 ref = g.log.first {|l| l.sha }
 remote = g.lib.send(:command, 'ls-remote').split(/\n/)[1].split(/\t/)[0]
 
-if ref.to_s == remote.to_s
+if ref.to_s != remote.to_s
   update_url = "https://github.com/wvuweb/hammer/wiki/Update"
   puts " "
   puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".colorize(:red)
