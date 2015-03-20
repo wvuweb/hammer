@@ -94,19 +94,42 @@ end
 
 doc_root = options.directory
 
-puts "Dropping the Hammer on #{doc_root}".colorize(:red)
+if File.directory?(doc_root+"/code")
+
+  code = Git.open(doc_root+"/code")
+  code_ref = code.log.first {|l| l.sha}
+  code_remote = code.lib.send(:command,'ls-remote').split(/\n/)[1].split(/\t/)[0]
+
+  if code_ref.to_s != code_remote.to_s
+    puts " "
+    puts "WARNING:".colorize(:red)
+    puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".colorize(:light_cyan)
+    puts "Your ".colorize(:red)+"Code".colorize(:light_white)+" Repository is out of date, please update it ".colorize(:red)
+    puts "by changing directory into ".colorize(:red)+"'/cleanslate_themes/code'".colorize(:light_green)
+    puts "then running ".colorize(:red)+"git pull".colorize(:light_green)
+    puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".colorize(:light_cyan)
+    puts " "
+  end
+
+else
+  puts " "
+  puts "Code directory not found.  If you want to use the shared repository".colorize(:red)
+  puts "please ".colorize(:red)+"git clone http://stash.development.wvu.edu/scm/cst/code.git".colorize(:light_green)
+  puts "into your cleanslate_themes directory".colorize(:red)
+  puts " "
+end
 
 puts " "
-puts "                                \\`.         ".colorize(:light_magenta)
-puts "      .--------------.___________) \\        ".colorize(:light_magenta)
-puts "      |//// WVU /////|___________[ ]        ".colorize(:light_magenta)
-puts "      `--------------'           ) (        ".colorize(:light_magenta)
-puts "                                 '-'        ".colorize(:light_magenta)
-puts "############################################".colorize(:yellow)
-puts "#     HAMMER - Clean Slate Mock Server     #".colorize(:yellow)
-puts "############################################".colorize(:yellow)
+puts "                                    \\`.         ".colorize(:light_magenta)
+puts "          .--------------.___________) \\        ".colorize(:light_magenta)
+puts "          |//// WVU /////|___________[ ]        ".colorize(:light_magenta)
+puts "          `--------------'           ) (        ".colorize(:light_magenta)
+puts "                                     '-'        ".colorize(:light_magenta)
+puts "    ############################################".colorize(:yellow)
+puts "    #     HAMMER - Clean Slate Mock Server     #".colorize(:yellow)
+puts "    ############################################".colorize(:yellow)
 puts " "
-puts " Starting in #{doc_root}... ".black.on_green
+puts "    Starting in #{doc_root}...     ".black.on_green
 puts " "
 puts " "
 
