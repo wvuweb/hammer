@@ -71,50 +71,13 @@ module Tags
     end
 
     tag 'partial' do |tag|
-      if tag.attr['theme']
-        # If the mock data exists
-        if tag.globals.context.data && tag.globals.context.data['shared_themes']
-          if tag.globals.context.data['shared_themes'][tag.attr['theme']]
-            if tag.globals.context.data['shared_themes'][tag.attr['theme']][tag.attr['name']]
-              if tag.globals.context.theme_root
-                # Build the Shared Themes local directory
-                theme_directory = tag.globals.context.data['shared_themes'][tag.attr['theme']][tag.attr['name']]
-                partial_path = [theme_directory,'views',self.partial_file_path(tag.attr['name'])].join('/')
-                partial_full_path = [tag.globals.context.theme_root.parent,partial_path].join('/')
-              else
-                return Hammer.error "theme root error: you might be missing the config.yml file in the root of your theme"
-              end
-            else
-              str ="mock_data.yml missing theme path key `#{tag.attr['name']}` under `#{tag.attr['theme']}`"
-              return Hammer.error str
-            end
-          else
-            str ="mock_data.yml missing theme key `#{tag.attr['theme']}` under `shared_themes:`"
-            return Hammer.error str
-          end
-        else
-          str ="mock_data.yml missing key `shared_themes:`"
-          return Hammer.error str
-        end
-      else
-        partial_path = self.partial_file_path(tag.attr['name'])
-        partial_dir = tag.globals.context.filesystem_path.dirname
 
-        if tag.globals.context.radius_parser.context.globals.layout
-          parent_dir = tag.globals.context.layout_file_path.dirname
-          partial_full_path = parent_dir.join(partial_path)
-        else
-          partial_full_path = partial_dir.join(partial_path)
-        end
-      end
+      options = tag.attr.with_indifferent_access
+      name = options.delete(:name)
+      theme = options.delete(:theme)
 
-      content = ThemePartialRenderer.new(
-        {
-          :context => tag.globals.context,
-          :filesystem_path => Pathname.new(partial_full_path),
-          :partial_path => partial_path
-        }
-      ).render
+      ThemePartialRenderer.new(template: tag.globals.context.filesystem_path, theme: theme, tag: tag).render(name, options)
+
     end
 
     def self.partial_file_path(name)
