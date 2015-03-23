@@ -59,8 +59,6 @@ class ThemePartialRenderer
     layouts_path = Pathname.new([theme_dir,'layouts'].join('/'))
     paths = [context_path, file_path, theme_dir,layouts_path].compact
 
-    puts paths
-
     paths
 
   end
