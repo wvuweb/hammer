@@ -4,31 +4,13 @@ Hammer is a theme development tool for the [CleanSlate](http://cleanslate.wvu.ed
 
 Hammer is similar to [Mock Builder](https://github.com/wvuweb/mock_builder "Mock Builder") for [Slate](http://slatecms.wvu.edu/ "Slate"), but has many differences due to the different architecture of [CleanSlate](http://cleanslate.wvu.edu/ "CleanSlate"). If you are familiar with [Mock Builder](https://github.com/wvuweb/mock_builder "Mock Builder") you should be able to quickly get up and running with Hammer.
 
-##MacOSX Install
+## Install & Usage
 
-Please use [Hammer-VM](https://github.com/wvuweb/hammer-vm)
-
-~~[MacOSX Install](https://github.com/wvuweb/hammer/wiki/Mac-OSX-Install)~~ **DEPRECIATED** 
-
-##Windows Install
-Please use [Hammer-VM](https://github.com/wvuweb/hammer-vm)
-
-~~[Windows Install](https://github.com/wvuweb/hammer/wiki/Windows-Install)~~ **DEPRECIATED**
-
-### Updating Hammer
-Please use [Hammer-VM](https://github.com/wvuweb/hammer-vm#commands)
-
-~~[Updating Instructions](https://github.com/wvuweb/hammer/wiki/Update)~~ **DEPRECIATED** 
-
-### Using Hammer
-
-1. ~~Open Terminal and type `hammer`.~~  **DEPRECIATED**  Please use [Hammer-VM](https://github.com/wvuweb/hammer-vm#commands)
-1. Open your browser and go to [http://localhost:2000](http://localhost:2000).
+Please install via [Hammer-VM](https://github.com/wvuweb/hammer-vm)
 
 ### Example Mock Data File
 
 [`mock_data.yml`](https://github.com/wvuweb/hammer/wiki/Mock-Data#basic-example-of-a-mock_datayml-file)
-
 
 ## Interested? Need Help? Read more..
 
