@@ -111,12 +111,11 @@ module Tags
     # Example retrieving variable with no default:
     #   <r:var name="foo" />
     tag 'var' do |tag|
-      # name = tag.attr['name']
-      # default = tag.attr['default']
-      # 
-      # value = tag.globals.vars[name]
-      # value.blank? && default.present? ? default : value
-      Hammer.error "var tag is not implemented yet"
+      name = tag.attr['name']
+      default = tag.attr['default']
+
+      value = tag.globals.vars[name]
+      value.blank? && default.present? ? default : value
     end
     
     # Set the value of a variable.
@@ -130,15 +129,23 @@ module Tags
     #   The following will set the 'baz' variable to the current value of the 'foo' variable.
     #   If the 'foo' variable is not currently set, the default value 'raz' will be used.
     #
-    #   <r:set_var name="baz" value="{foo}" default="baz" />
+    #   <r:set_var name="baz" value="{$foo}" default="raz" />
+    #
+    #   The next example will set the 'baz' variable to the value of 'foo' using the content
+    #   of the tag.
+    #
+    #   <r:set_var name="baz">
+    #     <r:var name="foo" />
+    #   </r:set_var>
+    #
     tag 'set_var' do |tag|
       name = tag.attr['name']
       value = tag.attr['value']
       default = tag.attr['default']
       
       value = default if value.blank? && default.present?
-      
-      tag.globals.vars[name] = value
+      value = tag.expand if value.blank?
+      tag.globals.vars[name] = value.to_s.strip
       nil
       # Hammer.error "set_var tag is not implemented yet"
     end
