@@ -70,6 +70,17 @@ module Tags
 
     end
 
+    # The contents of this tag will only be rendered/accessible in the editor. This could be used, for example, to
+    # provide access to content regions that for administrative/special purposes only and shouldn't be display
+    # for the world. Once content within the regions is published/saved, it will be available for display in other
+    # templates, if desired.
+    tag 'edit_mode_only' do |tag|
+      # if tag.globals.mode == Slate::ViewModes::EDIT
+      if tag.globals.context.data && tag.globals.context.data['edit_mode'] == true
+        tag.expand
+      end
+    end
+
     tag 'partial' do |tag|
 
       options = tag.attr.with_indifferent_access
