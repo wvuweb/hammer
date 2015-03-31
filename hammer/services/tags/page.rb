@@ -282,18 +282,33 @@ module Tags
     [:descendants, :ancestors, :children, :siblings].each do |method|
       tag method.to_s do |tag|
         # tag.locals.send("#{method.to_s}=", find_with_options(tag, tag.locals.page.send(method)))
-        # tag.expand
-        Hammer.error "#{method.to_s} tag is not yet implemented"
+        tag.expand
       end
 
       tag "#{method.to_s}:count" do |tag|
         #count_items tag, tag.locals.send(method)
-        Hammer.error "#{method.to_s}:count tag is not yet implemented"
+        if tag.globals.context.data && tag.globals.context.data["pages"]
+          tag.globals.context.data["pages"].count
+        else
+         Hammer.error "#{method.to_s}:count needs the 'pages' key in mock_data.yml"
+        end
       end
 
       tag "#{method.to_s}:each" do |tag|
         #loop_over tag, tag.locals.send(method)
-        Hammer.error "#{method.to_s}:each tag is not yet implemented"
+        if tag.globals.context.data && tag.globals.context.data["pages"]
+          mock_pages = tag.globals.context.data["pages"]
+          mock_pages.unshift(tag.globals.context.data["page"]) #include original page object
+
+          output = ""
+          mock_pages.each do |page|
+            tag.globals.context.data["page"] = page #set the current context
+            output = output + tag.expand
+          end
+          output
+        else
+         Hammer.error "#{method.to_s}:each needs the 'pages' key in mock_data.yml"
+        end
       end
     end
 
