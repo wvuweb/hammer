@@ -150,6 +150,42 @@ module Tags
       # Hammer.error "set_var tag is not implemented yet"
     end
     
+    tag 'if' do |tag|
+      tag.expand if compare_values(tag)
+    end
+
+    tag 'if_not' do |tag|
+      tag.expand unless compare_values(tag)
+    end
+
+    def self.compare_values(tag)
+      val1, val2, op, type = %w(value1 value2 op type).map { |attr| tag.attr[attr] }
+
+      case type.to_s.downcase
+      when 'number'
+        val1 = val1.to_f
+        val2 = val2.to_f
+      when 'boolean', 'bool'
+        val1 = val1.to_s.to_boolean
+        val2 = val2.to_s.to_boolean
+      when 'date'
+        val1 = parse_date(val1)
+        val2 = parse_date(val2)
+      end
+
+      truth = case op
+      when '=', '==' then val1 == val2
+      when '!=' then val1 != val2
+      when '>' then val1 > val2
+      when '<' then val1 < val2
+      when '>=' then val1 >= val2
+      when '<=' then val1 <= val2
+      else
+        false
+      end
+
+      truth
+    end
     # Replace content contained within the tag that matches the 'match' attribute with
     # the value contained in the 'with' attribute.
     #
