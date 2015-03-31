@@ -150,17 +150,15 @@ module Tags
     #
     # The above should render 'XXX' as the output.
     tag 'replace' do |tag|
-      # match = tag.attr['match']
-      # value = tag.attr['with']
-      # scope = tag.attr['scope'] || 'all'
-      # 
-      # # Determine which string replacement method to use.
-      # rmethod = scope.downcase == 'all' ? :gsub : :sub
-      # 
-      # content = tag.expand
-      # content.send rmethod, /#{match}/, value
+      match = tag.attr['match']
+      value = tag.attr['with']
+      scope = tag.attr['scope'] || 'all'
       
-      Hammer.error "replace tag is not implemented yet"
+      # Determine which string replacement method to use.
+      rmethod = scope.downcase == 'all' ? :gsub : :sub
+
+      content = tag.expand
+      content.send rmethod, /#{match}/, value
     end
     
     # Parse a date string and return a new string with the given format. The string to parse
