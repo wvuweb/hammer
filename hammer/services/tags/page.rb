@@ -217,8 +217,23 @@ module Tags
       else
         Hammer.error "Page:#{attr}"
       end
+    end
+
+    # Retrieve an attribute from the custom_data for the page.
+    tag 'page:data' do |tag|
+      attr = tag.attr['name']
+      #page = tag.locals.page
+      #(page.custom_data || {})[attr] || "ERROR: Custom data for '#{attr}' does not exist."
+
+      if tag.globals.context.data && tag.globals.context.data['page'] && tag.globals.context.data['page']['data'] && tag.globals.context.data['page']['data'][attr]
+        tag.globals.context.data['page']['data'][attr]
+      else
+        Hammer.error "Page:#{attr}"
+      end
+
 
     end
+
 
     #Fake a url for editing a page
     tag 'page:edit_url' do |tag|
