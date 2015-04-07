@@ -172,6 +172,7 @@ module Tags
         val1 = parse_date(val1)
         val2 = parse_date(val2)
       end
+
       truth = case op
       when '=', '==' then val1 == val2
       when '!=' then val1 != val2
@@ -297,7 +298,7 @@ module Tags
     def self.parse_date(str)
       # We will try parsing the date string with Chronic first. If that doesn't work, we'll attempt to
       # parse the string with DateTime.
-      Time.zone = "EST"
+      Time.zone = "Eastern Time (US & Canada)"
       Chronic.time_class = Time.zone
       date = Chronic.parse(str) || DateTime.parse(str) rescue nil
     end
