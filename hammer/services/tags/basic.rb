@@ -172,7 +172,6 @@ module Tags
         val1 = parse_date(val1)
         val2 = parse_date(val2)
       end
-
       truth = case op
       when '=', '==' then val1 == val2
       when '!=' then val1 != val2
@@ -291,13 +290,16 @@ module Tags
         [:strftime, format]
       end
 
+      date = parse_date(date_str)
+      date.present? ? date.send(*format_method) : error_msg
+    end
+
+    def self.parse_date(str)
       # We will try parsing the date string with Chronic first. If that doesn't work, we'll attempt to
       # parse the string with DateTime.
-      Chronic.time_class = Time
-      date = Chronic.parse(date_str) || DateTime.parse(date_str) rescue nil
-      date.present? ? date.send(*format_method) : error_msg
-
-      # Hammer.error "date_format tag is not implemented yet"
+      Time.zone = "EST"
+      Chronic.time_class = Time.zone
+      date = Chronic.parse(str) || DateTime.parse(str) rescue nil
     end
 
     tag 'select_html' do |tag|
