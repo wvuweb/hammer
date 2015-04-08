@@ -20,9 +20,10 @@ module Tags
     tag 'root' do |tag|
       # tag.locals.page = tag.globals.site.root_page
       # tag.expand
-      # "fix root tag"
-      # Hammer.error "root tag is not yet implemented"
-      tag.expand
+      if tag.globals.context.data['page'] && tag.globals.context.data['page']['root'] == "true"
+        tag.expand
+      end
+
     end
 
     # Reset the page context to the current (global) page.
