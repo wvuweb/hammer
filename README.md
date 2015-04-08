@@ -8,10 +8,6 @@ Hammer is similar to [Mock Builder](https://github.com/wvuweb/mock_builder "Mock
 
 Please install via [Hammer-VM](https://github.com/wvuweb/hammer-vm)
 
-### Example Mock Data File
-
-[`mock_data.yml`](https://github.com/wvuweb/hammer/wiki/Mock-Data#example-of-a-mock_datayml-file)
-
 ## Interested? Need Help? Read more..
 
 Visit the wiki for more information:
@@ -25,6 +21,9 @@ These dependencies are only needed if you are developing against Hammer directly
 * Ruby 1.9.3-p484
 
 
+### Example Mock Data File
+
+[`mock_data.yml`](https://github.com/wvuweb/hammer/wiki/Mock-Data#example-of-a-mock_datayml-file)
 
 ### Mock Data Documentation
 
