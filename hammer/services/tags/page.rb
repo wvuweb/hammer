@@ -20,10 +20,9 @@ module Tags
     tag 'root' do |tag|
       # tag.locals.page = tag.globals.site.root_page
       # tag.expand
-      if tag.globals.context.data['page'] && tag.globals.context.data['page']['root'] == "true"
-        tag.expand
+      if tag.globals.context.data['page'] && tag.globals.context.data['page']['root']
+        tag.globals.context.data['page']['root'] ? tag.expand : false
       end
-
     end
 
     # Reset the page context to the current (global) page.
