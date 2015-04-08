@@ -20,8 +20,8 @@ module Tags
     tag 'root' do |tag|
       # tag.locals.page = tag.globals.site.root_page
       # tag.expand
-      if tag.globals.context.data['page'] && tag.globals.context.data['page']['root']
-        tag.globals.context.data['page']['root'] ? tag.expand : false
+      if tag.globals.context.data['root']
+        tag.globals.context.data['root'] ? tag.expand : false
       end
     end
 
