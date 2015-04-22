@@ -332,14 +332,14 @@ module Tags
       <<-BREADCRUMB_LIST
       <ul class="#{options['ul_class']}">
         <li><a href="#home">Home</a></li>
-        <li class="active"><a href="#page">Page</a></li>
+        <li class="active">Page</li>
       </ul>
       BREADCRUMB_LIST
     end
 
     def self.breadcrumb_text(options)
       <<-BREADCRUMB_LIST
-      <a href="#home">Home</a>| <a href="#page">Page</a>
+      <a href="#home">Home</a>| Page
       BREADCRUMB_LIST
     end
   end
