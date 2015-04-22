@@ -38,7 +38,7 @@ class ThemeRenderer
   end
 
   def load_data
-    MockData.load(@theme_root)
+    MockData.load(@theme_root,@request_path)
   end
 
   def file_contents

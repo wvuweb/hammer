@@ -67,57 +67,57 @@ OptionParser.new do |o|
 end
 
 
-g = Git.open("../")
-ref = g.log.first {|l| l.sha }
-remote = g.lib.send(:command, 'ls-remote').split(/\n/)[1].split(/\t/)[0]
-
-if ref.to_s != remote.to_s
-  update_url = "https://github.com/wvuweb/hammer/wiki/Update"
-  puts " "
-  puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".colorize(:red)
-  puts "!!!".colorize(:red)+" WARNING YOU ARE BEHIND ON HAMMER VERSIONS".colorize(:light_cyan)+" !!!".colorize(:red)
-  puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".colorize(:red)
-  puts " "
-  puts "Repository is currently at ref: ".colorize(:light_white)+(ref.to_s+" ").colorize(:light_magenta)
-  puts "Remote is currently at ref: ".colorize(:light_white)+(remote.to_s+" ").colorize(:light_magenta)
-  # puts "Learn how to update Hammer at: ".colorize(:light_white)+update_url.colorize(:light_cyan)
-  puts " "
-  puts " "
-  puts "Update Hammer by using using the following command: ".colorize(:light_white)
-  puts " "
-  puts "vagrant hammer update".colorize(:light_green)
-  puts " "
-  puts "Hammer will automatically restart after updating itself".colorize(:light_white)
-  puts " "
-  puts " "
-end
-
-doc_root = options.directory
-
-if File.directory?(doc_root+"/code")
-
-  code = Git.open(doc_root+"/code")
-  code_ref = code.log.first {|l| l.sha}
-  code_remote = code.lib.send(:command,'ls-remote').split(/\n/)[1].split(/\t/)[0]
-
-  if code_ref.to_s != code_remote.to_s
-    puts " "
-    puts "WARNING:".colorize(:red)
-    puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".colorize(:light_cyan)
-    puts "Your ".colorize(:red)+"Code".colorize(:light_white)+" Repository is out of date, please update it ".colorize(:red)
-    puts "by changing directory into ".colorize(:red)+"'/cleanslate_themes/code'".colorize(:light_green)
-    puts "then running ".colorize(:red)+"git pull".colorize(:light_green)
-    puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".colorize(:light_cyan)
-    puts " "
-  end
-
-else
-  puts " "
-  puts "Code directory not found.  If you want to use the shared repository".colorize(:red)
-  puts "please ".colorize(:red)+"git clone http://stash.development.wvu.edu/scm/cst/code.git".colorize(:light_green)
-  puts "into your cleanslate_themes directory".colorize(:red)
-  puts " "
-end
+# g = Git.open("../")
+# ref = g.log.first {|l| l.sha }
+# remote = g.lib.send(:command, 'ls-remote').split(/\n/)[1].split(/\t/)[0]
+#
+# if ref.to_s != remote.to_s
+#   update_url = "https://github.com/wvuweb/hammer/wiki/Update"
+#   puts " "
+#   puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".colorize(:red)
+#   puts "!!!".colorize(:red)+" WARNING YOU ARE BEHIND ON HAMMER VERSIONS".colorize(:light_cyan)+" !!!".colorize(:red)
+#   puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".colorize(:red)
+#   puts " "
+#   puts "Repository is currently at ref: ".colorize(:light_white)+(ref.to_s+" ").colorize(:light_magenta)
+#   puts "Remote is currently at ref: ".colorize(:light_white)+(remote.to_s+" ").colorize(:light_magenta)
+#   # puts "Learn how to update Hammer at: ".colorize(:light_white)+update_url.colorize(:light_cyan)
+#   puts " "
+#   puts " "
+#   puts "Update Hammer by using using the following command: ".colorize(:light_white)
+#   puts " "
+#   puts "vagrant hammer update".colorize(:light_green)
+#   puts " "
+#   puts "Hammer will automatically restart after updating itself".colorize(:light_white)
+#   puts " "
+#   puts " "
+# end
+#
+ doc_root = options.directory
+#
+# if File.directory?(doc_root+"/code")
+#
+#   code = Git.open(doc_root+"/code")
+#   code_ref = code.log.first {|l| l.sha}
+#   code_remote = code.lib.send(:command,'ls-remote').split(/\n/)[1].split(/\t/)[0]
+#
+#   if code_ref.to_s != code_remote.to_s
+#     puts " "
+#     puts "WARNING:".colorize(:red)
+#     puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".colorize(:light_cyan)
+#     puts "Your ".colorize(:red)+"Code".colorize(:light_white)+" Repository is out of date, please update it ".colorize(:red)
+#     puts "by changing directory into ".colorize(:red)+"'/cleanslate_themes/code'".colorize(:light_green)
+#     puts "then running ".colorize(:red)+"git pull".colorize(:light_green)
+#     puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".colorize(:light_cyan)
+#     puts " "
+#   end
+#
+# else
+#   puts " "
+#   puts "Code directory not found.  If you want to use the shared repository".colorize(:red)
+#   puts "please ".colorize(:red)+"git clone http://stash.development.wvu.edu/scm/cst/code.git".colorize(:light_green)
+#   puts "into your cleanslate_themes directory".colorize(:red)
+#   puts " "
+# end
 
 puts " "
 puts "                                    \\`.         ".colorize(:light_magenta)
