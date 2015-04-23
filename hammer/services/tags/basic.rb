@@ -1,6 +1,7 @@
 require 'active_support/all'
 require 'time'
 require 'chronic'
+require 'cgi'
 
 module Tags
   class Basic < TagContainer
@@ -323,9 +324,9 @@ module Tags
     end
 
     tag 'escape_xml' do |tag|
-      # content = tag.expand
-      # CGI::escapeHTML content
-      Hammer.error "escape_xml tag is not implemented yet"
+      content = tag.expand
+      CGI::escapeHTML content
+      # Hammer.error "escape_xml tag is not implemented yet"
     end
 
     def self.breadcrumb_list(options)
