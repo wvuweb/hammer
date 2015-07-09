@@ -42,8 +42,8 @@ module Tags
       output = ""
 
       options = {
-        async: tag.attr['async'] == true ? "true" : "false",
-        defer: tag.attr['defer'] == true ? "true" : "false",
+        async: tag.attr['async'] == "true" ? true : false,
+        defer: tag.attr['defer'] == "true" ? true : false,
         type: 'text/javascript'
       }
 
@@ -90,6 +90,8 @@ module Tags
       end
 
       options[:src] = url
+
+      binding.pry
 
       content_tag(:script, nil, options)
 
