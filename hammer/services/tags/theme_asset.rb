@@ -42,8 +42,8 @@ module Tags
       output = ""
 
       options = {
-        async: tag.attr['async'] ? true : false,
-        defer: tag.attr['defer'] ? true : false,
+        async: tag.attr['async'] == true ? "true" : "false",
+        defer: tag.attr['defer'] == true ? "true" : "false",
         type: 'text/javascript'
       }
 
