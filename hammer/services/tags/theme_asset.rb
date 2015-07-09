@@ -91,8 +91,6 @@ module Tags
 
       options[:src] = url
 
-      binding.pry
-
       content_tag(:script, nil, options)
 
     end
