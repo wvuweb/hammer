@@ -2,6 +2,7 @@ require 'active_support/all'
 require 'time'
 require 'chronic'
 require 'cgi'
+require 'wannabe_bool'
 
 module Tags
   class Basic < TagContainer
@@ -92,7 +93,7 @@ module Tags
       #
       # %w(no_self no_root text_only reverse).each do |i|
       #   binding.pry
-      #   options[i] = options[i].to_s.to_boolean
+      #   options[i] = options[i].to_b
       # end
       if tag.globals.context.data && tag.globals.context.data[:breadcrumbs]
         tag.globals.context.data[:breadcrumbs]
@@ -167,8 +168,8 @@ module Tags
         val1 = val1.to_f
         val2 = val2.to_f
       when 'boolean', 'bool'
-        val1 = val1.to_s.to_boolean
-        val2 = val2.to_s.to_boolean
+        val1 = val1.to_b
+        val2 = val2.to_b
       when 'date'
         val1 = parse_date(val1)
         val2 = parse_date(val2)
