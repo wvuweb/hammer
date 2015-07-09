@@ -89,7 +89,7 @@ module Tags
         url = "/javascripts/#{name}.js"
       end
 
-      options[:url] = url
+      options[:src] = url
 
       content_tag(:script, nil, options)
 
