@@ -161,29 +161,41 @@ module Tags
     end
 
     def self.compare_values(tag)
-      val1, val2, op, type = %w(value1 value2 op type).map { |attr| tag.attr[attr] }
+      val1, val2, op, type, expression = [
+        ['value1', 'v1'],
+        ['value2', 'v2'],
+        ['operator', 'op'],
+        ['type'],
+        ['expression', 'expr']
+      ].map{ |key_list| tag.fetch_attr(key_list) }
 
-      case type.to_s.downcase
-      when 'number'
-        val1 = val1.to_f
-        val2 = val2.to_f
-      when 'boolean', 'bool'
-        val1 = val1.to_b
-        val2 = val2.to_b
-      when 'date'
-        val1 = parse_date(val1)
-        val2 = parse_date(val2)
-      end
 
-      truth = case op
-      when '=', '==' then val1 == val2
-      when '!=' then val1 != val2
-      when '>' then val1 > val2
-      when '<' then val1 < val2
-      when '>=' then val1 >= val2
-      when '<=' then val1 <= val2
+
+      if !expression.nil?
+        truth = expression
       else
-        false
+        case type.to_s.downcase
+        when 'number'
+          val1 = val1.to_f
+          val2 = val2.to_f
+        when 'boolean', 'bool'
+          val1 = val1.to_b
+          val2 = val2.to_b
+        when 'date'
+          val1 = parse_date(val1)
+          val2 = parse_date(val2)
+        end
+
+        truth = case op
+        when '=', '==' then val1 == val2
+        when '!=' then val1 != val2
+        when '>' then val1 > val2
+        when '<' then val1 < val2
+        when '>=' then val1 >= val2
+        when '<=' then val1 <= val2
+        else
+          false
+        end
       end
 
       truth
