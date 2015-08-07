@@ -1,8 +1,6 @@
-
-
 module Tags  
   class Menus < TagContainer
-    
+
     tag 'site_menu' do |tag|
       if tag.globals.context.data && tag.globals.context.data['site_menu']
         tag.globals.context.data['site_menu']
@@ -18,7 +16,7 @@ module Tags
         MENU
       end
     end
-    
+
     tag 'sub_menu' do |tag|
       if tag.globals.context.data && tag.globals.context.data['sub_menu']
         tag.globals.context.data['sub_menu']
@@ -34,7 +32,7 @@ module Tags
         MENU
       end
     end
-    
+
     tag 'ancestor_menu' do |tag|
       if tag.globals.context.data && tag.globals.context.data['ancestor_menu']
         tag.globals.context.data['ancestor_menu']
