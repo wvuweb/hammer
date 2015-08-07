@@ -39,7 +39,7 @@ module Tags
         if tag.globals.context.data && tag.globals.context.data['site'] && tag.globals.context.data['site'][attr.to_s]
           tag.globals.context.data['site'][attr.to_s]
         else
-          Hammer.error "Add key <em> page:#{attr}</em>"
+          Hammer.error "Missing key <em>#{attr}</em> under <em>site:</em>"
         end
       end
     end
