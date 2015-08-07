@@ -129,6 +129,15 @@ ancestor_menu: String                           # ancestor_menu allows you to ov
                                                 #     <li><a href="#">Page</a></li>
                                                 #   </ul>
 
+files:                                          # files contains all the data for any of the <r:files|file /> tags
+  - filename: String  
+    name: String
+    title: String
+    alt_text: String
+    download_url: String
+    image_url: String
+  - ...
+
 blog:                                           # blog contains all the data for the <r:blog:{method} /> tags
   name: String                                  # <r:blog:name />             -- accepts a string
                                                 # blog articles much like pages are a repeating group of content for each article
