@@ -3,6 +3,7 @@ require 'time'
 require 'chronic'
 require 'cgi'
 require 'wannabe_bool'
+require 'httparty'
 
 module Tags
   class Basic < TagContainer
@@ -147,6 +148,7 @@ module Tags
 
       value = default if value.blank? && default.present?
       value = tag.expand if value.blank?
+
       tag.globals.vars[name] = value.to_s.strip
       nil
       # Hammer.error "set_var tag is not implemented yet"
@@ -340,6 +342,37 @@ module Tags
       content = tag.expand
       CGI::escapeHTML content
       # Hammer.error "escape_xml tag is not implemented yet"
+    end
+
+    tag 'web_request' do |tag|
+      url = (tag.attr['url'] || '').strip
+      #cache_term_minutes = (tag.attr['cache_for'] || '').to_i
+      #cache_term_minutes = 15 if cache_term_minutes < 1
+
+      #cache [tag.cache_key, tag.globals.site, tag.globals.page], expires_in: cache_term_minutes.minutes do
+        response = HTTParty.get(url, timeout: 30) rescue nil
+
+        if response.present?
+          tag.locals.web_response = {
+            body: response.body,
+            code: response.code,
+            message: response.message,
+            headers: response.headers
+          }
+
+          tag.double? ? tag.expand : tag.locals.web_response.try(:body)
+        end
+      #end
+    end
+
+    tag 'web_request:response' do |tag|
+      tag.expand
+    end
+
+    [:body, :code, :message, :headers].each do |attr|
+      tag "web_request:response:#{attr.to_s}" do |tag|
+        tag.locals.web_response[attr] if tag.locals.web_response.present?
+      end
     end
 
     def self.breadcrumb_list(options)
