@@ -214,7 +214,12 @@ module Tags
         # end
         #
         # output.flatten.join('')
-        items = target
+        if tag.attr['limit']
+          limit = tag.attr['limit'].to_i - 1
+          items = target[0..limit]
+        else
+          items = target
+        end
 
         output = []
         items.each_with_index do |item, index|
