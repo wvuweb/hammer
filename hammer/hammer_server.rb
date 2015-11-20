@@ -68,6 +68,7 @@ end
 
 
 g = Git.open("../")
+g.lib.send(:command, 'git config http.sslVerify "false"')
 ref = g.log.first {|l| l.sha }
 remote = g.lib.send(:command, 'ls-remote').split(/\n/)[1].split(/\t/)[0]
 
