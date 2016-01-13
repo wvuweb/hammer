@@ -3,6 +3,7 @@ class ThemePartialRenderer
   def initialize(args)
     @tag = args[:tag]
     @template = args[:template]
+    @opts = args[:opts]
     @theme = load_theme(args[:theme])
 
     # @parser = @template.radius_parser
@@ -30,12 +31,12 @@ class ThemePartialRenderer
 
   private
 
-  def load_theme(theme_name)
-    theme = if theme_name.nil?
+  def load_theme(shared_theme = nil)
+    theme = if shared_theme.nil?
       @tag.globals.context.theme_root
     else
-      # Theme.find_by_name(theme_name)
-      Pathname.new([@tag.globals.context.document_root,theme_name].join('/'))
+      # @tag.globals.context.data['shared_themes'][shared_theme][@opts[:name]]
+      Pathname.new([@tag.globals.context.document_root,@tag.globals.context.data['shared_themes'][shared_theme][@opts[:name]]].join('/'))
     end
 
     # raise Slate::Errors::TemplateNotFound.new("Could not find theme: #{theme_name}") unless theme.present?

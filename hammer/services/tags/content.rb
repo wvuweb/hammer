@@ -84,10 +84,11 @@ module Tags
     tag 'partial' do |tag|
 
       options = tag.attr.with_indifferent_access
+      tag_opts = tag.attr.with_indifferent_access
       name = options.delete(:name)
       theme = options.delete(:theme)
 
-      ThemePartialRenderer.new(template: tag.globals.context.filesystem_path, theme: theme, tag: tag).render(name, options)
+      ThemePartialRenderer.new(template: tag.globals.context.filesystem_path, theme: theme, tag: tag, opts: tag_opts).render(name, options)
 
     end
 
