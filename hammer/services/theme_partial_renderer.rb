@@ -16,10 +16,13 @@ class ThemePartialRenderer
 
     # raise Slate::Errors::TemplateNotFound.new("Could not find partial '#{file_name}' in '#{@theme.name}' theme.") unless file_path.present?
 
-    # binding.pry
-
     unless file_path.present?
-      content = "Partial Not Found: Could not find partial '#{file_name}' in '#{@theme}' theme."
+      if @theme.nil?
+        content = "Partial Not Found: Could not find partial '#{file_name}' is '#{@opts['theme']}' listed in your mock_data.yml?"
+      else
+        content = "Partial Not Found: Could not find partial '#{file_name}' in '#{@theme}' theme."
+      end
+
     else
       content = File.read file_path
     end
@@ -36,7 +39,12 @@ class ThemePartialRenderer
       @tag.globals.context.theme_root
     else
       # @tag.globals.context.data['shared_themes'][shared_theme][@opts[:name]]
-      Pathname.new([@tag.globals.context.document_root,@tag.globals.context.data['shared_themes'][shared_theme][@opts[:name]]].join('/'))
+
+      if @tag.globals.context.data['shared_themes'] && @tag.globals.context.data['shared_themes'][shared_theme] && @tag.globals.context.data['shared_themes'][shared_theme][@opts[:name]]
+        Pathname.new([@tag.globals.context.document_root,@tag.globals.context.data['shared_themes'][shared_theme][@opts[:name]]].join('/'))
+      else
+        nil
+      end
     end
 
     # raise Slate::Errors::TemplateNotFound.new("Could not find theme: #{theme_name}") unless theme.present?
