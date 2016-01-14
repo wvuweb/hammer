@@ -3,17 +3,16 @@ require 'active_support/core_ext/string/output_safety'
 module Tags
   class Asset < TagContainer
 
-
-        BOOLEAN_ATTRIBUTES = %w(disabled readonly multiple checked autobuffer
-                             autoplay controls loop selected hidden scoped async
-                             defer reversed ismap seamless muted required
-                             autofocus novalidate formnovalidate open pubdate
-                             itemscope allowfullscreen default inert sortable
-                             truespeed typemustmatch).to_set
-        BOOLEAN_ATTRIBUTES.merge(BOOLEAN_ATTRIBUTES.map {|attribute| attribute.to_sym })
-        PRE_CONTENT_STRINGS = {
-          :textarea => "\n"
-        }
+    BOOLEAN_ATTRIBUTES = %w(disabled readonly multiple checked autobuffer
+                         autoplay controls loop selected hidden scoped async
+                         defer reversed ismap seamless muted required
+                         autofocus novalidate formnovalidate open pubdate
+                         itemscope allowfullscreen default inert sortable
+                         truespeed typemustmatch).to_set
+    BOOLEAN_ATTRIBUTES.merge(BOOLEAN_ATTRIBUTES.map {|attribute| attribute.to_sym })
+    PRE_CONTENT_STRINGS = {
+      :textarea => "\n"
+    }
 
     tag 'file' do |tag|
       tag.locals.asset
@@ -148,9 +147,12 @@ module Tags
       "<#{name}#{tag_options(options, escape) if options}#{open ? ">" : " />"}".html_safe
     end
 
-     def self.tag_options(options, escape = true)
+    def self.tag_options(options, escape = true)
+
       return if options.blank?
+
       attrs = []
+
       options.each_pair do |key, value|
         if key.to_s == 'data' && value.is_a?(Hash)
           value.each_pair do |k, v|
@@ -162,18 +164,19 @@ module Tags
           attrs << tag_option(key, value, escape)
         end
       end
+
       " #{attrs.sort! * ' '}" unless attrs.empty?
-      end
+    end
 
-      def self.tag_option(key, value, escape)
-        value = value.join(" ") if value.is_a?(Array)
-        value = ERB::Util.h(value) if escape
-        %(#{key}="#{value}")
-      end
+    def self.tag_option(key, value, escape)
+      value = value.join(" ") if value.is_a?(Array)
+      value = ERB::Util.h(value) if escape
+      %(#{key}="#{value}")
+    end
 
-      def self.boolean_tag_option(key)
-        %(#{key}="#{key}")
-      end
+    def self.boolean_tag_option(key)
+      %(#{key}="#{key}")
+    end
 
   end
 end
