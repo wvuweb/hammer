@@ -45,6 +45,19 @@ module Tags
       end
     end
 
+    # Retrieve an attribute from the custom_data for the page.
+    tag 'site:data' do |tag|
+      attr = tag.attr['name']
+      #page = tag.locals.page
+      #(page.custom_data || {})[attr] || "ERROR: Custom data for '#{attr}' does not exist."
+
+      if tag.globals.context.data && tag.globals.context.data['site'] && tag.globals.context.data['site']['data'] && tag.globals.context.data['site']['data'][attr]
+        tag.globals.context.data['site']['data'][attr]
+      else
+        Hammer.error "Missing key <em>#{attr}</em> under <em>site:data</em>"
+      end
+    end
+
     # Returns the number of sites with the given status. Status can be one of: live, development,
     # archived, active, all. Live and development sites are considered 'active'.
     tag 'site_count' do |tag|
