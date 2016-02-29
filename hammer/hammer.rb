@@ -16,21 +16,16 @@ module Hammer
 
     request_path(request)
 
-    puts "Requesting system path: ".colorize(:light_magenta)
-    puts map_request.to_s.colorize(:yellow)
+    puts "Handling a request for system path:".colorize(:light_magenta)+" #{map_request.to_s.colorize(:yellow)}\n"
 
     if @filesystem_path.directory?
-      puts "Path is a Directory".colorize(:blue)
-
+      puts "Path is a Directory\n".colorize(:blue)
       directory = WEBrick::HTTPServlet::FileHandler.new(@server, @document_root, { :FancyIndexing =>true })
       directory.do_GET(request, response)
-
     else
-      if request_html?
-        puts "Path is a #{get_mime_type} file".colorize(:blue)
-
+      if request_radiusable_template?
+        puts "Path is a #{get_mime_type} file\n".colorize(:blue)
         response.status = 200
-
         response.body = ThemeRenderer.new(
           {
             :server => @server,
@@ -42,10 +37,8 @@ module Hammer
           }
         ).render
         response['content-type'] = get_mime_type
-
       else
-        puts "Path is a File".colorize(:blue)
-
+        puts "Path is a #{get_mime_type} File\n".colorize(:blue)
         file = WEBrick::HTTPServlet::FileHandler.new(@server, @document_root, { :FancyIndexing =>true })
         file.do_GET(request, response)
       end
@@ -61,8 +54,8 @@ module Hammer
     @request_path = Pathname.new(request.path)
   end
 
-  def request_html?
-    get_mime_type == "text/html" || "application/rss+xml"
+  def request_radiusable_template?
+    get_mime_type == ("text/html" || "application/rss+xml")
   end
 
   def map_request
