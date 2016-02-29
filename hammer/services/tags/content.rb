@@ -51,15 +51,7 @@ module Tags
     tag 'editable_region' do |tag|
       if tag.globals.context.data
         if tag.globals.context.data['editable_region'] && tag.globals.context.data['editable_region'][tag.attr['name']]
-          if is_num?(tag.globals.context.data['editable_region'][tag.attr['name']])
-            content = ""
-            content_array = Faker::Lorem.paragraphs(tag.globals.context.data['editable_region'][tag.attr['name']].to_i)
-            content_array.each do |c|
-              content << "<p>"+c+"</p>"
-            end
-          else
-            content = tag.globals.context.data['editable_region'][tag.attr['name']]
-          end
+          content = tag.globals.context.data['editable_region'][tag.attr['name']]
         else
           content = Hammer.error "Set data for key: <em>#{tag.attr['name']}</em> under <em>editable_region</em> in the mock_data file"
         end
@@ -67,7 +59,6 @@ module Tags
         content = Faker::Lorem.paragraph(rand(2..10))
       end
       content
-
     end
 
     # The contents of this tag will only be rendered/accessible in the editor. This could be used, for example, to
