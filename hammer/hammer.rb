@@ -38,7 +38,7 @@ module Hammer
         ).render
         response['content-type'] = get_mime_type
       else
-        puts "Path is a #{get_mime_type} File\n".colorize(:blue)
+        puts "Path is a Static #{get_mime_type} File\n".colorize(:blue)
         file = WEBrick::HTTPServlet::FileHandler.new(@server, @document_root, { :FancyIndexing =>true })
         file.do_GET(request, response)
       end
@@ -55,7 +55,8 @@ module Hammer
   end
 
   def request_radiusable_template?
-    get_mime_type == ("text/html" || "application/rss+xml")
+    radiusable = %w(text/html application/rss+xml application/json)
+    radiusable.include?(get_mime_type)
   end
 
   def map_request

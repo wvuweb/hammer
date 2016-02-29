@@ -79,6 +79,8 @@ class ThemePartialRenderer
   def default_format
     if get_mime_type == "application/rss+xml"
       '.rss'
+    elsif get_mime_type == 'application/json'
+      ".json"
     else
       '.html'
     end
