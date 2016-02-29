@@ -18,6 +18,7 @@ class ThemeRenderer
     @document_root = options[:document_root]
     @filesystem_path = options[:filesystem_path]
     @request_path = options[:request_path]
+    @content_type = options[:content_type]
     @theme_root = theme_root
     @data = load_data
     @content = file_contents
@@ -78,7 +79,6 @@ class ThemeRenderer
       @content = file_contents
     end
     render_with_radius
-
   end
 
   def radius_parser(context = {})

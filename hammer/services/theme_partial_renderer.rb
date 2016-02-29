@@ -77,8 +77,11 @@ class ThemePartialRenderer
   end
 
   def default_format
-    #'.' + @template.format
-    '.html'
+    if get_mime_type == "text/html"
+      '.html'
+    elsif get_mime_type == "application/rss+xml"
+      '.rss'
+    end
   end
 
   def normalize_partial_name(name, options = {})
@@ -94,6 +97,11 @@ class ThemePartialRenderer
     filename += extension.present? ? extension : default_format
 
     dirname == '.' ? filename : File.join(dirname, filename)
+  end
+
+  def get_mime_type
+    mime_type = WEBrick::HTTPUtils::load_mime_types(Pathname.new(Dir.pwd + '/config/mime.types'))
+    WEBrick::HTTPUtils::mime_type(@template.to_s, mime_type)
   end
 
   #   protected
