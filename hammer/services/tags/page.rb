@@ -268,6 +268,27 @@ module Tags
       end
     end
 
+    # Expands tag if current page editable region has content
+    tag 'page:if_has_content_for' do |tag|
+      rname = tag.attr['region'].strip
+      always = tag.attr['always_show_in_edit_mode'].to_s.to_b && tag.globals.context.data['edit_mode'] == true
+      content = nil
+      if tag.globals.context.data["page"] && tag.globals.context.data["page"]["content"] && tag.globals.context.data["page"]["content"][rname]
+        content = tag.globals.context.data["page"]["content"][rname]
+      end
+      tag.expand if always || !content.nil?
+    end
+
+    tag 'page:unless_has_content_for' do |tag|
+      rname = tag.attr['region'].strip
+      always = tag.attr['always_show_in_edit_mode'].to_s.to_b && tag.globals.context.data['edit_mode'] == true
+      content = nil
+      if tag.globals.context.data["page"] && tag.globals.context.data["page"]["content"] && tag.globals.context.data["page"]["content"][rname]
+        content = tag.globals.context.data["page"]["content"][rname]
+      end
+      tag.expand if always || content.nil?
+    end
+
     # Page template tags
     tag 'page:template' do |tag|
       # tag.locals.page_template = tag.locals.page.template
