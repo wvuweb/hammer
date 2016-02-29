@@ -102,7 +102,7 @@ class ThemePartialRenderer
   def get_mime_type
     mime_file_path = File.expand_path('../config/mime.types', File.dirname(__FILE__))
     mime_file = WEBrick::HTTPUtils::load_mime_types(mime_file_path)
-    WEBrick::HTTPUtils::mime_type(@filesystem_path.to_s, mime_file)
+    WEBrick::HTTPUtils::mime_type(@template.to_s, mime_file)
   end
 
   #   protected
