@@ -77,10 +77,10 @@ class ThemePartialRenderer
   end
 
   def default_format
-    if get_mime_type == "text/html"
-      '.html'
-    elsif get_mime_type == "application/rss+xml"
+    if get_mime_type == "application/rss+xml"
       '.rss'
+    else
+      '.html'
     end
   end
 
@@ -100,8 +100,9 @@ class ThemePartialRenderer
   end
 
   def get_mime_type
-    mime_type = WEBrick::HTTPUtils::load_mime_types(Pathname.new(Dir.pwd + '/config/mime.types'))
-    WEBrick::HTTPUtils::mime_type(@template.to_s, mime_type)
+    mime_file_path = File.expand_path('../config/mime.types', File.dirname(__FILE__))
+    mime_file = WEBrick::HTTPUtils::load_mime_types(mime_file_path)
+    WEBrick::HTTPUtils::mime_type(@filesystem_path.to_s, mime_file)
   end
 
   #   protected
