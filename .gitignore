@@ -1,4 +1,4 @@
-# A .gitignore file tells git which files not to include or version track in your repository. 
+# A .gitignore file tells git which files not to include or version track in your repository.
 # Usually, these are silly things like ".DS_Store" or "Thumbs.db".
 # We've included a list of the most common files we don't want to version track here.
 # Much credit goes to: https://github.com/github/gitignore
@@ -21,7 +21,7 @@ Icon
 *.svn-base
 .svn*
 
-# Windows 
+# Windows
 ## Image file caches
 Thumbs.db
 ehthumbs.db
@@ -34,3 +34,5 @@ $RECYCLE.BIN/
 
 # SublimeText project files
 *.sublime-workspace
+
+vendor/

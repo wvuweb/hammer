@@ -25,18 +25,16 @@ module Hammer
     else
       if request_radiusable_template?
         puts "Path is a #{get_mime_type} file\n".colorize(:blue)
-        response.status = 200
-        response.body = ThemeRenderer.new(
-          {
-            :server => @server,
-            :request => request,
-            :document_root => @document_root,
-            :filesystem_path => @filesystem_path,
-            :request_path => @request_path,
-            :content_type => get_mime_type
-          }
-        ).render
-        response['content-type'] = get_mime_type
+        body = ThemeRenderer.new({
+              :server => @server,
+              :request => request,
+              :document_root => @document_root,
+              :filesystem_path => @filesystem_path,
+              :request_path => @request_path,
+              :content_type => get_mime_type
+            }).render
+        response.body = body
+        response.content_type = get_mime_type+'; charset=utf-8'
       else
         puts "Path is a Static #{get_mime_type} File\n".colorize(:blue)
         file = WEBrick::HTTPServlet::FileHandler.new(@server, @document_root, { :FancyIndexing =>true })

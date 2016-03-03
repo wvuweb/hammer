@@ -116,6 +116,13 @@ class ThemeRenderer
 
       output = radius_parser.parse(self.layout_content)
 
+      @htmldoc = Nokogiri::HTML::Document.parse(output)
+      meta = Nokogiri::XML::Node.new "meta", @htmldoc
+      meta['http-equiv'] = "Content-Type"
+      meta['content'] = "text/html; charset=UTF-8"
+      @htmldoc.at('head').add_child(meta)
+      output = @htmldoc.to_html
+
       if self.data && self.data['livereload']
         @htmldoc = Nokogiri::HTML::Document.parse(output)
         script = Nokogiri::XML::Node.new "script", @htmldoc
