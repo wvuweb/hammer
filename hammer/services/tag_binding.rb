@@ -17,7 +17,8 @@ module Radius
         begin
           memo[k] = parse_value(v)
         rescue Exception => e
-          raise AttributeParseError.new(name, k, v, e.backtrace)
+          memo[k] = Hammer.error "<strong>Attribute Error</strong> #{name} #{e}"
+          #raise AttributeParseError.new(name, k, v, e.backtrace)
         end
 
         memo
