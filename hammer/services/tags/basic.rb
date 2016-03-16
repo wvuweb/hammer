@@ -232,6 +232,12 @@ module Tags
       output
     end
 
+    # Return the current index of the current loop being itterated over. Indexes
+    # start with 0.
+    tag 'loop:each:index' do |tag|
+      tag.locals.loop_index
+    end
+
     tag 'loop:each' do |tag|
      _loop = tag.globals.loops.last
      _loop[:attr].merge! tag.attr
@@ -274,6 +280,7 @@ module Tags
 
      items.each_with_index do |item, index|
        tag.locals.loop_item = item
+       tag.locals.loop_index = index
        output << tag.expand
      end if items
 
