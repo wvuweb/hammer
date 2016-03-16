@@ -1,5 +1,9 @@
+require 'dentaku'
+
 module Radius
   class TagBinding
+    CALCULATOR = Dentaku::Calculator.new
+    # CALCULATOR.add_functions(Dentaku::CustomFunctions::FUNCTIONS)
 
     # We override the built-in TagBinding#attributes method so that we can parse/process the
     # attribute values. This allows us to use page/URL parameters for attribute values.
@@ -10,7 +14,12 @@ module Radius
     #  This would substitute the value of the 'bar' variable from globals.vars, if it exists.
     def attributes
       @attributes.inject({}) do |memo, (k, v)|
-        memo[k] = parse_value(v)
+        begin
+          memo[k] = parse_value(v)
+        rescue Exception => e
+          raise AttributeParseError.new(name, k, v, e.backtrace)
+        end
+
         memo
       end.with_indifferent_access
     end
@@ -26,13 +35,67 @@ module Radius
       self.attr[key]
     end
 
+    def cache_key
+      Digest::MD5.hexdigest("#{self.name}#{self.attributes.sort.flatten.join}")
+    end
+
+    def dictionary
+      dict = {}
+
+      # Include theme custom data
+      if theme = globals.theme
+        dict.merge!(theme.config['data']) if theme.config['data'].present?
+      end
+
+      # Include custom site data attributes, if they exist.
+      if site = locals.site
+        dict.merge!(site.custom_data) if site.custom_data.present?
+      end
+
+      if page = locals.page
+        # Include custom page data attributes, if they exist.
+        dict.merge!(page.custom_data) if page.custom_data.present?
+
+        # Include any variables from the URL query string, if they exist.
+        dict.merge!(page.params) if page.params.present?
+
+        # Include access to page attributes that are Radius accessible.
+        page.radius_attributes.each do |attr|
+          dict[attr.to_s] = page.send(attr.to_sym)
+        end
+      end
+
+      # Include global template variables.
+      dict.merge!(globals.vars) if globals.vars
+
+      dict
+    end
+
     private
-    
+
+    def math_dictionary
+      dictionary.inject({}) do |memo, (key, value)|
+        memo[key] = if value.to_s.strip =~ /^\d+(?:\.\d+)?$/
+          value.to_f
+        else
+          value
+        end
+
+        memo
+      end
+    end
+
     def parse_value(v)
       str = v.to_s.strip
       if str =~ /^{\s*\$(\w+)\s*}$/
-        (globals.vars || {})[$1]
+        # Parse a variable reference (attr1="{$var_name}")
+        dictionary[$1].to_s
+      elsif str =~ /^{{\s*(.*)\s*}}$/
+        # Evaluate mathematical expressions (attr1="{{ 123 + var_name / 2 }}")
+        CALCULATOR.clear
+        CALCULATOR.evaluate!($1, math_dictionary)
       elsif str =~ /^{\s*(\w+(?::\w+)*)\s*}$/
+        # Parse a tag reference (attr1="{page:name}")
         render($1)
       else
         v
