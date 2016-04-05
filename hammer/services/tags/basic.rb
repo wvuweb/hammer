@@ -280,7 +280,7 @@ module Tags
 
      items.each_with_index do |item, index|
        tag.locals.loop_item = item
-       tag.locals.loop_index = index
+       tag.locals.loop_index = index + 1
        output << tag.expand
      end if items
 
