@@ -164,7 +164,7 @@ module Tags
       # tag.expand
       if tag.globals.context.data && tag.globals.context.data['get_page']
         if tag.globals.context.data['get_page'].include?(tag.attr['id'].to_i)
-          tag.globals.context.data['get_page'][tag.attr['id'].to_i]
+          tag.expand
         else
           Hammer.error "key <em>get_page id</em> of #{tag.attr['id']} not found in mock_data file"
         end
@@ -186,7 +186,7 @@ module Tags
         if tag.globals.context.data && tag.globals.context.data['page'] && tag.globals.context.data['page'][attr.to_s]
           tag.globals.context.data['page'][attr.to_s]
         else
-          Hammer.error "page:#{attr}"
+          Hammer.error "Page Attribute missing page:#{attr}"
         end
       end
     end
@@ -215,7 +215,7 @@ module Tags
       if tag.globals.context.data && tag.globals.context.data['page'][attr]
         tag.globals.context.data['page'][attr]
       else
-        Hammer.error "Page:#{attr}"
+        Hammer.error "Page Attribute missing Page:#{attr}"
       end
     end
 
@@ -228,7 +228,7 @@ module Tags
       if tag.globals.context.data && tag.globals.context.data['page'] && tag.globals.context.data['page']['data'] && tag.globals.context.data['page']['data'][attr]
         tag.globals.context.data['page']['data'][attr]
       else
-        Hammer.error "Page:#{attr}"
+        Hammer.error "Page Data attribute missing Page:data:#{attr}"
       end
 
 

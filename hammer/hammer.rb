@@ -68,7 +68,7 @@ module Hammer
   end
 
   def self.error(message)
-    "<strong>Hammer: </strong> #{message}"
+    "<strong>Hammer Error: </strong> #{message}"
   end
 
 end
