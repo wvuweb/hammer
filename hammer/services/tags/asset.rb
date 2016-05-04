@@ -82,7 +82,10 @@ module Tags
 
     tag 'files:count' do |tag|
       # count_items tag, tag.locals.assets
-      Hammer.error "files:count tag is not implemented yet"
+      if tag.globals.context.data && tag.globals.context.data['files']
+        files = tag.globals.context.data['files']
+        loop_over(tag, files, false).count
+      end
     end
 
     tag 'files:each' do |tag|
@@ -90,23 +93,17 @@ module Tags
       if tag.globals.context.data && tag.globals.context.data['files']
         #loop_over tag, tag.globals.context.data['files']
         files = tag.globals.context.data['files']
-        output = []
-        files.each do |file|
-          tag.locals.asset = file
-          output << tag.expand
-        end
-
-        output.flatten.join('')
+        loop_over tag, files
       end
 
       #Hammer.error "files:each tag is not implemented yet"
     end
 
-    def self.decorated_asset(asset)
-      unless asset.is_a? ApplicationDecorator
-        AssetDecorator.decorate(asset)
-      end
-    end
+    # def self.decorated_asset(asset)
+    #   unless asset.is_a? ApplicationDecorator
+    #     AssetDecorator.decorate(asset)
+    #   end
+    # end
 
     def self.find_with_options(tag, target)
       conditions = tag.attr.symbolize_keys
@@ -117,12 +114,13 @@ module Tags
         :tags => conditions[:labels] || [],
         :tags_op => conditions[:labels_match] || 'any',
         :order => conditions[:by] || 'name',
-        :reverse_order => conditions[:order] == 'desc' ? '1' : '0'
-        #:page => conditions[:page].present? ? conditions[:page] : 1,
-        #:limit => conditions[:per_page].present? ? conditions[:per_page] : 50
+        :reverse_order => conditions[:order] == 'desc' ? '1' : '0',
+        :random => conditions[:random].to_s.to_b,
+        :page => conditions[:offset].present? ? conditions[:offset].to_i : 1,
+        :limit => conditions[:limit].present? ? conditions[:limit].to_i : 50
       }
 
-      assets = Filter::Assets.new(target, filter).all
+      # assets = Filter::Assets.new(target, filter).all
     end
 
     def self.count_items(tag, target)
@@ -130,16 +128,29 @@ module Tags
       items.reorder(nil).count # Order is irrelevant for counting
     end
 
-    def self.loop_over(tag, target)
-      items = find_with_options(tag, target)
-      output = []
+    def self.loop_over(tag, target, out=true)
 
-      items.each_with_index do |item, index|
-        tag.locals.asset = decorated_asset item
-        output << tag.expand
+      items = target
+      if tag.attr['labels']
+        items = items.select{|h| h[:label] == tag.attr['labels']}
       end
 
-      output.flatten.join('')
+      if tag.attr['limit']
+        limit = tag.attr['limit'].to_i - 1
+        items = items[0..limit]
+      end
+
+      if out
+        output = []
+        items.each do |item, index|
+          # tag.locals.asset = decorated_asset item
+          tag.locals.asset = item
+          output << tag.expand
+        end
+        output.flatten.join('')
+      else
+        items
+      end
     end
 
 
