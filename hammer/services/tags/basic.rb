@@ -4,6 +4,8 @@ require 'chronic'
 require 'cgi'
 require 'wannabe_bool'
 require 'httparty'
+require "net/http"
+require "uri"
 
 module Tags
   class Basic < TagContainer
@@ -339,6 +341,15 @@ module Tags
       date = Chronic.parse(str) || DateTime.parse(str) rescue nil
     end
 
+    # This tag allows you to select one or more HTML elements, via a CSS expression, and output them.
+    #
+    # Example:
+    #    <r:select_html css_selector="p.special">
+    #      <p>Hello World</p>
+    #      <p class="special">I'm special</p>
+    #    </r:select_html>
+    #
+    #  In the example above, the second <p> tag would be returned.
     tag 'select_html' do |tag|
       css_selector = tag.attr['css_selector']
       limit = tag.attr['limit']
@@ -348,7 +359,7 @@ module Tags
       begin
         html = Nokogiri::HTML(content)
         results = html.css(css_selector.to_s)
-        output = (limit.present? ? results.first(limit.to_i).collect(&:to_s) : results).join('')
+        output = (limit.present? ? results.first(limit.to_i).collect(&:to_s) : results.collect(&:to_s)).join('')
       rescue
         output = "ERROR: Could not parse content."
       end
@@ -356,6 +367,33 @@ module Tags
       output
       # tag.expand
       # Hammer.error "select_html tag is not implemented yet"
+    end
+
+    # This tag allows you to output the value of an HTML element attribute, using a CSS expression. If
+    # multiple HTML elements match the given CSS expression, only the first will be used.
+    #
+    # Example: <r:select_html_attr css_selector="a" attr="href"><a href="http://google.com">Google</a></r:select_html_attr>
+    tag 'select_html_attr' do |tag|
+      css_selector = tag.attr['css_selector']
+      attribute = tag.attr['attr']
+      content = tag.expand
+      output = ''
+
+      begin
+        html = Nokogiri::HTML(content)
+        results = html.css(css_selector.to_s)
+        output = if results.present?
+          begin
+            results.first.try(:attributes).try(:fetch, attribute).try(:value)
+          rescue KeyError => e
+            Hammer.error "ERROR: Attribute '#{attribute}' not found."
+          end
+        end
+      rescue
+        output = Hammer.error "ERROR: Could not parse content."
+      end
+
+      output
     end
 
     tag 'escape_xml' do |tag|
@@ -393,6 +431,56 @@ module Tags
       tag "web_request:response:#{attr.to_s}" do |tag|
         tag.locals.web_response[attr] if tag.locals.web_response.present?
       end
+    end
+
+    tag 'xslt_transform' do |tag|
+      theme = tag.globals.theme
+      url = (tag.attr['url'] || '').strip
+      source_format = (tag.attr['source_format'] || 'xml').downcase
+      xslt_file = tag.attr['xslt_file'].to_s.strip
+
+      cache_term_minutes = (tag.attr['cache_for'] || '').to_i
+      cache_term_minutes = 15 if cache_term_minutes < 1
+
+      xslt = if tag.double?
+        tag.expand
+      elsif xslt_file.present?
+        file = File.join(tag.globals.context.theme_root, xslt_file)
+
+        if File.exists?(file)
+          File.read(file)
+        else
+          raise RuntimeTagError, "ERROR: Could not load XSLT file: #{xslt_file}"
+        end
+      end
+
+      raise(RuntimeTagError, "ERROR: You must either specify XSLT content for this tag or use the xslt_file attribute.") unless xslt.present?
+
+      # cache [tag.cache_key, tag.globals.site, tag.globals.page], expires_in: cache_term_minutes.minutes do
+        begin
+          url = url = URI.parse(url)
+          request = req = Net::HTTP::Get.new(url.to_s)
+          response = Net::HTTP.start(url.host, url.port) {|http|
+            http.request(req)
+          }
+        #rescue raise(RuntimeTagError, "ERROR: Could not load the XML URL: #{url}")
+        rescue => e
+          return Hammer.error "Could not load the XML URL: #{url} due to #{e}"
+        end
+
+        if response.present?
+          # If the source is JSON, we transform it into XML, which can then be transformed via XSLT.
+          xml = if source_format == 'json'
+            JSON.parse(response.body).to_xml(root: :xml) rescue raise(RuntimeTagError, "ERROR: Could not parse JSON source data.")
+          else
+            response.body
+          end
+
+          document = Nokogiri::XML(xml)
+          template = Nokogiri::XSLT(xslt)
+          template.transform(document)
+        end
+      # end
     end
 
     def self.breadcrumb_list(options)
