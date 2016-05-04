@@ -163,7 +163,7 @@ module Tags
       # Hammer.error "get_page tag is not yet implemented"
       # tag.expand
       if tag.globals.context.data && tag.globals.context.data['get_page']
-        if tag.globals.context.data['get_page'].include?(tag.attr['id'].to_i)
+        if tag.globals.context.data['get_page'].any? { |h| h == tag.attr['id'].to_i }
           tag.expand
         else
           Hammer.error "key <em>get_page id</em> of #{tag.attr['id']} not found in mock_data file"
@@ -224,7 +224,6 @@ module Tags
       attr = tag.attr['name']
       #page = tag.locals.page
       #(page.custom_data || {})[attr] || "ERROR: Custom data for '#{attr}' does not exist."
-
       if tag.globals.context.data && tag.globals.context.data['page'] && tag.globals.context.data['page']['data'] && tag.globals.context.data['page']['data'][attr]
         tag.globals.context.data['page']['data'][attr]
       else
