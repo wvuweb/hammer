@@ -53,7 +53,7 @@ module Hammer
   end
 
   def request_radiusable_template?
-    radiusable = %w(text/html application/rss+xml application/json)
+    radiusable = %w(text/html application/xml application/atom+xml application/rss+xml application/json)
     radiusable.include?(get_mime_type)
   end
 
