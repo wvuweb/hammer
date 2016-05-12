@@ -49,21 +49,29 @@ module Radius
       end
 
       # Include custom site data attributes, if they exist.
-      if site = locals.site
-        dict.merge!(site.custom_data) if site.custom_data.present?
+      # if site = locals.site
+      #   dict.merge!(site.custom_data) if site.custom_data.present?
+      # end
+      #
+      # if page = locals.page
+      #   # Include custom page data attributes, if they exist.
+      #   dict.merge!(page.custom_data) if page.custom_data.present?
+      #
+      #   # Include any variables from the URL query string, if they exist.
+      #   dict.merge!(page.params) if page.params.present?
+      #
+      #   # Include access to page attributes that are Radius accessible.
+      #   page.radius_attributes.each do |attr|
+      #     dict[attr.to_s] = page.send(attr.to_sym)
+      #   end
+      # end
+
+      if globals.context.data['site']['data']
+        dict.merge!(globals.context.data['site']['data'])
       end
 
-      if page = locals.page
-        # Include custom page data attributes, if they exist.
-        dict.merge!(page.custom_data) if page.custom_data.present?
-
-        # Include any variables from the URL query string, if they exist.
-        dict.merge!(page.params) if page.params.present?
-
-        # Include access to page attributes that are Radius accessible.
-        page.radius_attributes.each do |attr|
-          dict[attr.to_s] = page.send(attr.to_sym)
-        end
+      if globals.context.data['page']['data']
+        dict.merge!(globals.context.data['page']['data'])
       end
 
       # Include global template variables.
