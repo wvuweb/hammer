@@ -438,7 +438,6 @@ module Tags
       url = (tag.attr['url'] || '').strip
       source_format = (tag.attr['source_format'] || 'xml').downcase
       xslt_file = tag.attr['xslt_file'].to_s.strip
-
       cache_term_minutes = (tag.attr['cache_for'] || '').to_i
       cache_term_minutes = 15 if cache_term_minutes < 1
 
@@ -450,11 +449,11 @@ module Tags
         if File.exists?(file)
           File.read(file)
         else
-          raise RuntimeTagError, "ERROR: Could not load XSLT file: #{xslt_file}"
+          Hammer.error "ERROR: Could not load XSLT file: #{xslt_file}"
         end
       end
 
-      raise(RuntimeTagError, "ERROR: You must either specify XSLT content for this tag or use the xslt_file attribute.") unless xslt.present?
+      Hammer.error "ERROR: You must either specify XSLT content for this tag or use the xslt_file attribute." unless xslt.present?
 
       # cache [tag.cache_key, tag.globals.site, tag.globals.page], expires_in: cache_term_minutes.minutes do
         begin
