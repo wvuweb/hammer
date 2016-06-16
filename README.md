@@ -88,9 +88,6 @@ pages:                                          # pages allow you to mock addtio
 if_page_depth_eq: 1                             # <r:if_page_depth_eq page_depth="1"/> test for page depth equal to value
 if_page_depth_gt: 1                             # <r:if_page_depth_gt page_depth="1"/> test for page depth greater than value
 
-get_page:                                       # get page allows you to define data returned by <r:get_page id="1234" />
-  1234: String                                  # 1234                        -- accepts a string or | pipe character followed by HTML
-
 site_menu: String                               # site menu allows you to override the html generated if you have a pages block
                                                 # <r:site_menu />             -- accepts a string or | pipe character followed by HTML
                                                 # example:
