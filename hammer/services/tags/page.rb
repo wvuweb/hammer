@@ -162,14 +162,19 @@ module Tags
       # end
       # Hammer.error "get_page tag is not yet implemented"
       # tag.expand
-      if tag.globals.context.data && tag.globals.context.data['get_page']
-        if tag.globals.context.data['get_page'].any? { |h| h == tag.attr['id'].to_i }
-          tag.expand
+
+
+      if tag.globals.context.data && tag.globals.context.data['pages']
+        data = tag.globals.context.data['pages'].find { |h| h['id'] == tag.attr['id'].to_i }
+        oldcontext = tag.globals.context.data['page']
+        if data
+          newcontext = data
+          tag.expand(newcontext,oldcontext)
         else
-          Hammer.error "key <em>get_page id</em> of #{tag.attr['id']} not found in mock_data file"
+          Hammer.error "key <em>pages:id</em> of #{tag.attr['id']} not found in mock_data file"
         end
       else
-        Hammer.error "Set key <em>get_page</em> in mock_data file"
+        Hammer.error "Set key <em>pages</em> in mock_data file"
       end
 
     end
@@ -236,7 +241,7 @@ module Tags
 
     #Fake a url for editing a page
     tag 'page:edit_url' do |tag|
-      if tag.globals.context.data && tag.globals.context.data['page']['edit_url']
+      if tag.globals.context.data && tag.globals.context.data['page'] && tag.globals.context.data['page']['edit_url']
         tag.globals.context.data['page']['edit_url']
       else
         # return a hash as a url.
@@ -334,12 +339,13 @@ module Tags
         if tag.globals.context.data && tag.globals.context.data["pages"]
           mock_pages = tag.globals.context.data["pages"]
           mock_pages.unshift(tag.globals.context.data["page"]) #include original page object
-
+          oldcontext = tag.globals.context.data["page"]
           output = ""
           mock_pages.each do |page|
             tag.globals.context.data["page"] = page #set the current context
             output = output + tag.expand
           end
+          tag.globals.context.data["page"] = oldcontext
           output
         else
          Hammer.error "#{method.to_s}:each needs the 'pages' key in mock_data.yml"

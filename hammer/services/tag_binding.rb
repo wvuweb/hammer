@@ -3,6 +3,24 @@ require 'dentaku'
 module Radius
   class TagBinding
     CALCULATOR = Dentaku::Calculator.new
+
+    # Evaluates the current tag and returns the rendered contents.
+    def expand(newcontext=nil,oldcontext=nil)
+      unless oldcontext.nil? && newcontext.nil?
+        globals.context.data['page'] = newcontext
+      end
+      double? ? block.call : ''
+      if double?
+        output = block.call
+        unless oldcontext.nil? && newcontext.nil?
+          globals.context.data['page'] = oldcontext
+        end
+        output
+      else
+        ''
+      end
+    end
+
     # CALCULATOR.add_functions(Dentaku::CustomFunctions::FUNCTIONS)
 
     # We override the built-in TagBinding#attributes method so that we can parse/process the
