@@ -58,7 +58,11 @@ module Tags
       else
         content = Faker::Lorem.paragraph(rand(2..10))
       end
-      content
+      if tag.globals.context.data['show_editable_regions']
+        "<div class='hammer-show-editable' style='border: 1px dashed red;'>"+content+"</div>"
+      else
+        content
+      end
     end
 
     # The contents of this tag will only be rendered/accessible in the editor. This could be used, for example, to
