@@ -59,7 +59,11 @@ module Tags
         content = Faker::Lorem.paragraph(rand(2..10))
       end
       if tag.globals.context.data['show_editable_regions']
-        "<div class='hammer-show-editable' style='border: 1px dashed red;'>"+content+"</div>"
+        if tag.attr['scope'] == "site"
+          "<div class='hammer-show-editable' style='outline: 1px dotted orange;'>"+content+"</div>"
+        else
+          "<div class='hammer-show-editable' style='outline: 1px dotted #09F;'>"+content+"</div>"
+        end
       else
         content
       end
