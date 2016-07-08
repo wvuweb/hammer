@@ -25,17 +25,27 @@ class ThemeRenderer
     @output = ''
   end
 
-  def theme_root
-    config_path = Pathname.new('config.yml')
+  def config_file
+    Pathname.new('config.yml')
+  end
 
+  def theme_root
     @filesystem_path.ascend { |parent|
       if parent.directory?
-        if parent.join(config_path).exist?
+        if parent.join(config_file).exist?
           # puts "Theme directory: ".colorize(:light_magenta)+parent.to_s.split('/').last.to_s.colorize(:light_blue)
           return parent
         end
       end
     }
+  end
+
+  def config_file_exists?
+    File.exists? theme_root.join(config_file)
+  end
+
+  def config_file_path
+    return theme_root.join(config_file)
   end
 
   def load_data
@@ -97,6 +107,8 @@ class ThemeRenderer
         raise 'Parsing template YAML config failed.'
       end
     end
+
+    self.config.merge!(YAML::load(File.open(config_file_path))) if config_file_exists?
     self.config ||= {}
   end
 
