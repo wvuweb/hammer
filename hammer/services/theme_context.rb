@@ -24,6 +24,10 @@ class ThemeContext < ::Radius::Context
       load_tags_from Tags::Content
       load_tags_from Tags::Blog
       load_tags_from Tags::Asset
+
+      if @context.config["theme_type"] == "Emergency"
+        load_tags_from Tags::Emergency
+      end
     end
   end
 
