@@ -107,9 +107,9 @@ class ThemeRenderer
         raise 'Parsing template YAML config failed.'
       end
     end
-
-    self.config.merge!(YAML::load(File.open(config_file_path))) if config_file_exists?
     self.config ||= {}
+    self.config.merge!(YAML::load(File.open(config_file_path))) if config_file_exists?
+
   end
 
   def render_with_radius
