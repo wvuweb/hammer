@@ -34,6 +34,17 @@ module Tags
       output
     end
 
+    tag 'stylesheet_url' do |tag|
+      doc_root = tag.globals.context.server.config[:DocumentRoot]
+
+      if doc_root.split('/').last == "cleanslate_themes"
+        url = "/#{tag.globals.context.request.path.split('/')[1]}/stylesheets/#{tag.attr['name']}.css"
+      else
+        url = "/stylesheets/#{tag.attr['name']}.css"
+      end
+      url
+    end
+
     tag 'include_javascript' do |tag|
       # site = tag.globals.site
       # theme = tag.globals.theme
