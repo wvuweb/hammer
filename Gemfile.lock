@@ -1,61 +1,72 @@
 GEM
   remote: http://rubygems.org/
   specs:
-    actionview (4.1.6)
-      activesupport (= 4.1.6)
+    actionview (4.2.7.1)
+      activesupport (= 4.2.7.1)
       builder (~> 3.1)
       erubis (~> 2.7.0)
-    activesupport (4.1.6)
-      i18n (~> 0.6, >= 0.6.9)
+      rails-dom-testing (~> 1.0, >= 1.0.5)
+      rails-html-sanitizer (~> 1.0, >= 1.0.2)
+    activesupport (4.2.7.1)
+      i18n (~> 0.7)
       json (~> 1.7, >= 1.7.7)
       minitest (~> 5.1)
-      thread_safe (~> 0.1)
+      thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
     builder (3.2.2)
     chronic (0.10.2)
-    coderay (1.1.0)
-    colorize (0.7.3)
-    crass (0.2.1)
+    coderay (1.1.1)
+    colorize (0.8.1)
+    crass (1.0.2)
     debug_inspector (0.0.2)
-    dentaku (2.0.7)
+    dentaku (2.0.9)
     erubis (2.7.0)
-    faker (1.6.5)
+    faker (1.6.6)
       i18n (~> 0.5)
-    git (1.2.8)
-    htmlentities (4.3.2)
-    httparty (0.13.5)
-      json (~> 1.8)
+    git (1.3.0)
+    htmlentities (4.3.4)
+    httparty (0.14.0)
       multi_xml (>= 0.5.2)
-    i18n (0.6.11)
-    json (1.8.1)
+    i18n (0.7.0)
+    json (1.8.3)
+    loofah (2.0.3)
+      nokogiri (>= 1.5.9)
     method_source (0.8.2)
-    mini_portile (0.6.0)
-    minitest (5.4.2)
+    mini_portile2 (2.0.0)
+    minitest (5.9.1)
     multi_xml (0.5.5)
-    nokogiri (1.6.3.1)
-      mini_portile (= 0.6.0)
-    nokogumbo (1.1.12)
+    nokogiri (1.6.7.2)
+      mini_portile2 (~> 2.0.0.rc2)
+    nokogumbo (1.4.9)
       nokogiri
-    pry (0.10.1)
+    pry (0.10.4)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
-    pry-stack_explorer (0.4.9.1)
+    pry-stack_explorer (0.4.9.2)
       binding_of_caller (>= 0.7)
       pry (>= 0.9.11)
-    rack (1.5.2)
+    rack (1.6.4)
     radius (0.7.4)
-    sanitize (3.0.2)
-      crass (~> 0.2.0)
+    rails-deprecated_sanitizer (1.0.3)
+      activesupport (>= 4.2.0.alpha)
+    rails-dom-testing (1.0.7)
+      activesupport (>= 4.2.0.beta, < 5.0)
+      nokogiri (~> 1.6.0)
+      rails-deprecated_sanitizer (>= 1.0.1)
+    rails-html-sanitizer (1.0.3)
+      loofah (~> 2.0)
+    sanitize (4.4.0)
+      crass (~> 1.0.2)
       nokogiri (>= 1.4.4)
-      nokogumbo (= 1.1.12)
+      nokogumbo (~> 1.4.1)
     slop (3.6.0)
-    thread_safe (0.3.4)
+    thread_safe (0.3.5)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
-    wannabe_bool (0.1.1)
+    wannabe_bool (0.6.0)
     webrick (1.3.1)
 
 PLATFORMS
@@ -71,7 +82,7 @@ DEPENDENCIES
   git
   htmlentities
   httparty
-  nokogiri
+  nokogiri (= 1.6.7.2)
   pry
   pry-stack_explorer
   rack
@@ -79,3 +90,9 @@ DEPENDENCIES
   sanitize
   wannabe_bool
   webrick
+
+RUBY VERSION
+   ruby 1.9.3p551
+
+BUNDLED WITH
+   1.13.6
