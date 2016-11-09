@@ -65,7 +65,12 @@ module Tags
     #       I think labels should be used for admin purposes and 'tags' should be used
     #       for the public.
     tag 'article:tags' do |tag|
-      tag.locals.article.label_list.join(',')
+      # tag.locals.article.label_list.join(',')
+      if tag.locals.article['tags'].kind_of?(Array)
+        tag.locals.article['tags'].join(',')
+      elsif
+        Hammer.error 'Article tags should be an array see Hammer Mock Data Wiki'
+      end
     end
 
     tag 'article:published_at' do |tag|
@@ -94,7 +99,7 @@ module Tags
       end
 
       tag.locals.articles = [] if tag.locals.articles.nil?
-
+      tag.locals.attributes = tag.attr
       tag.expand
     end
 
@@ -295,8 +300,9 @@ module Tags
         # end
         #
         # output.flatten.join('')
-        if tag.attr['limit']
-          limit = tag.attr['limit'].to_i - 1
+
+        if tag.locals.attributes['limit']
+          limit = tag.locals.attributes['limit'].to_i - 1
           items = target[0..limit]
         else
           items = target

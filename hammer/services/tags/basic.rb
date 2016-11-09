@@ -242,12 +242,8 @@ module Tags
 
     tag 'loop:each' do |tag|
       _loop = tag.globals.loops.last
-      # TODO: be on the look out for this causing issues, looping
-      # on the WVUToday homepage was causing a nil class on _loop
-      unless _loop.nil?
-        _loop[:attr].merge! tag.attr
-        loop_over tag
-      end
+      _loop[:attr].merge! tag.attr
+      loop_over tag
     end
 
     tag 'loop:each:item' do |tag|
