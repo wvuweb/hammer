@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-ruby "1.9.3"
+ruby "2.3.0"
 
 gem 'rack'
 gem 'webrick'
@@ -9,7 +9,7 @@ gem 'pry'
 gem 'pry-stack_explorer'
 gem 'chronic'
 gem 'htmlentities'
-gem 'nokogiri', '= 1.6.7.2'
+gem 'nokogiri'
 gem 'sanitize'
 gem 'colorize'
 gem 'activesupport'
