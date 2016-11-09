@@ -69,8 +69,9 @@ end
 
 g = Git.open("../")
 begin
-  ref = g.log.first {|l| l.sha }
-  remote = g.lib.send(:command, 'ls-remote').split(/\n/)[1].split(/\t/)[0]
+  branch = g.lib.send(:command, "symbolic-ref --short HEAD")
+  ref = g.lib.send(:command, "rev-parse #{branch}")
+  remote = g.lib.send(:command, "rev-parse origin/#{branch}")
 
   if ref.to_s != remote.to_s
     update_url = "https://github.com/wvuweb/hammer/wiki/Update"
@@ -104,8 +105,8 @@ if File.directory?(doc_root+"/code")
 
   code = Git.open(doc_root+"/code")
   begin
-    code_ref = code.log.first {|l| l.sha}
-    code_remote = code.lib.send(:command,'ls-remote').split(/\n/)[1].split(/\t/)[0]
+    code_ref = g.lib.send(:command, "rev-parse master")
+    code_remote = g.lib.send(:command, "rev-parse origin/master")
 
     if code_ref.to_s != code_remote.to_s
       puts " "
