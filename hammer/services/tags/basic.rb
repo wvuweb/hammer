@@ -52,7 +52,7 @@ module Tags
       attr = tag.attr['name']
       #page = tag.locals.page
       #(page.custom_data || {})[attr] || "ERROR: Custom data for '#{attr}' does not exist."
-
+      # return YAML.dump tag.globals.context.data['site']
       if tag.globals.context.data && tag.globals.context.data['site'] && tag.globals.context.data['site']['data'] && tag.globals.context.data['site']['data'][attr]
         tag.globals.context.data['site']['data'][attr]
       else
@@ -241,10 +241,13 @@ module Tags
     end
 
     tag 'loop:each' do |tag|
-     _loop = tag.globals.loops.last
-     _loop[:attr].merge! tag.attr
-
-     loop_over tag
+      _loop = tag.globals.loops.last
+      # TODO: be on the look out for this causing issues, looping
+      # on the WVUToday homepage was causing a nil class on _loop
+      unless _loop.nil?
+        _loop[:attr].merge! tag.attr
+        loop_over tag
+      end
     end
 
     tag 'loop:each:item' do |tag|
