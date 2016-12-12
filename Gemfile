@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-ruby "2.3.1"
+ruby "2.3.3"
 
 gem 'rack'
 gem 'webrick'
@@ -14,7 +14,7 @@ gem 'sanitize'
 gem 'colorize'
 gem 'activesupport'
 gem 'actionview'
-gem 'faker','~>1.6.5'
+gem 'faker','~> 1.6.5'
 gem 'git'
 gem 'wannabe_bool'
 gem 'httparty'
