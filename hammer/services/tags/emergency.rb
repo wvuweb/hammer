@@ -17,6 +17,16 @@ module Tags
       parse_date(tag.locals.emergency_status['updated_at'], format)
     end
 
+    tag 'emergency_site' do |tag|
+      tag.locals.emergency_site ||= load_site(tag)
+      tag.expand
+    end
+
+    tag 'emergency_site:published_at' do |tag|
+      format = (tag.attr['format'] || '%m/%d/%Y').strip
+      parse_date(tag.locals.emergency_site[:published_at], format)
+    end
+
     tag 'events' do |tag|
       if tag.globals.context.data && tag.globals.context.data['events']
         tag.locals.events = tag.globals.context.data['events']
@@ -103,6 +113,16 @@ module Tags
         output.flatten.join('')
       end
 
+      def load_site(tag)
+        if tag.globals.context.data && tag.globals.context.data['site']
+          tag.locals.emergency_site = tag.globals.context.data['site']
+        else
+          site = {
+            :published_at => Random.rand(11).to_s+ " days ago"
+          }
+          tag.locals.emergency_site = site
+        end
+      end
 
       def load_emergency_status(tag)
         # page = tag.globals.page
@@ -112,7 +132,7 @@ module Tags
         else
           emergency_status = {
             :status => [true, false].sample,
-            :updated_at => Random.rand(11).to_s+ "days ago"
+            :updated_at => Random.rand(11).to_s+ " days ago"
           }
           tag.locals.emergency_status = emergency_status
         end
@@ -133,7 +153,7 @@ module Tags
             :title => Faker::Lorem.sentence(1),
             :created_by => { :first_name => Faker::Name.first_name, :last_name =>  Faker::Name.last_name },
             :content => content,
-            :published_at => Random.rand(11).to_s+ "days ago"
+            :published_at => Random.rand(11).to_s+ " days ago"
           }
           tag.locals.event = event
           event
