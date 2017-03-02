@@ -184,6 +184,18 @@ module Tags
       tag.expand
     end
 
+    # Expands the content of the tag if the current (local) page is the current (global) site's
+    # default page.
+    tag 'page:if_site_default' do |tag|
+      tag.expand if tag.globals.context.data['page']['default_page']
+    end
+
+    # Expands the content of the tag if the current (local) page is NOT the current (global) site's
+    # default page.
+    tag 'page:unless_site_default' do |tag|
+      tag.expand unless tag.globals.context.data['page']['default_page']
+    end
+
     [:id, :name, :path, :slug, :meta_description, :title, :alternate_name, :depth, :created_at, :updated_at, :published_at].each do |attr|
       tag "page:#{attr.to_s}" do |tag|
         # tag.locals.page.send(attr)
