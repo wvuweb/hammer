@@ -23,7 +23,11 @@ module Tags
       # tag.locals.blog ||= load_blog(tag)
       # tag.expand
       if tag.globals.context.data && tag.globals.context.data['blog']
-        tag.locals.blog = tag.globals.context.data['blog']
+        if tag.attr['id'] && tag.globals.context.data['blog'].class == Array
+          @blog = tag.globals.context.data['blog'].select{|w,v| w['id'].to_s ==(tag.attr['id']) }
+        else
+          @blog = tag.globals.context.data['blog']
+        end
       end
       tag.expand
     end
@@ -93,11 +97,13 @@ module Tags
       # tag.locals.blog ||= load_blog(tag)
       # tag.locals.articles = filter_articles(tag, tag.locals.blog.children.published)
       # tag.expand
-
-      if tag.globals.context.data && tag.globals.context.data[:blog] && tag.globals.context.data[:blog][:articles]
-        tag.locals.articles = tag.globals.context.data[:blog][:articles]
+      # if tag.globals.context.data && tag.globals.context.data[:blog]
+      if @blog.class == Array
+        tag.locals.articles = @blog.first['articles']
+      else
+        tag.locals.articles = @blog['articles']
       end
-
+      # end
       tag.locals.articles = [] if tag.locals.articles.nil?
       tag.locals.attributes = tag.attr
       tag.expand
@@ -300,7 +306,6 @@ module Tags
         # end
         #
         # output.flatten.join('')
-
         if tag.locals.attributes['limit']
           limit = tag.locals.attributes['limit'].to_i - 1
           items = target[0..limit]
