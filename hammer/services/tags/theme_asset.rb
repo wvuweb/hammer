@@ -34,6 +34,13 @@ module Tags
       output
     end
 
+    tag 'stylesheet_content' do |tag|
+      css_name = tag.attr['name'].strip
+      css_name += '.css' unless css_name.ends_with?('.css')
+      pipe = ThemeAssetPipeline::Style.new(tag.globals.context.theme_root, css_name)
+      pipe.content
+    end
+
     tag 'stylesheet_url' do |tag|
       doc_root = tag.globals.context.server.config[:DocumentRoot]
 
