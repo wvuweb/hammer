@@ -24,9 +24,11 @@ module Tags
       # tag.expand
       if tag.globals.context.data && tag.globals.context.data['blog']
         if tag.attr['id'] && tag.globals.context.data['blog'].class == Array
-          @blog = tag.globals.context.data['blog'].select{|w,v| w['id'].to_s ==(tag.attr['id']) }
+      
+          @blog = tag.globals.context.data['blog'].select{|w,v| w['id'].to_s ==(tag.attr['id']) }.first
         else
-          @blog = tag.globals.context.data['blog']
+      
+          @blog = tag.globals.context.data['blog'].first
         end
       end
       tag.expand
@@ -98,11 +100,9 @@ module Tags
       # tag.locals.articles = filter_articles(tag, tag.locals.blog.children.published)
       # tag.expand
       # if tag.globals.context.data && tag.globals.context.data[:blog]
-      if @blog.class == Array
-        tag.locals.articles = @blog.first['articles']
-      else
-        tag.locals.articles = @blog['articles']
-      end
+  
+      tag.locals.articles = @blog[:articles]
+
       # end
       tag.locals.articles = [] if tag.locals.articles.nil?
       tag.locals.attributes = tag.attr
@@ -184,9 +184,9 @@ module Tags
         }
       )
       ActionView::Base.new.content_tag :ul, class: options[:ul_class] do
-
-        if tag.globals.context.data[:blog][:archive] && tag.globals.context.data[:blog][:archive][:monthly] && tag.globals.context.data[:blog][:archive][:monthly].count > 0
-          data = tag.globals.context.data[:blog][:archive][:monthly]
+    
+        if @blog[:archive] && @blog[:archive][:monthly] && @blog[:archive][:monthly].count > 0
+          data = @blog[:archive][:monthly]
         else
           date_to = Date.parse(Chronic.parse('today').strftime("%Y-%m-%d").to_s)
           date_from = Date.parse(Chronic.parse('4 months ago').strftime("%Y-%m-%d").to_s)
