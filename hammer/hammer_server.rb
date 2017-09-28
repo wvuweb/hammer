@@ -99,10 +99,12 @@ rescue
   puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".colorize(:red)
 end
 
-
-doc_root = options.directory
+if options.directory
+  doc_root = options.directory
+else
+  doc_root = "../cleanslate_themes"
+end
 if File.directory?(doc_root+"/code")
-
   code = Git.open(doc_root+"/code")
   begin
     code_ref = g.lib.send(:command, "rev-parse master")
@@ -126,7 +128,7 @@ if File.directory?(doc_root+"/code")
 
 else
   puts " "
-  puts "Code directory not found.  If you want to use the shared repository".colorize(:red)
+  puts "Code directory not found at #{doc_root}/code.  If you want to use the shared repository".colorize(:red)
   puts "please ".colorize(:red)+"git clone http://stash.development.wvu.edu/scm/cst/code.git".colorize(:light_green)
   puts "into your cleanslate_themes directory".colorize(:red)
   puts " "
