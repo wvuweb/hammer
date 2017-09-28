@@ -45,7 +45,6 @@ options = OpenStruct.new
 options.directory = (Pathname.new(Dir.pwd).parent.parent + "cleanslate_themes").to_s
 options.port = 2000
 options.daemon = WEBrick::SimpleServer
-options.virtualmachine = false
 
 OptionParser.new do |o|
   o.on('-d', '--directory directory', String, 'Directory to start hammer in') do |d|
@@ -62,10 +61,6 @@ OptionParser.new do |o|
 
   o.on('-da', '--daemon daemon', Integer, 'If the server should run Daemonized') do |da|
     options.daemon = da == 1 ?  WEBrick::Daemon : WEBrick::SimpleServer
-  end
-
-  o.on('-vm', '--virtualmachine virtualmachine', Integer, 'If the server is running as a VM') do |vm|
-    options.virtualmachine = vm
   end
 
   o.parse!(ARGV)
@@ -104,28 +99,21 @@ rescue
   puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".colorize(:red)
 end
 
-directory = options.directory
-doc_root = directory
 
-if options.virtualmachine == 1
-  doc_root = "/srv/cleanslate_themes"
-end
+doc_root = options.directory
+if File.directory?(doc_root+"/code")
 
-# Check for code directory
-code_dir = File.directory?(doc_root+'/code')
-
-if code_dir
-  code = Git.open(doc_root+'/code')
+  code = Git.open(doc_root+"/code")
   begin
-    code_ref = code.lib.send(:command, "rev-parse master")
-    code_remote = code.lib.send(:command, "rev-parse origin/master")
+    code_ref = g.lib.send(:command, "rev-parse master")
+    code_remote = g.lib.send(:command, "rev-parse origin/master")
 
     if code_ref.to_s != code_remote.to_s
       puts " "
       puts "WARNING:".colorize(:red)
       puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".colorize(:light_cyan)
-      puts "Your ".colorize(:red)+"Code Git Repository".colorize(:light_white)+" is out of date, please update it ".colorize(:red)
-      puts "by changing directory into ".colorize(:red)+doc_root+"/code".colorize(:light_green)
+      puts "Your ".colorize(:red)+"Code".colorize(:light_white)+" Repository is out of date, please update it ".colorize(:red)
+      puts "by changing directory into ".colorize(:red)+"'/cleanslate_themes/code'".colorize(:light_green)
       puts "then running ".colorize(:red)+"git pull".colorize(:light_green)
       puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".colorize(:light_cyan)
       puts " "
@@ -138,7 +126,7 @@ if code_dir
 
 else
   puts " "
-  puts "Code directory not found at #{doc_root}/code.  If you want to use the shared repository".colorize(:red)
+  puts "Code directory not found.  If you want to use the shared repository".colorize(:red)
   puts "please ".colorize(:red)+"git clone http://stash.development.wvu.edu/scm/cst/code.git".colorize(:light_green)
   puts "into your cleanslate_themes directory".colorize(:red)
   puts " "
@@ -154,12 +142,7 @@ puts "    ############################################".colorize(:yellow)
 puts "    #     HAMMER - Clean Slate Mock Server     #".colorize(:yellow)
 puts "    ############################################".colorize(:yellow)
 puts " "
-if options.virtualmachine == 1
-  puts "    Starting in #{directory}...     ".black.on_green
-else
-  puts "    Starting in #{doc_root}...     ".black.on_green
-end
-
+puts "    Starting in #{doc_root}...     ".black.on_green
 puts " "
 puts " "
 
