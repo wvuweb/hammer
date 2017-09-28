@@ -45,6 +45,7 @@ options = OpenStruct.new
 options.directory = (Pathname.new(Dir.pwd).parent.parent + "cleanslate_themes").to_s
 options.port = 2000
 options.daemon = WEBrick::SimpleServer
+options.virtualmachine = false
 
 OptionParser.new do |o|
   o.on('-d', '--directory directory', String, 'Directory to start hammer in') do |d|
@@ -63,8 +64,8 @@ OptionParser.new do |o|
     options.daemon = da == 1 ?  WEBrick::Daemon : WEBrick::SimpleServer
   end
 
-  o.on('-x', '--virtualmachine virtualmachine', TrueClass, 'If the server is running as a VM') do |vm|
-    options.virtualmachine = x
+  o.on('-vm', '--virtualmachine virtualmachine', Integer, 'If the server is running as a VM') do |vm|
+    options.virtualmachine = vm
   end
 
   o.parse!(ARGV)
@@ -110,13 +111,21 @@ else
 end
 
 # Check for code directory
-if options.vm
-  code_dir = File.directory?('srv/cleanslate_themes/code')
-  code = Git.open("srv/cleanslate_themes/code")
+if options.virtualmachine == 1
+  code_dir = File.directory?('/srv/cleanslate_themes/code')
+  begin
+    code = Git.open("/srv/cleanslate_themes/code")
+  rescue
+    puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".colorize(:red)
+    puts "!!!".colorize(:red)+" ARE YOU SURE YOU ARE IN A VIRTUAL MACHINE? ".colorize(:light_cyan)+" !!!".colorize(:red)
+    puts "!!!".colorize(:red)+" Code repo not found in /srv/cleanslate/code".colorize(:light_cyan)+" !!!".colorize(:red)
+    puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".colorize(:red)
+  end
 else
   code_dir = File.directory?(doc_root+"/code")
   code = Git.open(doc_root+"/code")
 end
+
 
 if code_dir
   begin
