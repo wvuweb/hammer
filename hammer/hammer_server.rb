@@ -112,8 +112,8 @@ if File.directory?(doc_root+"/code")
       puts " "
       puts "WARNING:".colorize(:red)
       puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".colorize(:light_cyan)
-      puts "Your ".colorize(:red)+"Code".colorize(:light_white)+" Repository is out of date, please update it ".colorize(:red)
-      puts "by changing directory into ".colorize(:red)+"'/cleanslate_themes/code'".colorize(:light_green)
+      puts "Your ".colorize(:red)+"Code Git Repository".colorize(:light_white)+" is out of date, please update it ".colorize(:red)
+      puts "by changing directory into ".colorize(:red)+doc_root+"/code".colorize(:light_green)
       puts "then running ".colorize(:red)+"git pull".colorize(:light_green)
       puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".colorize(:light_cyan)
       puts " "
