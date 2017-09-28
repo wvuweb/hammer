@@ -63,6 +63,10 @@ OptionParser.new do |o|
     options.daemon = da == 1 ?  WEBrick::Daemon : WEBrick::SimpleServer
   end
 
+  o.on('-vm', '--virtualmachine virtualmachine', TrueClass, 'If the server is running as a VM') do |vm|
+    options.virtualmachine = vm
+  end
+
   o.parse!(ARGV)
 end
 
@@ -104,11 +108,20 @@ if options.directory
 else
   doc_root = "../cleanslate_themes"
 end
-if File.directory?(doc_root+"/code")
+
+# Check for code directory
+if options.vm
+  code_dir = File.directory?('srv/cleanslate_themes/code')
+  code = Git.open("srv/cleanslate_themes/code")
+else
+  code_dir = File.directory?(doc_root+"/code")
   code = Git.open(doc_root+"/code")
+end
+
+if code_dir
   begin
-    code_ref = g.lib.send(:command, "rev-parse master")
-    code_remote = g.lib.send(:command, "rev-parse origin/master")
+    code_ref = code.lib.send(:command, "rev-parse master")
+    code_remote = code.lib.send(:command, "rev-parse origin/master")
 
     if code_ref.to_s != code_remote.to_s
       puts " "
