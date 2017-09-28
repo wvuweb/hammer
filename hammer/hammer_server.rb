@@ -63,8 +63,8 @@ OptionParser.new do |o|
     options.daemon = da == 1 ?  WEBrick::Daemon : WEBrick::SimpleServer
   end
 
-  o.on('-vm', '--virtualmachine virtualmachine', TrueClass, 'If the server is running as a VM') do |vm|
-    options.virtualmachine = vm
+  o.on('-x', '--virtualmachine virtualmachine', TrueClass, 'If the server is running as a VM') do |vm|
+    options.virtualmachine = x
   end
 
   o.parse!(ARGV)
