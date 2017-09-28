@@ -104,30 +104,18 @@ rescue
   puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".colorize(:red)
 end
 
-if options.directory
-  doc_root = options.directory
-else
-  doc_root = "../cleanslate_themes"
+directory = options.directory
+doc_root = directory
+
+if options.virtualmachine == 1
+  doc_root = "/srv/cleanslate_themes"
 end
 
 # Check for code directory
-if options.virtualmachine == 1
-  code_dir = File.directory?('/srv/cleanslate_themes/code')
-  begin
-    code = Git.open("/srv/cleanslate_themes/code")
-  rescue
-    puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".colorize(:red)
-    puts "!!!".colorize(:red)+" ARE YOU SURE YOU ARE IN A VIRTUAL MACHINE? ".colorize(:light_cyan)+" !!!".colorize(:red)
-    puts "!!!".colorize(:red)+" Code repo not found in /srv/cleanslate/code".colorize(:light_cyan)+" !!!".colorize(:red)
-    puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".colorize(:red)
-  end
-else
-  code_dir = File.directory?(doc_root+"/code")
-  code = Git.open(doc_root+"/code")
-end
-
+code_dir = File.directory?(doc_root+'/code')
 
 if code_dir
+  code = Git.open(doc_root+'/code')
   begin
     code_ref = code.lib.send(:command, "rev-parse master")
     code_remote = code.lib.send(:command, "rev-parse origin/master")
@@ -166,7 +154,12 @@ puts "    ############################################".colorize(:yellow)
 puts "    #     HAMMER - Clean Slate Mock Server     #".colorize(:yellow)
 puts "    ############################################".colorize(:yellow)
 puts " "
-puts "    Starting in #{doc_root}...     ".black.on_green
+if options.virtualmachine == 1
+  puts "    Starting in #{directory}...     ".black.on_green
+else
+  puts "    Starting in #{doc_root}...     ".black.on_green
+end
+
 puts " "
 puts " "
 
