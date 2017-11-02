@@ -78,9 +78,9 @@ begin
   hammer_ref = `#{hammer_ref_cmd}`
   hammer_remote = `#{hammer_remote_cmd}`
 
-  puts "Hammer is on branch: ".colorize(:light_white)+"#{hammer_branch}".colorize(:light_magenta).delete!("\n")
-  puts "Hammer Local #{hammer_branch} branch ref is at: ".colorize(:light_white)+"#{hammer_ref}".colorize(:light_magenta).delete!("\n")
-  puts "Hammer Remote #{hammer_branch} branch ref is at: ".colorize(:light_white)+"#{hammer_remote}".colorize(:light_magenta).delete!("\n")
+  puts "Hammer is on branch: ".colorize(:light_white)+"#{hammer_branch}".colorize(:light_blue).delete!("\n")
+  puts "Hammer Local #{hammer_branch} branch ref is at: ".colorize(:light_white)+"#{hammer_ref}".colorize(:light_blue).delete!("\n")
+  puts "Hammer Remote #{hammer_branch} branch ref is at: ".colorize(:light_white)+"#{hammer_remote}".colorize(:light_blue).delete!("\n")
 
   # branch = g.lib.send(:command, "symbolic-ref --short HEAD")
   # ref = g.lib.send(:command, "rev-parse #{branch}")
@@ -126,8 +126,8 @@ if File.directory?(doc_root+"/code")
     code_ref = `#{code_ref_cmd}`
     code_remote = `#{code_remote_cmd}`
 
-    puts "Code Local repo ref is at: ".colorize(:light_white)+"#{code_ref}".colorize(:light_magenta).delete!("\n")
-    puts "Code Remote repo ref is at: ".colorize(:light_white)+"#{code_remote}".colorize(:light_magenta).delete!("\n")
+    puts "Code Local repo ref is at: ".colorize(:light_white)+"#{code_ref}".colorize(:light_blue).delete!("\n")
+    puts "Code Remote repo ref is at: ".colorize(:light_white)+"#{code_remote}".colorize(:light_blue).delete!("\n")
 
     #code_ref = g.lib.send(:command, "rev-parse master")
     #code_remote = g.lib.send(:command, "rev-parse origin/master")
