@@ -113,7 +113,8 @@ if File.directory?(doc_root+"/code")
     code_ref = `#{code_ref_cmd}`
     code_remote = `#{code_remote_cmd}`
 
-    puts "#{code_ref} == #{code_remote}"
+    puts "Code Local ref is at: #{code_ref}"
+    puts "Code Remote ref is at: #{code_remote}"
 
     #code_ref = g.lib.send(:command, "rev-parse master")
     #code_remote = g.lib.send(:command, "rev-parse origin/master")
