@@ -98,11 +98,6 @@ begin
     puts "!!!".colorize(:red)+" WARNING YOU ARE BEHIND ON HAMMER VERSIONS".colorize(:light_cyan)+" !!!".colorize(:red)
     puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".colorize(:red)
     puts " "
-    puts "Repository is currently at ref: ".colorize(:light_white)+(ref.to_s+" ").colorize(:light_magenta)
-    puts "Remote is currently at ref: ".colorize(:light_white)+(remote.to_s+" ").colorize(:light_magenta)
-    # puts "Learn how to update Hammer at: ".colorize(:light_white)+update_url.colorize(:light_cyan)
-    puts " "
-    puts " "
     puts "Update Hammer by using using the following command: ".colorize(:light_white)
     puts " "
     puts "vagrant hammer update".colorize(:light_green)
@@ -112,7 +107,6 @@ begin
     puts " "
   end
 rescue => e
-  binding.pry
   puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".colorize(:red)
   puts "!!!".colorize(:red)+" COULD NOT CHECK HAMMER REPOSITORY FOR UPDATES".colorize(:light_cyan)+" !!!".colorize(:red)
   puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".colorize(:red)
