@@ -101,12 +101,16 @@ module Tags
       # tag.expand
       # if tag.globals.context.data && tag.globals.context.data[:blog]
 
-      tag.locals.articles = @blog[:articles]
+      begin
+        tag.locals.articles = @blog[:articles]
+        # end
+        tag.locals.articles = [] if tag.locals.articles.nil?
+        tag.locals.attributes = tag.attr
+        tag.expand
+      rescue
+        Hammer.error 'Blog Articles should be part of an array.'
+      end
 
-      # end
-      tag.locals.articles = [] if tag.locals.articles.nil?
-      tag.locals.attributes = tag.attr
-      tag.expand
     end
 
     tag 'articles:each' do |tag|
