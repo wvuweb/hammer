@@ -103,10 +103,20 @@ end
 doc_root = options.directory
 if File.directory?(doc_root+"/code")
 
-  code = Git.open(doc_root+"/code")
+  # code = Git.open(doc_root+"/code")
+
+  code_ref_cmd = " ssh-agent bash -c 'ssh-add ./config/hammer; cd #{doc_root+'/code'} && git rev-parse master'"
+  code_remote_cmd = "ssh-agent bash -c 'ssh-add ./config/hammer; cd #{doc_root+'/code'} && git rev-parse origin/master'"
+
   begin
-    code_ref = g.lib.send(:command, "rev-parse master")
-    code_remote = g.lib.send(:command, "rev-parse origin/master")
+
+    code_ref = `#{code_ref_cmd}`
+    code_remote = `#{code_remote_cmd}`
+
+    puts "#{code_ref} == #{code_remote}"
+
+    #code_ref = g.lib.send(:command, "rev-parse master")
+    #code_remote = g.lib.send(:command, "rev-parse origin/master")
 
     if code_ref.to_s != code_remote.to_s
       puts " "
