@@ -127,7 +127,7 @@ if File.directory?(doc_root+"/code")
 else
   puts " "
   puts "Code directory not found.  If you want to use the shared repository".colorize(:red)
-  puts "please ".colorize(:red)+"git clone http://stash.development.wvu.edu/scm/cst/code.git".colorize(:light_green)
+  puts "please ".colorize(:red)+"git clone https://bitbucket.org/wvudigital/code.git".colorize(:light_green)
   puts "into your cleanslate_themes directory".colorize(:red)
   puts " "
 end
