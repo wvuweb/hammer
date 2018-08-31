@@ -104,7 +104,7 @@ class ThemeRenderer
       begin
         self.config = YAML.load(match[1])
       rescue => e
-        raise 'Parsing template YAML config failed.'
+        raise 'Parsing template YAML config failed. Are you sure your YAML is valid?'
       end
     end
     self.config ||= {}
