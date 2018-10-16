@@ -117,7 +117,9 @@ doc_root = options.directory
 if File.directory?(doc_root+"/code")
 
   # code = Git.open(doc_root+"/code")
-
+  
+  # Add identity files for bitbucket
+  File.chmod(0600,"./config/hammer")
   code_ref_cmd = " ssh-agent bash -c 'ssh-add ./config/hammer; cd #{doc_root+'/code'} && git rev-parse master'"
   code_remote_cmd = "ssh-agent bash -c 'ssh-add ./config/hammer; cd #{doc_root+'/code'} && git ls-remote'"
 
