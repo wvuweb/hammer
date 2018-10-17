@@ -108,6 +108,14 @@ module Tags
       tag.expand
     end
 
+    tag 'published_at' do |tag|
+      if tag.globals.context.data && tag.globals.context.data['page']['published_at']
+        tag.globals.context.data['page']['published_at']
+      else
+        Random.rand(11).to_s+ "days ago"
+      end
+    end
+
     tag 'if_page_depth_eq' do |tag|
       allowed_options = %w(page_depth)
       options = tag.attr.select { |k,v| allowed_options.include?(k) }
@@ -270,7 +278,6 @@ module Tags
       else
         Hammer.error "Set key <em>page</em> in mock_data file"
       end
-      #binding.pry#"fix page:first_non_blank_attr tag"
     end
 
     tag 'page:content' do |tag|
@@ -310,7 +317,6 @@ module Tags
       # tag.locals.page_template = tag.locals.page.template
       # tag.expand
       if tag.globals.context.data && tag.globals.context.data["page"]
-        # binding.pry
         if tag.globals.context.data["page"]["template"]
           tag.locals.page_template = tag.globals.context.data["page"]["template"]
         end

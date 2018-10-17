@@ -108,7 +108,6 @@ module Tags
       # options['mode'] = tag.globals.mode
       #
       # %w(no_self no_root text_only reverse).each do |i|
-      #   binding.pry
       #   options[i] = options[i].to_b
       # end
       if tag.globals.context.data && tag.globals.context.data[:breadcrumbs]

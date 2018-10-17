@@ -33,7 +33,6 @@ module ThemeAssetPipeline
           @file_paths << file_path
         end
       end
-      binding.pry
     end
 
     def find_file(paths)
