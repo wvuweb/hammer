@@ -108,14 +108,6 @@ module Tags
       tag.expand
     end
 
-    tag 'published_at' do |tag|
-      if tag.globals.context.data && tag.globals.context.data['page']['published_at']
-        tag.globals.context.data['page']['published_at']
-      else
-        Random.rand(11).to_s+ "days ago"
-      end
-    end
-
     tag 'if_page_depth_eq' do |tag|
       allowed_options = %w(page_depth)
       options = tag.attr.select { |k,v| allowed_options.include?(k) }
@@ -204,7 +196,7 @@ module Tags
       tag.expand unless tag.globals.context.data['page']['default_page']
     end
 
-    [:id, :name, :path, :slug, :meta_description, :title, :alternate_name, :depth, :created_at, :updated_at, :published_at].each do |attr|
+    [:id, :name, :path, :slug, :meta_description, :title, :alternate_name, :depth].each do |attr|
       tag "page:#{attr.to_s}" do |tag|
         # tag.locals.page.send(attr)
         #{"}fix page:#{attr.to_s} tag"
@@ -212,6 +204,18 @@ module Tags
           tag.globals.context.data['page'][attr.to_s]
         else
           Hammer.error "Page Attribute missing page:#{attr}"
+        end
+      end
+    end
+
+    [:created_at, :updated_at, :published_at].each do |attr|
+      tag "page:#{attr.to_s}" do |tag|
+        # tag.locals.page.send(attr)
+        #{"}fix page:#{attr.to_s} tag"
+        if tag.globals.context.data && tag.globals.context.data['page'] && tag.globals.context.data['page'][attr.to_s]
+          tag.globals.context.data['page'][attr.to_s]
+        else
+          Random.rand(11).to_s+ " days ago"
         end
       end
     end

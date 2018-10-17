@@ -269,7 +269,7 @@ module Tags
             :title => Faker::Lorem.sentence(1),
             :created_by => { :first_name => Faker::Name.first_name, :last_name =>  Faker::Name.last_name },
             :content => content,
-            :published_at => Random.rand(11).to_s+ "days ago"
+            :published_at => Random.rand(11).to_s+ " days ago"
           }
           tag.locals.article = article
           article
