@@ -166,12 +166,20 @@ module Tags
 
       if tag.globals.context.data && tag.globals.context.data['pages']
         data = tag.globals.context.data['pages'].find { |h| h['id'] == tag.attr['id'].to_i }
+
+        puts "Processing tag get_page with page id #{data["id"]}".colorize(:light_blue)
+
         oldcontext = tag.globals.context.data['page']
+
         if data
           newcontext = data
           tag.expand(newcontext,oldcontext)
         else
-          Hammer.error "key <em>pages:id</em> of #{tag.attr['id']} not found in mock_data file"
+          if tag.attr['id'].nil
+            Hammer.error "get_page tag attribute of id is nil"
+          else
+            Hammer.error "key <em>pages:id</em> of: #{tag.attr['id']} was not found in mock_data file"
+          end
         end
       else
         Hammer.error "Set key <em>pages</em> in mock_data file"
