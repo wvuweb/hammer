@@ -166,12 +166,20 @@ module Tags
 
       if tag.globals.context.data && tag.globals.context.data['pages']
         data = tag.globals.context.data['pages'].find { |h| h['id'] == tag.attr['id'].to_i }
+
+        puts "Processing tag get_page with page id #{data["id"]}".colorize(:light_blue)
+
         oldcontext = tag.globals.context.data['page']
+
         if data
           newcontext = data
           tag.expand(newcontext,oldcontext)
         else
-          Hammer.error "key <em>pages:id</em> of #{tag.attr['id']} not found in mock_data file"
+          if tag.attr['id'].nil
+            Hammer.error "get_page tag attribute of id is nil"
+          else
+            Hammer.error "key <em>pages:id</em> of: #{tag.attr['id']} was not found in mock_data file"
+          end
         end
       else
         Hammer.error "Set key <em>pages</em> in mock_data file"
@@ -196,7 +204,7 @@ module Tags
       tag.expand unless tag.globals.context.data['page']['default_page']
     end
 
-    [:id, :name, :path, :slug, :meta_description, :title, :alternate_name, :depth, :created_at, :updated_at, :published_at].each do |attr|
+    [:id, :name, :path, :slug, :meta_description, :title, :alternate_name, :depth].each do |attr|
       tag "page:#{attr.to_s}" do |tag|
         # tag.locals.page.send(attr)
         #{"}fix page:#{attr.to_s} tag"
@@ -204,6 +212,18 @@ module Tags
           tag.globals.context.data['page'][attr.to_s]
         else
           Hammer.error "Page Attribute missing page:#{attr}"
+        end
+      end
+    end
+
+    [:created_at, :updated_at, :published_at].each do |attr|
+      tag "page:#{attr.to_s}" do |tag|
+        # tag.locals.page.send(attr)
+        #{"}fix page:#{attr.to_s} tag"
+        if tag.globals.context.data && tag.globals.context.data['page'] && tag.globals.context.data['page'][attr.to_s]
+          tag.globals.context.data['page'][attr.to_s]
+        else
+          Random.rand(11).to_s+ " days ago"
         end
       end
     end
@@ -270,7 +290,6 @@ module Tags
       else
         Hammer.error "Set key <em>page</em> in mock_data file"
       end
-      #binding.pry#"fix page:first_non_blank_attr tag"
     end
 
     tag 'page:content' do |tag|
@@ -310,7 +329,6 @@ module Tags
       # tag.locals.page_template = tag.locals.page.template
       # tag.expand
       if tag.globals.context.data && tag.globals.context.data["page"]
-        # binding.pry
         if tag.globals.context.data["page"]["template"]
           tag.locals.page_template = tag.globals.context.data["page"]["template"]
         end

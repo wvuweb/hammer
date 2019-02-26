@@ -108,7 +108,6 @@ module Tags
       # options['mode'] = tag.globals.mode
       #
       # %w(no_self no_root text_only reverse).each do |i|
-      #   binding.pry
       #   options[i] = options[i].to_b
       # end
       if tag.globals.context.data && tag.globals.context.data[:breadcrumbs]
@@ -456,11 +455,13 @@ module Tags
 
       # cache [tag.cache_key, tag.globals.site, tag.globals.page], expires_in: cache_term_minutes.minutes do
         begin
-          url = url = URI.parse(url)
-          request = req = Net::HTTP::Get.new(url.to_s)
-          response = Net::HTTP.start(url.host, url.port) {|http|
-            http.request(req)
-          }
+          uri = URI.parse(url)
+          response = Net::HTTP.start(uri.host, uri.port,
+            :use_ssl => uri.scheme == 'https') do |http|
+            request = Net::HTTP::Get.new uri
+            http.request request # Net::HTTPResponse object
+          end
+
         #rescue raise(RuntimeTagError, "ERROR: Could not load the XML URL: #{url}")
         rescue => e
           return Hammer.error "Could not load the XML URL: #{url} due to #{e}"

@@ -136,19 +136,20 @@ files:                                          # files contains all the data fo
   - ...
 
 blog:                                           # blog contains all the data for the <r:blog:{method} /> tags
-  name: String                                  # <r:blog:name />             -- accepts a string
+  - id: Integer
+    name: String                                # <r:blog:name />             -- accepts a string
                                                 # blog articles much like pages are a repeating group of content for each article
-  articles:                                     # each article is seperated by a dash  
-    - article:                                  # <r:blog:articles /> loops can access the following data in a <r:each />
-      name: String                              # <r:article:name />          -- accepts a string
-      title: String                             # <r:article:title />         -- accepts a string
-      created_by:                               # <r:article:author_full_name />  -- accepts two other objects  
-        first_name: String                      # <r:article:author_first_name /> -- accepts a string
-        last_name: String                       # <r:article:author_last_name />  -- acccpts a string
-      content: String                           # <r:article:content />       -- accepts a string or | pipe character followed by HTML
-      published_at: 2 days ago                  # <r:article:published_at />  -- accepts a date string
-    - article:
-      ...
-    - article:
-      ...
+    articles:                                   # each article is seperated by a dash  
+      - article:                                # <r:blog:articles /> loops can access the following data in a <r:each />
+        name: String                            # <r:article:name />          -- accepts a string
+        title: String                           # <r:article:title />         -- accepts a string
+        created_by:                             # <r:article:author_full_name />  -- accepts two other objects  
+          first_name: String                    # <r:article:author_first_name /> -- accepts a string
+          last_name: String                     # <r:article:author_last_name />  -- acccpts a string
+        content: String                         # <r:article:content />       -- accepts a string or | pipe character followed by HTML
+        published_at: 2 days ago                # <r:article:published_at />  -- accepts a date string
+      - article:
+        ...
+      - article:
+        ...
 ```

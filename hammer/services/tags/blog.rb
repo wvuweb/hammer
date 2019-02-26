@@ -23,7 +23,13 @@ module Tags
       # tag.locals.blog ||= load_blog(tag)
       # tag.expand
       if tag.globals.context.data && tag.globals.context.data['blog']
-        tag.locals.blog = tag.globals.context.data['blog']
+        if tag.attr['id'] && tag.globals.context.data['blog'].class == Array
+
+          @blog = tag.globals.context.data['blog'].select{|w,v| w['id'].to_s ==(tag.attr['id']) }.first
+        else
+
+          @blog = tag.globals.context.data['blog'].first
+        end
       end
       tag.expand
     end
@@ -93,14 +99,18 @@ module Tags
       # tag.locals.blog ||= load_blog(tag)
       # tag.locals.articles = filter_articles(tag, tag.locals.blog.children.published)
       # tag.expand
+      # if tag.globals.context.data && tag.globals.context.data[:blog]
 
-      if tag.globals.context.data && tag.globals.context.data[:blog] && tag.globals.context.data[:blog][:articles]
-        tag.locals.articles = tag.globals.context.data[:blog][:articles]
+      begin
+        tag.locals.articles = @blog[:articles]
+        # end
+        tag.locals.articles = [] if tag.locals.articles.nil?
+        tag.locals.attributes = tag.attr
+        tag.expand
+      rescue
+        Hammer.error 'Blog Articles should be part of an array.'
       end
 
-      tag.locals.articles = [] if tag.locals.articles.nil?
-      tag.locals.attributes = tag.attr
-      tag.expand
     end
 
     tag 'articles:each' do |tag|
@@ -179,8 +189,8 @@ module Tags
       )
       ActionView::Base.new.content_tag :ul, class: options[:ul_class] do
 
-        if tag.globals.context.data[:blog][:archive] && tag.globals.context.data[:blog][:archive][:monthly] && tag.globals.context.data[:blog][:archive][:monthly].count > 0
-          data = tag.globals.context.data[:blog][:archive][:monthly]
+        if @blog[:archive] && @blog[:archive][:monthly] && @blog[:archive][:monthly].count > 0
+          data = @blog[:archive][:monthly]
         else
           date_to = Date.parse(Chronic.parse('today').strftime("%Y-%m-%d").to_s)
           date_from = Date.parse(Chronic.parse('4 months ago').strftime("%Y-%m-%d").to_s)
@@ -246,10 +256,8 @@ module Tags
       end
 
       def load_article(tag)
-        # page = tag.globals.page
-        #page.type == 'ArticlePage' ? decorated_page(page) : nil
-        if tag.globals.context.data && tag.globals.context.data['blog'] && tag.globals.context.data['blog']['articles']
-          tag.globals.context.data['blog']['articles'].first
+        if tag.globals.context.data && tag.globals.context.data['blog'] && tag.globals.context.data['blog'].first['articles']
+          tag.globals.context.data['blog'].first['articles'].sample
         else
           content = <<-CONTENT
             <p>#{Faker::Lorem.paragraph(2)}</p>
@@ -261,7 +269,7 @@ module Tags
             :title => Faker::Lorem.sentence(1),
             :created_by => { :first_name => Faker::Name.first_name, :last_name =>  Faker::Name.last_name },
             :content => content,
-            :published_at => Random.rand(11).to_s+ "days ago"
+            :published_at => Random.rand(11).to_s+ " days ago"
           }
           tag.locals.article = article
           article
@@ -300,7 +308,6 @@ module Tags
         # end
         #
         # output.flatten.join('')
-
         if tag.locals.attributes['limit']
           limit = tag.locals.attributes['limit'].to_i - 1
           items = target[0..limit]
