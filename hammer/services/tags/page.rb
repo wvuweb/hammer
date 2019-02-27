@@ -188,7 +188,8 @@ module Tags
     end
 
     tag 'page' do |tag|
-      tag.locals.page ||= decorated_page(tag.globals.page)
+      # tag.locals.page ||= decorated_page(tag.globals.page)
+      tag.locals.page ||= tag.globals.context.data['page']
       tag.expand
     end
 
