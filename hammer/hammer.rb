@@ -68,7 +68,8 @@ module Hammer
   end
 
   def self.error(message)
-    "<strong>Hammer Error: </strong> #{message}"
+    puts "Hammer Error: #{message.gsub!(/(<[^>]*>)|\n|\t/s) {""}}".colorize(:red)
+    return "<strong>Hammer Error: </strong> #{message}"
   end
 
 end
