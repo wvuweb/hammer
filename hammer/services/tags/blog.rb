@@ -24,15 +24,7 @@ module Tags
     }
 
     tag 'blog' do |tag|
-      # tag.locals.blog ||= load_blog(tag)
-      # tag.expand
-      if tag.globals.context.data && tag.globals.context.data['blog']
-        if tag.attr['id'] && tag.globals.context.data['blog'].class == Array
-          @blog = tag.globals.context.data['blog'].select{|w,v| w['id'].to_s ==(tag.attr['id']) }.first
-        else
-          @blog = tag.globals.context.data['blog'].first
-        end
-      end
+      tag.locals.blog ||= load_blog(tag)
       tag.expand
     end
 
@@ -58,20 +50,8 @@ module Tags
     end
 
     tag 'article:content' do |tag|
-
       # tag.render 'page:content', tag.attr
-      # tag.locals.article['content']
-      # rname = tag.attr['name'].strip
-      #
-      # if tag.locals.article[:content] && tag.locals.article[:content][rname]
-      #   tag.locals.article[:content][rname]
-      # else
-      #   Hammer.error 'Set key <em>blog:articles:article:content</em> in mock_data file'
-      # end
-
       tag.locals.article[:content]
-
-
     end
 
     # TODO: Use a different taggable attribute, such as 'tags', instead of 'labels'.
@@ -106,18 +86,6 @@ module Tags
       # tag.locals.blog ||= load_blog(tag)
       # tag.locals.articles = filter_articles(tag, tag.locals.blog.children.published)
       # tag.expand
-      # if tag.globals.context.data && tag.globals.context.data[:blog]
-
-      # begin
-      #   tag.locals.articles = @blog[:articles]
-      #   # end
-      #   tag.locals.articles = [] if tag.locals.articles.nil?
-      #   tag.locals.attributes = tag.attr
-      #   tag.expand
-      # rescue
-      #   Hammer.error 'Blog Articles should be part of an array.'
-      # end
-      # tag.locals.articles
 
       page_id =  tag.globals.context.data['page']['id']
       articles = tag.globals.context.data['blog'].select{|w,v| w['id'] == page_id  }
@@ -206,8 +174,10 @@ module Tags
       )
       ActionView::Base.new.content_tag :ul, class: options[:ul_class] do
 
-        if @blog[:archive] && @blog[:archive][:monthly] && @blog[:archive][:monthly].count > 0
-          data = @blog[:archive][:monthly]
+        tag.locals.blog ||= load_blog(tag)
+
+        if tag.locals.blog[:archive] && tag.locals.blog[:archive][:monthly] && tag.locals.blog[:archive][:monthly].count > 0
+          data = tag.locals.blog[:archive][:monthly]
         else
           date_to = Date.parse(Chronic.parse('today').strftime("%Y-%m-%d").to_s)
           date_from = Date.parse(Chronic.parse('4 months ago').strftime("%Y-%m-%d").to_s)
@@ -257,19 +227,30 @@ module Tags
       end
 
       def load_blog(tag)
-        page = if tag.attr['id'].present?
-          tag.globals.site.pages.find(tag.attr['id']) rescue nil
+        # page = if tag.attr['id'].present?
+        #   tag.globals.site.pages.find(tag.attr['id']) rescue nil
+        # else
+        #   tag.locals.page
+        # end
+        #
+        # if page.type == 'ArticlePage'
+        #   page = page.parent
+        # elsif page.type != 'BlogPage'
+        #   page = nil
+        # end
+        #
+        # decorated_page(page)
+
+        if tag.globals.context.data && tag.globals.context.data['blog'].kind_of?(Array)
+          if tag.attr['id']
+            tag.locals.blog = tag.globals.context.data['blog'].select{|w,v| w['id'].to_s ==(tag.attr['id']) }.first
+          else
+            tag.locals.blog = tag.globals.context.data['blog'].first
+          end
         else
-          tag.locals.page
+          Hammer.error 'No Blog Found in Mock Data File'
         end
 
-        if page.type == 'ArticlePage'
-          page = page.parent
-        elsif page.type != 'BlogPage'
-          page = nil
-        end
-
-        decorated_page(page)
       end
 
       def load_article(tag)
@@ -352,7 +333,7 @@ module Tags
       end
 
       def url_for_page(tag, key)
-        # url = tag.globals.page.request_path
+        # z = tag.globals.page.request_path
         # data = tag.locals.article_pagination
         # return nil if data.empty?
         # new_val = data[key.to_sym]
