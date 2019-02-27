@@ -209,10 +209,15 @@ module Tags
       tag "page:#{attr.to_s}" do |tag|
         # tag.locals.page.send(attr)
         #{"}fix page:#{attr.to_s} tag"
-        if tag.globals.context.data && tag.globals.context.data['page'] && tag.globals.context.data['page'][attr.to_s]
-          tag.globals.context.data['page'][attr.to_s]
+        # if tag.globals.context.data && tag.globals.context.data['page'] && tag.globals.context.data['page'][attr.to_s]
+        #   tag.globals.context.data['page'][attr.to_s]
+        # else
+        #   Hammer.error "Page Attribute missing page:#{attr}"
+        # end
+        if tag.locals.page[attr.to_s]
+          tag.locals.page[attr.to_s]
         else
-          Hammer.error "Page Attribute missing page:#{attr}"
+          Hammer.error "Attribute missing page:#{attr}"
         end
       end
     end
