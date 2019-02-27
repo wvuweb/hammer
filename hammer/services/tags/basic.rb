@@ -349,6 +349,7 @@ module Tags
     #
     #  In the example above, the second <p> tag would be returned.
     tag 'select_html' do |tag|
+
       css_selector = tag.attr['css_selector']
       limit = tag.attr['limit']
       content = tag.expand
@@ -372,6 +373,8 @@ module Tags
     #
     # Example: <r:select_html_attr css_selector="a" attr="href"><a href="http://google.com">Google</a></r:select_html_attr>
     tag 'select_html_attr' do |tag|
+
+
       css_selector = tag.attr['css_selector']
       attribute = tag.attr['attr']
       content = tag.expand

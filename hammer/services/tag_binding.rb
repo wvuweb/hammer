@@ -2,6 +2,7 @@ require 'dentaku'
 
 module Radius
   class TagBinding
+
     CALCULATOR = Dentaku::Calculator.new
 
     # Evaluates the current tag and returns the rendered contents.

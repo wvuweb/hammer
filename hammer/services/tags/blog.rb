@@ -5,6 +5,10 @@ module Tags
   # Blog Tag Module
   class Blog < TagContainer
 
+    def initialize
+      @blog = nil
+    end
+
     include ActionView::Helpers::TagHelper
     include ActionView::Context
 
@@ -24,10 +28,8 @@ module Tags
       # tag.expand
       if tag.globals.context.data && tag.globals.context.data['blog']
         if tag.attr['id'] && tag.globals.context.data['blog'].class == Array
-
           @blog = tag.globals.context.data['blog'].select{|w,v| w['id'].to_s ==(tag.attr['id']) }.first
         else
-
           @blog = tag.globals.context.data['blog'].first
         end
       end
@@ -56,15 +58,20 @@ module Tags
     end
 
     tag 'article:content' do |tag|
+
       # tag.render 'page:content', tag.attr
       # tag.locals.article['content']
-      rname = tag.attr['name'].strip
+      # rname = tag.attr['name'].strip
+      #
+      # if tag.locals.article[:content] && tag.locals.article[:content][rname]
+      #   tag.locals.article[:content][rname]
+      # else
+      #   Hammer.error 'Set key <em>blog:articles:article:content</em> in mock_data file'
+      # end
 
-      if tag.locals.article[:content] && tag.locals.article[:content][rname]
-        tag.locals.article[:content][rname]
-      else
-        Hammer.error 'Set key <em>blog:articles:article:content</em> in mock_data file'
-      end
+      tag.locals.article[:content]
+
+
     end
 
     # TODO: Use a different taggable attribute, such as 'tags', instead of 'labels'.
@@ -101,15 +108,25 @@ module Tags
       # tag.expand
       # if tag.globals.context.data && tag.globals.context.data[:blog]
 
-      begin
-        tag.locals.articles = @blog[:articles]
-        # end
-        tag.locals.articles = [] if tag.locals.articles.nil?
-        tag.locals.attributes = tag.attr
-        tag.expand
-      rescue
-        Hammer.error 'Blog Articles should be part of an array.'
+      # begin
+      #   tag.locals.articles = @blog[:articles]
+      #   # end
+      #   tag.locals.articles = [] if tag.locals.articles.nil?
+      #   tag.locals.attributes = tag.attr
+      #   tag.expand
+      # rescue
+      #   Hammer.error 'Blog Articles should be part of an array.'
+      # end
+      # tag.locals.articles
+
+      page_id =  tag.globals.context.data['page']['id']
+      articles = tag.globals.context.data['blog'].select{|w,v| w['id'] == page_id  }
+      if articles.count > 0
+        tag.locals.articles = articles.first['articles']
+      else
+        tag.locals.articles =  []
       end
+      tag.expand
 
     end
 
@@ -308,9 +325,14 @@ module Tags
         # end
         #
         # output.flatten.join('')
-        if tag.locals.attributes['limit']
-          limit = tag.locals.attributes['limit'].to_i - 1
-          items = target[0..limit]
+
+        if tag.locals.attributes
+          if tag.locals.attributes['limit']
+            limit = tag.locals.attributes['limit'].to_i - 1
+            items = target[0..limit]
+          else
+            items = target
+          end
         else
           items = target
         end
@@ -324,6 +346,7 @@ module Tags
         end
 
         output.flatten.join('')
+
       end
 
       def url_for_page(tag, key)
