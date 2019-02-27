@@ -304,12 +304,14 @@ module Tags
       end
 
       def count_items(tag, target)
+
         # filter_articles(tag, target).total_count
-        if tag.globals.context.data && tag.globals.context.data['blog'] && tag.globals.context.data['blog']['articles']
-          tag.globals.context.data['blog']['articles'].count
+        if tag.globals.context.data['blog'].kind_of?(Array)
+          tag.globals.context.data['blog'].first['articles'].count
         else
           5
         end
+
       end
 
       def loop_over(tag, target)
