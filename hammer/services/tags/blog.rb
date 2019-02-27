@@ -309,9 +309,9 @@ module Tags
         #
         # output.flatten.join('')
 
-        if tag.locals.attributes
-          if tag.locals.attributes['limit']
-            limit = tag.locals.attributes['limit'].to_i - 1
+        if tag.attributes
+          if tag.attributes['limit']
+            limit = tag.attributes['limit'].to_i - 1
             items = target[0..limit]
           else
             items = target

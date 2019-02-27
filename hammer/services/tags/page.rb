@@ -293,14 +293,21 @@ module Tags
     end
 
     tag 'page:content' do |tag|
+      # rname = tag.attr['name'].strip
+      # if tag.globals.context.data
+      #   if tag.globals.context.data["page"] && tag.globals.context.data["page"]["content"] && tag.globals.context.data["page"]["content"][rname]
+      #     tag.globals.context.data["page"]["content"][rname]
+      #   else
+      #     Hammer.error "Set key <em>page:content:#{rname}</em> in mock_data file"
+      #   end
+      # end
       rname = tag.attr['name'].strip
-      if tag.globals.context.data
-        if tag.globals.context.data["page"] && tag.globals.context.data["page"]["content"] && tag.globals.context.data["page"]["content"][rname]
-          tag.globals.context.data["page"]["content"][rname]
-        else
-          Hammer.error "Set key <em>page:content:#{rname}</em> in mock_data file"
-        end
+      if tag.locals.page[:content][rname]
+        tag.locals.page[:content][rname]
+      else
+        Hammer.error "Set key <em>page:content:#{rname}</em> in mock_data file"
       end
+
     end
 
     # Expands tag if current page editable region has content
@@ -365,21 +372,30 @@ module Tags
       end
 
       tag "#{method.to_s}:each" do |tag|
-        #loop_over tag, tag.locals.send(method)
-        if tag.globals.context.data && tag.globals.context.data["pages"]
-          mock_pages = tag.globals.context.data["pages"]
-          mock_pages.unshift(tag.globals.context.data["page"]) #include original page object
-          oldcontext = tag.globals.context.data["page"]
-          output = ""
-          mock_pages.each do |page|
-            tag.globals.context.data["page"] = page #set the current context
-            output = output + tag.expand
-          end
-          tag.globals.context.data["page"] = oldcontext
-          output
+        if tag.locals.context.data['pages']
+          loop_over tag, tag.locals.context.data['pages']
         else
-         Hammer.error "#{method.to_s}:each needs the 'pages' key in mock_data.yml"
+          Hammer.error "#{method.to_s}:each tag needs the 'pages' key in mock_data.yml"
         end
+
+        #loop_over tag, tag.locals.send(method)
+        # if tag.globals.context.data && tag.globals.context.data["pages"]
+        #   mock_pages = tag.globals.context.data["pages"]
+        #   mock_pages.unshift(tag.globals.context.data["page"]) #include original page object
+        #   oldcontext = tag.globals.context.data["page"]
+        #   output = ""
+        #   mock_pages.each do |page|
+        #     tag.globals.context.data["page"] = page #set the current context
+        #     output = output + tag.expand
+        #   end
+        #   tag.globals.context.data["page"] = oldcontext
+        #   output
+        # else
+        #  Hammer.error "#{method.to_s}:each needs the 'pages' key in mock_data.yml"
+        # end
+
+
+
       end
     end
 
@@ -429,15 +445,33 @@ module Tags
     end
 
     def self.loop_over(tag, target)
-      items = find_with_options(tag, target)
-      output = []
-
-      items.each_with_index do |item, index|
-        tag.locals.child = decorated_page item
-        tag.locals.page = decorated_page item
-        output << tag.expand
+      # items = find_with_options(tag, target)
+      # output = []
+      #
+      # items.each_with_index do |item, index|
+      #   tag.locals.child = decorated_page item
+      #   tag.locals.page = decorated_page item
+      #   output << tag.expand
+      # end
+      #
+      # output.flatten.join('')``
+      if tag.attributes
+        if tag.attributes['limit']
+          limit = tag.attributes['limit'].to_i - 1
+          items = target[0..limit]
+        else
+          items = target
+        end
+      else
+        items = target
       end
 
+      output = []
+      items.each_with_index do |item, index|
+        tag.locals.page = item
+        tag.locals.article = item
+        output << tag.expand
+      end
       output.flatten.join('')
     end
 
