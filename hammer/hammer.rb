@@ -67,9 +67,44 @@ module Hammer
     WEBrick::HTTPUtils::mime_type(@filesystem_path.to_s, mime_file)
   end
 
-  def self.error(message)
-    puts "Hammer Error: #{message.gsub!(/(<[^>]*>)|\n|\t/s) {""}}".colorize(:red)
-    return "<strong>Hammer Error: </strong> #{message}"
+  def self.error(message, options={})
+    options = {
+      comment: false,
+      message: "",
+      warning: false
+    }.merge(options)
+
+    type = options[:warning] ? "Warning" : "Error"
+
+    error_background_color = options[:warning] ? "#9BD3DD" : "red"
+    error_text_color = options[:warning] ? "black" : "white"
+    span_style = "color: #000; border: 1px dashed #{error_background_color}; background-color: #fff; border-radius: 3px; font-family: monospace; padding: 0 3px 0 0;"
+    error_style= "color: #{error_text_color}; background-color: #{error_background_color}; border-radius: 3px 0 0 3px; padding: 0 3px; font-family: monospace;"
+
+    console_error =  "Hammer #{type}: #{message.gsub(/(<[^>]*>)|\n|\t/s) {""}}"
+    puts console_error.colorize(:red)
+
+    error = "<strong style='#{error_style}'>Hammer #{type}:</strong> #{message}"
+    if options[:comment]
+      "<!-- #{console_error} #{options[:message]} -->"
+    else
+      "<span style='#{span_style}'>#{error} #{options[:message]}</span>"
+    end
+  end
+
+  def self.key_missing(key,options={})
+    options = {
+      parent_key: nil,
+      comment: false,
+      message: ""
+    }.merge(options)
+
+    style = "background-color: #eee; border-radius: 3px; font-family: monospace; padding: 0 3px;"
+    if options[:parent_key]
+      error("Missing key <code style='#{style}'>#{key}:</code> under <code style='#{style}'>#{options[:parent_key]}:</code> in mock_data.yml", options)
+    else
+      error("Missing key <code style='#{style}'>#{key}:</code> in mock_data.yml", options)
+    end
   end
 
 end

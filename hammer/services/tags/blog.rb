@@ -34,19 +34,35 @@ module Tags
     end
 
     tag 'article:id' do |tag|
-      tag.locals.article['id']
+      if tag.locals.article['id']
+        tag.locals.article['id']
+      else
+        Hammer.key_missing "id", {parent_key: "article"}
+      end
     end
 
     tag 'article:name' do |tag|
-      tag.locals.article['name']
+      if tag.locals.article['name']
+        tag.locals.article['name']
+      else
+        Hammer.key_missing "name", {parent_key: "article"}
+      end
     end
 
     tag 'article:title' do |tag|
-      tag.locals.article['title']
+      if tag.locals.article['title']
+        tag.locals.article['title']
+      else
+        Hammer.key_missing "title", {parent_key: "article"}
+      end
     end
 
     tag 'article:path' do |tag|
-      tag.render 'page:url', tag.attr
+      if tag.locals.article['url']
+        tag.locals.article['url']
+      else
+        tag.render 'page:url', tag.attr
+      end
     end
 
     tag 'article:content' do |tag|
@@ -54,48 +70,66 @@ module Tags
       tag.locals.article[:content]
     end
 
-    # TODO: Use a different taggable attribute, such as 'tags', instead of 'labels'.
-    #       I think labels should be used for admin purposes and 'tags' should be used
-    #       for the public.
     tag 'article:tags' do |tag|
       # tag.locals.article.label_list.join(',')
       if tag.locals.article['tags'].kind_of?(Array)
         tag.locals.article['tags'].join(',')
       elsif
-        Hammer.error 'Article tags should be an array see Hammer Mock Data Wiki'
+        Hammer.error 'Article tags should be an array'
       end
     end
 
     tag 'article:published_at' do |tag|
-      tag.locals.article[:published_at]
+      if tag.locals.article[:published_at]
+        tag.locals.article[:published_at]
+      else
+        "#{(0..10).to_a.sample} days ago"
+      end
     end
 
     tag 'article:author_first_name' do |tag|
-      tag.locals.article[:created_by][:first_name]
+      if tag.locals.article[:created_by][:first_name]
+        tag.locals.article[:created_by][:first_name]
+      else
+        Hammer.key_missing "first_name", {parent_key: "article"}
+      end
     end
 
     tag 'article:author_last_name' do |tag|
-      tag.locals.article[:created_by][:last_name]
+      if tag.locals.article[:created_by][:last_name]
+        tag.locals.article[:created_by][:last_name]
+      else
+        Hammer.key_missing "last_name", {parent_key: "article"}
+      end
     end
 
     tag 'article:author_full_name' do |tag|
-      tag.locals.article[:created_by][:first_name] + ' ' + tag.locals.article[:created_by][:last_name]
+      if tag.locals.article[:created_by]
+        if tag.locals.article[:created_by][:first_name] || tag.locals.article[:created_by][:last_name]
+          [tag.locals.article[:created_by][:first_name], tag.locals.article[:created_by][:last_name]].join(" ")
+        else
+          content = []
+          content << (Hammer.key_missing "first_name or last_name", {parent_key: "article:created_by", comment: true, warning: true})
+          content << [Faker::Name.first_name, Faker::Name.last_name].join(" ")
+          content.join("")
+        end
+      else
+        content = []
+        content << (Hammer.key_missing "created_by", {parent_key: "article", comment: true})
+        content << [Faker::Name.first_name, Faker::Name.last_name].join(" ")
+        content.join("")
+      end
     end
 
     tag 'articles' do |tag|
-      # tag.locals.blog ||= load_blog(tag)
-      # tag.locals.articles = filter_articles(tag, tag.locals.blog.children.published)
-      # tag.expand
 
-      page_id =  tag.globals.context.data['page']['id']
-      articles = tag.globals.context.data['blog'].select{|w,v| w['id'] == page_id  }
-      if articles.count > 0
-        tag.locals.articles = articles.first['articles']
+      tag.locals.blog ||= load_blog(tag)
+      if tag.locals.blog['articles']
+        tag.locals.articles = tag.locals.blog['articles']
+        tag.expand
       else
-        tag.locals.articles =  []
+        Hammer.key_missing "articles", {parent_key: "blog"}
       end
-      tag.expand
-
     end
 
     tag 'articles:each' do |tag|
@@ -116,7 +150,7 @@ module Tags
     tag 'articles:if_no_articles' do |tag|
       # cnt = tag.locals.articles.try(:all).try(:count)
       # tag.expand if cnt.nil? or cnt == 0
-      if tag.locals.articles.count.nil? or tag.locals.articles.count == 0
+      if tag.locals.articles.count.nil? || tag.locals.articles.count == 0
         tag.expand
       end
     end
@@ -227,51 +261,55 @@ module Tags
       end
 
       def load_blog(tag)
-        # page = if tag.attr['id'].present?
-        #   tag.globals.site.pages.find(tag.attr['id']) rescue nil
-        # else
-        #   tag.locals.page
-        # end
-        #
-        # if page.type == 'ArticlePage'
-        #   page = page.parent
-        # elsif page.type != 'BlogPage'
-        #   page = nil
-        # end
-        #
-        # decorated_page(page)
 
-        if tag.globals.context.data && tag.globals.context.data['blog'].kind_of?(Array)
-          if tag.attr['id']
-            tag.locals.blog = tag.globals.context.data['blog'].select{|w,v| w['id'].to_s ==(tag.attr['id']) }.first
-          else
-            tag.locals.blog = tag.globals.context.data['blog'].first
-          end
+        tag.locals.errors = []
+        if tag.globals.context.data['page']
+          tag.locals.page = tag.globals.context.data['page']
         else
-          Hammer.error 'No Blog Found in Mock Data File'
+          tag.locals.errors << (Hammer.key_missing "page")
         end
 
+        blogs = tag.globals.context.data['blogs'] || tag.globals.context.data['blog']
+
+        if tag.globals.context.data['blog']
+          tag.locals.errors << (Hammer.error "Depreciation Notice: <code>blog:</code> key to be renamed <code>blogs:</code> in future release", {comment: true, warning: true})
+        end
+        if blogs
+          if blogs.kind_of?(Array)
+            if blogs.select{|w| w['id'].to_s == (tag.locals.page['id'].to_s) }.first
+              tag.locals.blog = blogs.select{|w| w['id'].to_s == (tag.locals.page['id'].to_s) }.first
+            else
+              tag.locals.errors << (Hammer.error "Could not find blog with id: #{tag.locals.page['id']} in mock_data.yml")
+            end
+          else
+            tag.locals.errors << (Hammer.error "Depreciation Notice: in future release <code>blogs:</code> should be an Array in mock_data.yml", {comment: true, warning: true})
+            tag.locals.blog = tag.globals.context.data['blog']
+          end
+        else
+          tag.locals.errors << (Hammer.key_missing "blogs")
+        end
       end
 
       def load_article(tag)
-        if tag.globals.context.data && tag.globals.context.data['blog'] && tag.globals.context.data['blog'].first['articles']
-          tag.globals.context.data['blog'].first['articles'].sample
-        else
-          content = <<-CONTENT
-            <p>#{Faker::Lorem.paragraph(2)}</p>
-            <p>#{Faker::Lorem.paragraph(5)}</p>
-            <p>#{Faker::Lorem.paragraph(3)}</p>
-          CONTENT
-          article = {
-            :name => Faker::Lorem.sentence(1),
-            :title => Faker::Lorem.sentence(1),
-            :created_by => { :first_name => Faker::Name.first_name, :last_name =>  Faker::Name.last_name },
-            :content => content,
-            :published_at => Random.rand(11).to_s+ " days ago"
-          }
-          tag.locals.article = article
-          article
-        end
+        # if tag.globals.context.data && tag.globals.context.data['blog'] && tag.globals.context.data['blog'].first['articles']
+        #   tag.globals.context.data['blog'].first['articles'].sample
+        # else
+        #   content = <<-CONTENT
+        #     <p>#{Faker::Lorem.paragraph(2)}</p>
+        #     <p>#{Faker::Lorem.paragraph(5)}</p>
+        #     <p>#{Faker::Lorem.paragraph(3)}</p>
+        #   CONTENT
+        #   article = {
+        #     :name => Faker::Lorem.sentence(1),
+        #     :title => Faker::Lorem.sentence(1),
+        #     :created_by => { :first_name => Faker::Name.first_name, :last_name =>  Faker::Name.last_name },
+        #     :content => content,
+        #     :published_at => Random.rand(11).to_s+ " days ago"
+        #   }
+        #   tag.locals.article = article
+        #   article
+        # end
+        tag.locals.blog['articles'].sample
       end
 
       def decorated_page(page)

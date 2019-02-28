@@ -42,7 +42,7 @@ module Tags
         if tag.globals.context.data && tag.globals.context.data['site'] && tag.globals.context.data['site'][attr.to_s]
           tag.globals.context.data['site'][attr.to_s]
         else
-          Hammer.error "Missing key <em>#{attr}</em> under <em>site:</em>"
+          Hammer.key_missing attr, {parent_key: "site"}
         end
       end
     end
@@ -56,7 +56,7 @@ module Tags
       if tag.globals.context.data && tag.globals.context.data['site'] && tag.globals.context.data['site']['data'] && tag.globals.context.data['site']['data'][attr]
         tag.globals.context.data['site']['data'][attr]
       else
-        Hammer.error "Missing key <em>#{attr}</em> under <em>site:data</em>"
+        Hammer.key_missing attr, {parent_key: "site:data"}
       end
     end
 
