@@ -129,12 +129,27 @@ module Tags
     end
 
     tag 'articles' do |tag|
-      if tag.locals.blog['articles']
-        tag.locals.articles = tag.locals.blog['articles']
-        tag.expand
+      # blog = load_blog(tag)
+      # binding.pry
+      # tag.locals.blog ||= blog[:blog]
+      # errors = blog[:errors]
+      #
+      # content = []
+      # errors.each do |error|
+      #   content << error
+      # end
+      content = []
+      unless tag.locals.blog.nil?
+        if tag.locals.blog['articles']
+          tag.locals.articles = tag.locals.blog['articles']
+          content << tag.expand
+        else
+          content << (Hammer.key_missing "articles", {parent_key: "blog"})
+        end
       else
-        Hammer.key_missing "articles", {parent_key: "blog"}
+        content << (Hammer.error "tag.locals.blog missing")
       end
+      content.join("")
     end
 
     tag 'articles:each' do |tag|
