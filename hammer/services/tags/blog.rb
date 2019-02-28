@@ -24,8 +24,15 @@ module Tags
     }
 
     tag 'blog' do |tag|
-      tag.locals.blog ||= load_blog(tag)
-      tag.expand
+      blog = load_blog(tag)
+      tag.locals.blog ||= blog[:blog]
+      errors = blog[:errors]
+      content = []
+      errors.each do |error|
+        content << error
+      end
+      content << tag.expand
+      content.join("")
     end
 
     tag 'article' do |tag|
@@ -261,54 +268,37 @@ module Tags
       end
 
       def load_blog(tag)
-
-        tag.locals.errors = []
+        blog_object = {}
+        blog_object[:errors] = []
         if tag.globals.context.data['page']
           tag.locals.page = tag.globals.context.data['page']
         else
-          tag.locals.errors << (Hammer.key_missing "page")
+          blog_object[:errors] << (Hammer.key_missing "page")
         end
 
         blogs = tag.globals.context.data['blogs'] || tag.globals.context.data['blog']
 
         if tag.globals.context.data['blog']
-          tag.locals.errors << (Hammer.error "Depreciation Notice: <code>blog:</code> key to be renamed <code>blogs:</code> in future release", {comment: true, warning: true})
+          blog_object[:errors] << (Hammer.error "Depreciation Notice: <code>blog:</code> key to be renamed <code>blogs:</code> in future release", {comment: true, warning: true})
         end
         if blogs
           if blogs.kind_of?(Array)
             if blogs.select{|w| w['id'].to_s == (tag.locals.page['id'].to_s) }.first
-              tag.locals.blog = blogs.select{|w| w['id'].to_s == (tag.locals.page['id'].to_s) }.first
+              blog_object[:blog] = blogs.select{|w| w['id'].to_s == (tag.locals.page['id'].to_s) }.first
             else
-              tag.locals.errors << (Hammer.error "Could not find blog with id: #{tag.locals.page['id']} in mock_data.yml")
+              blog_object[:errors] << (Hammer.error "Could not find blog with id: #{tag.locals.page['id'].to_s} in mock_data.yml")
             end
           else
-            tag.locals.errors << (Hammer.error "Depreciation Notice: in future release <code>blogs:</code> should be an Array in mock_data.yml", {comment: true, warning: true})
-            tag.locals.blog = tag.globals.context.data['blog']
+            blog_object[:errors] << (Hammer.error "Depreciation Notice: in future release <code>blogs:</code> should be an Array in mock_data.yml", {comment: true, warning: true})
+            blog_object[:blog] = tag.globals.context.data['blog']
           end
         else
-          tag.locals.errors << (Hammer.key_missing "blogs")
+          blog_object[:errors] << (Hammer.key_missing "blogs")
         end
+        blog_object
       end
 
       def load_article(tag)
-        # if tag.globals.context.data && tag.globals.context.data['blog'] && tag.globals.context.data['blog'].first['articles']
-        #   tag.globals.context.data['blog'].first['articles'].sample
-        # else
-        #   content = <<-CONTENT
-        #     <p>#{Faker::Lorem.paragraph(2)}</p>
-        #     <p>#{Faker::Lorem.paragraph(5)}</p>
-        #     <p>#{Faker::Lorem.paragraph(3)}</p>
-        #   CONTENT
-        #   article = {
-        #     :name => Faker::Lorem.sentence(1),
-        #     :title => Faker::Lorem.sentence(1),
-        #     :created_by => { :first_name => Faker::Name.first_name, :last_name =>  Faker::Name.last_name },
-        #     :content => content,
-        #     :published_at => Random.rand(11).to_s+ " days ago"
-        #   }
-        #   tag.locals.article = article
-        #   article
-        # end
         tag.locals.blog['articles'].sample
       end
 
@@ -334,19 +324,6 @@ module Tags
       end
 
       def loop_over(tag, target)
-        # items = filter_articles(tag, target).all
-        #
-        # output = []
-        #
-        # items.each_with_index do |item, index|
-        #   page = decorated_page item
-        #   tag.locals.page = page
-        #   tag.locals.article = page
-        #   output << tag.expand
-        # end
-        #
-        # output.flatten.join('')
-
         if tag.attributes
           if tag.attributes['limit']
             limit = tag.attributes['limit'].to_i - 1
@@ -371,26 +348,6 @@ module Tags
       end
 
       def url_for_page(tag, key)
-        # z = tag.globals.page.request_path
-        # data = tag.locals.article_pagination
-        # return nil if data.empty?
-        # new_val = data[key.to_sym]
-        #
-        # seo_regex = /\/#{data[:param]}\/(\d+)/
-        # qstring_regex = /&?#{data[:param]}=(\d+)/
-        #
-        # replace = lambda { |m| m.gsub($1, new_val.to_s) }
-        #
-        # # Replace the page number for both /page/1 and ?page=1 param styles.
-        # url = url.gsub(seo_regex, &replace)
-        # url = url.gsub(qstring_regex, &replace)
-        #
-        # # Add the page data to the URL, if it's not already there.
-        # unless url =~ seo_regex
-        #   url = url.gsub(/^([^\?]+)(?:\?(.*))?$/, "\\1/#{data[:param]}/#{new_val.to_s}?\\2")
-        # end
-        #
-        # new_val.present? ? url : '#'
         '#'
       end
 
