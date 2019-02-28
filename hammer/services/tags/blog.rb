@@ -146,8 +146,6 @@ module Tags
         else
           content << (Hammer.key_missing "articles", {parent_key: "blog"})
         end
-      else
-        content << (Hammer.error "tag.locals.blog missing")
       end
       content.join("")
     end
