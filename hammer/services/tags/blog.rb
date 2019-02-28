@@ -129,8 +129,6 @@ module Tags
     end
 
     tag 'articles' do |tag|
-
-      tag.locals.blog ||= load_blog(tag)
       if tag.locals.blog['articles']
         tag.locals.articles = tag.locals.blog['articles']
         tag.expand
@@ -214,8 +212,6 @@ module Tags
         }
       )
       ActionView::Base.new.content_tag :ul, class: options[:ul_class] do
-
-        tag.locals.blog ||= load_blog(tag)
 
         if tag.locals.blog[:archive] && tag.locals.blog[:archive][:monthly] && tag.locals.blog[:archive][:monthly].count > 0
           data = tag.locals.blog[:archive][:monthly]
