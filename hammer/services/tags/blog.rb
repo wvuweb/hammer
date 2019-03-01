@@ -36,8 +36,18 @@ module Tags
     end
 
     tag 'article' do |tag|
+      blog = load_blog(tag)
+      tag.locals.blog ||= blog[:blog]
       tag.locals.article ||= load_article(tag)
-      tag.expand
+
+      errors = blog[:errors]
+      content = []
+      errors.each do |error|
+        content << error
+      end
+      content << tag.expand
+      content.join("")
+
     end
 
     tag 'article:id' do |tag|
@@ -129,15 +139,6 @@ module Tags
     end
 
     tag 'articles' do |tag|
-      # blog = load_blog(tag)
-      # binding.pry
-      # tag.locals.blog ||= blog[:blog]
-      # errors = blog[:errors]
-      #
-      # content = []
-      # errors.each do |error|
-      #   content << error
-      # end
       content = []
       unless tag.locals.blog.nil?
         if tag.locals.blog['articles']
