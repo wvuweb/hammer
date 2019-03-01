@@ -123,8 +123,10 @@ module Tags
     end
 
     tag 'page:if_site_default' do |tag|
-      if tag.locals.page['default_page']
-        tag.expand
+      unless tag.locals.page['default_page'].nil?
+        if tag.locals.page['default_page'] == true
+          tag.expand
+        end
       else
         Hammer.key_missing "default_page", {parent_key: "page"}
       end
@@ -133,9 +135,12 @@ module Tags
     # Expands the content of the tag if the current (local) page is NOT the current (global) site's
     # default page.
     tag 'page:unless_site_default' do |tag|
-      unless tag.locals.page['default_page']
-        tag.expand
+      unless tag.locals.page['default_page'].nil?
+        if tag.locals.page['default_page'] == false
+          tag.expand
+        end
       else
+        binding.pry
         Hammer.key_missing "default_page", {parent_key: "page"}
       end
     end
@@ -143,7 +148,7 @@ module Tags
     [:id, :name, :path, :slug, :meta_description, :title, :alternate_name, :depth].each do |attr|
       tag "page:#{attr.to_s}" do |tag|
         # tag.locals.page.send(attr)
-        if tag.locals.page[attr.to_s]
+        if defined? tag.locals.page[attr.to_s]
           tag.locals.page[attr.to_s]
         else
           Hammer.key_missing attr, {parent_key: "page"}
