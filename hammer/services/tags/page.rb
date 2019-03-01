@@ -140,7 +140,6 @@ module Tags
           tag.expand
         end
       else
-        binding.pry
         Hammer.key_missing "default_page", {parent_key: "page"}
       end
     end
