@@ -93,7 +93,7 @@ module Hammer
 
     console_error =  "Hammer #{type}: #{message.gsub(/(<[^>]*>)|\n|\t/s) {""}}"
 
-    # puts console_error.colorize(:red)
+    puts console_error.colorize(:red)
 
     error = "<strong style='#{error_style}'>Hammer #{type}:</strong> #{message}"
     if options[:comment]
