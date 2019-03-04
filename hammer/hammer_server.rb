@@ -92,7 +92,7 @@ begin
   # remote = g.lib.send(:command, "rev-parse origin/#{branch}")
 
   if hammer_ref != hammer_remote
-    update_url = "https://github.com/wvuweb/hammer/wiki/Update"
+    # update_url = "https://github.com/wvuweb/hammer/wiki/Update"
     puts " "
     puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".colorize(:red)
     puts "!!!".colorize(:red)+" WARNING YOU ARE BEHIND ON HAMMER VERSIONS".colorize(:light_cyan)+" !!!".colorize(:red)
@@ -106,7 +106,7 @@ begin
     puts " "
     puts " "
   end
-rescue => e
+rescue
   puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".colorize(:red)
   puts "!!!".colorize(:red)+" COULD NOT CHECK HAMMER REPOSITORY FOR UPDATES".colorize(:light_cyan)+" !!!".colorize(:red)
   puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".colorize(:red)
@@ -176,11 +176,19 @@ puts "    Starting in #{doc_root}...     ".black.on_green
 puts " "
 puts " "
 
+log_file = File.open '/var/log/webrick/error.log', 'a+'
+log = WEBrick::Log.new log_file
+
+access_file = File.open '/var/log/webrick/error.log', 'a+'
+access_log = WEBrick::Log.new access_file
+
 httpd = WEBrick::HTTPServer.new(
   :Port => options.port,
   :DocumentRoot => doc_root,
   :ServerType => options.daemon,
-  :DirectoryIndex => []
+  :DirectoryIndex => [],
+  :Logger => log,
+  :AccessLog => access_log
 )
 
 httpd.mount("/", HammerServlet, doc_root, true)
