@@ -136,8 +136,8 @@ module WEBrick
 
 
       def format_directory(html)
-        template = Tilt::ERBTemplate.new('views/directory.erb')
-        layout = Tilt::ERBTemplate.new('views/layout/default.erb')
+        template = Tilt::ERBTemplate.new(File.expand_path File.dirname(__FILE__)+'/views/directory.erb')
+        layout = Tilt::ERBTemplate.new(File.expand_path File.dirname(__FILE__)+'/views/layout/default.erb')
         context = Object.new
         layout.render(context, html: html) { template.render(context, html: html) }
       end

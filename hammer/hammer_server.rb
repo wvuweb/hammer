@@ -176,11 +176,16 @@ puts "    Starting in #{doc_root}...     ".black.on_green
 puts " "
 puts " "
 
-log_file = File.open '/var/log/webrick/error.log', 'a+'
-log = WEBrick::Log.new log_file
+log = nil
+access_log = nil
 
-access_file = File.open '/var/log/webrick/error.log', 'a+'
-access_log = WEBrick::Log.new access_file
+if options.daemon == 1
+  log_file = File.open '/var/log/webrick/error.log', 'a+'
+  log = WEBrick::Log.new log_file
+
+  access_file = File.open '/var/log/webrick/error.log', 'a+'
+  access_log = WEBrick::Log.new access_file
+end
 
 httpd = WEBrick::HTTPServer.new(
   :Port => options.port,
