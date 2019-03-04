@@ -269,7 +269,7 @@ module Tags
         if tag.locals.page['content']
           if tag.locals.page['content'][rname]
             content = tag.locals.page['content'][rname]
-            tag.expand if always || !content.nil?
+            tag.expand if always || !content.empty?
           else
             Hammer.key_missing rname, {parent_key: 'page:content'}
           end
