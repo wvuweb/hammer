@@ -10,7 +10,7 @@ require "../hammer/services/theme_context.rb"
 class ThemeRenderer
 
   attr_accessor :config, :server, :request, :document_root, :filesystem_path, :request_root, :theme_root, :output
-  attr_accessor :content, :layout_file_path, :data
+  attr_accessor :content, :layout_file_path, :data, :data_errors
 
   def initialize(options)
     @server = options[:server]
@@ -20,7 +20,8 @@ class ThemeRenderer
     @request_path = options[:request_path]
     @content_type = options[:content_type]
     @theme_root = theme_root
-    @data = load_data
+    @data = load_data[:yml]
+    @data_errors = load_data[:errors]
     @content = file_contents
     @output = ''
   end
@@ -118,16 +119,12 @@ class ThemeRenderer
     radius_parser.context.globals.layout = false
 
     if has_layout?
-
       radius_parser.context.globals.yield = parsed_content
       radius_parser.context.globals.layout = true
-
       radius_parser.context.globals.layout_file_path = layout_file_path
-
       layout_content
 
       output = radius_parser.parse(self.layout_content)
-
       @htmldoc = Nokogiri::HTML::Document.parse(output)
       meta = Nokogiri::XML::Node.new "meta", @htmldoc
       meta['http-equiv'] = "Content-Type"
@@ -135,22 +132,31 @@ class ThemeRenderer
       @htmldoc.at('head').add_child(meta)
       output = @htmldoc.to_html
 
-      if self.data && self.data['livereload']
+      # if self.data && self.data['livereload']
+      #   @htmldoc = Nokogiri::HTML::Document.parse(output)
+      #   script = Nokogiri::XML::Node.new "script", @htmldoc
+      #   script['src'] = "http://localhost:35729/livereload.js"
+      #   script['defer'] = "defer"
+      #   @htmldoc.at('head').add_child(script)
+      #   output = @htmldoc.to_html
+      # end
+      #
+      # if self.data && self.data['browsersync']
+      #   @htmldoc = Nokogiri::HTML::Document.parse(output)
+      #   script = Nokogiri::XML::Node.new "script", @htmldoc
+      #
+      #   script.content = self.data['browsersync-data']
+      #
+      #   @htmldoc.at('body').add_child(script)
+      #   output = @htmldoc.to_html
+      # end
+
+      if self.data_errors
         @htmldoc = Nokogiri::HTML::Document.parse(output)
-        script = Nokogiri::XML::Node.new "script", @htmldoc
-        script['src'] = "http://localhost:35729/livereload.js"
-        script['defer'] = "defer"
-        @htmldoc.at('head').add_child(script)
-        output = @htmldoc.to_html
-      end
-
-      if self.data && self.data['browsersync']
-        @htmldoc = Nokogiri::HTML::Document.parse(output)
-        script = Nokogiri::XML::Node.new "script", @htmldoc
-
-        script.content = self.data['browsersync-data']
-
-        @htmldoc.at('body').add_child(script)
+        self.data_errors.each do |error|
+          # @htmldoc.before(@htmldoc.at('body').first).add_child(error)
+          @htmldoc.at('body').children.first.before(error)
+        end
         output = @htmldoc.to_html
       end
 

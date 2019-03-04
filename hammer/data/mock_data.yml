@@ -1,0 +1,223 @@
+shared_themes:
+  "Code":
+    "layouts/masthead--v1": "code"
+    "layouts/footer__contact--v1": "code"
+    "layouts/footer__credits--v2": "code"
+    "layouts/footer__icons--v2": "code"
+    "layouts/browser-update-org--v2": "code"
+  "Some Other Theme":
+    "some/other/path/template": "theme-folder-name"
+    "another/path/template": "theme-folder-name"
+
+show_editable_regions: false  #If true a div with `border: 1px dashed red` will be injected into the content of the region
+
+editable_region:
+  main: This is content for the main editable region. Change what it says in the mock_data.yml file.
+  sidebar: Sidebar stuff.
+  contact: |
+    <p><strong>Division of Virginia West Advancement</strong></p>
+    <p>1111 WVU Road Suite 250 | P.O. Box 6202 | Morgantown, WV 26506-6202</p>
+    <p><strong>Phone:</strong> 304.293.5600 | <strong>Fax:</strong> 304.293.8279 | <strong>Email:</strong> <a href="mailto:firstname.lastname@mail.wvu.edu">firstname.lastname@mail.wvu.edu</a></p>
+
+site:
+  id: 26
+  name: "This is my site name"
+  domain: "domain.wvu.edu"
+  data:
+    anykey: "This can be any value"
+    anotherkey: "Another Value"
+
+root: true
+
+page:
+  id: 1 # This number must match the ID of the current blog you want to display
+  name: "Test Page 1"
+  slug: "test-page-1"
+  meta_description: "Hello World"
+  title: "This is the best Test page ever!"
+  alternate_name: "Some other name"
+  depth: 1
+  updated_at: today
+  created_at: two weeks ago
+  published_at: now
+  default_page: true
+  data:
+    some_key: some_data_value
+    another_key: some_other_value
+  content:
+    shared_content: |
+      <p><%= Faker::Lorem.paragraph(2) %></p>
+      <p><%= Faker::Lorem.paragraph(2) %></p>
+    shared_content_2: |
+      <p><%= Faker::Lorem.paragraph(2) %></p>
+      <p><%= Faker::Lorem.paragraph(2) %></p>
+  javascript: |
+
+pages:
+  - id: 2
+    name: "Study of Birds"
+    slug: "study-of-birds"
+    url: "#study-of-birds"
+    meta_description: "<%= Faker::Lorem.paragraph(5) %>"
+    title: "Study of Birds"
+    alternate_name: "Ornithology"
+    depth: 1
+  - id: 3
+    name: "Study of Fish"
+    slug: "study-of-fish"
+    url: "#study-of-fish"
+    meta_description: "<%= Faker::Lorem.paragraph(5) %>"
+    title: "Study of Fish"
+    alternate_name: "Ichthyology"
+    depth: 1
+
+if_page_depth_eq: 1
+if_page_depth_gt: 1
+
+site_menu: |
+  <ul>
+    <li class="active"><a href="#">Hello</a></li>
+    <li><a href="#">World</a></li>
+    <li><a href="#"><%= Faker::Lorem.word.capitalize %></a></li>
+    <li><a href="#"><%= Faker::Lorem.word.capitalize %></a></li>
+    <li><a href="#"><%= Faker::Lorem.word.capitalize %></a></li>
+  </ul>
+
+sub_menu: |
+  <ul>
+    <li class="active"><a href="#"><%= Faker::Lorem.word.capitalize %></a></li>
+    <li><a href="#"><%= Faker::Lorem.word.capitalize %></a></li>
+    <li><a href="#"><%= Faker::Lorem.word.capitalize %></a></li>
+    <li><a href="#"><%= Faker::Lorem.word.capitalize %></a></li>
+    <li><a href="#"><%= Faker::Lorem.word.capitalize %></a></li>
+  </ul>
+
+ancestor_menu: |
+  <% pages = %w(Page1 Page2 Page3 Page4 Page5) %>
+  <ul>
+    <% pages.each do |page| %>
+      <li><a href="#"><%= page %></a></li>
+    <% end %>
+  </ul>
+
+breadcrumbs: |
+  <ul class="wvu-breadcrumbs__crumbs">
+    <li><a href="#">Home</a></li>
+    <li class="active">Page</li>
+  </ul>
+
+blog:
+  - id: 1 # This number must match the ID from the `page` key to display the content below.
+    name: Blog Name
+    articles:
+      - article:
+        id: "11"
+        name: "This is my most recent blog post and hopefully long enough to span two lines."
+        title: "<%= Faker::Lorem.sentence(1) %>"
+        created_by:
+          first_name: "<%= Faker::Name.first_name %>"
+          last_name: "<%= Faker::Name.last_name %>"
+        content: |
+          <p><%= Faker::Lorem.paragraph(2) %></p>
+          <p><%= Faker::Lorem.paragraph(5) %></p>
+          <p><%= Faker::Lorem.paragraph(3) %></p>
+        published_at: "2 days ago"
+      - article:
+        id: "22"
+        name: "<%= Faker::Lorem.sentence(1) %>"
+        title: "<%= Faker::Lorem.sentence(1) %>"
+        created_by:
+          first_name: "<%= Faker::Name.first_name %>"
+          last_name: "<%= Faker::Name.last_name %>"
+        content: |
+          <p><%= Faker::Lorem.paragraph(2) %></p>
+          <p><%= Faker::Lorem.paragraph(5) %></p>
+          <p><%= Faker::Lorem.paragraph(3) %></p>
+        published_at: "2 weeks ago"
+      - article:
+        id: "33"
+        name: "My First Blog Post"
+        title: "<%= Faker::Lorem.sentence(1) %>"
+        created_by:
+          first_name: "<%= Faker::Name.first_name %>"
+          last_name: "<%= Faker::Name.last_name %>"
+        content: |
+          <p>"Death twitches my ear. 'Live,' he says, 'I am coming.'" - Virgil</p>
+          <p><%= Faker::Lorem.paragraph(5) %></p>
+          <p><%= Faker::Lorem.paragraph(3) %></p>
+        published_at: "6 months ago"
+    archive:
+      monthly:
+        - item:
+            date: January 2016
+            count: 5
+            url: '#'
+        - item:
+            date: December 2015
+            count: 4
+            url: '#'
+        - item:
+            date: November 2015
+            count: 3
+            url: '#'
+        - item:
+            date: October 2015
+            count: 2
+            url: '#'
+  - id: 2 # This number must match the ID from the `page` key to display the content below.
+    name: Blog Name 2
+    articles:
+      - article:
+        id: "44"
+        name: "<%= Faker::Lorem.sentence(1) %>"
+        title: "<%= Faker::Lorem.sentence(1) %>"
+        created_by:
+          first_name: "<%= Faker::Name.first_name %>"
+          last_name: "<%= Faker::Name.last_name %>"
+        content: |
+          <p><%= Faker::Lorem.paragraph(2) %></p>
+          <p><%= Faker::Lorem.paragraph(5) %></p>
+          <p><%= Faker::Lorem.paragraph(3) %></p>
+        published_at: "4 days ago"
+      - article:
+        id: "55"
+        name: "<%= Faker::Lorem.sentence(1) %>"
+        title: "<%= Faker::Lorem.sentence(1) %>"
+        created_by:
+          first_name: "<%= Faker::Name.first_name %>"
+          last_name: "<%= Faker::Name.last_name %>"
+        content: |
+          <p><%= Faker::Lorem.paragraph(2) %></p>
+          <p><%= Faker::Lorem.paragraph(5) %></p>
+          <p><%= Faker::Lorem.paragraph(3) %></p>
+        published_at: "3 months ago"
+      - article:
+        id: "66"
+        name: "<%= Faker::Lorem.sentence(1) %>"
+        title: "<%= Faker::Lorem.sentence(1) %>"
+        created_by:
+          first_name: "<%= Faker::Name.first_name %>"
+          last_name: "<%= Faker::Name.last_name %>"
+        content: |
+          <p><%= Faker::Lorem.paragraph(2) %></p>
+          <p><%= Faker::Lorem.paragraph(5) %></p>
+          <p><%= Faker::Lorem.paragraph(3) %></p>
+        published_at: "2 years ago"
+    archive:
+      monthly:
+        - item:
+            date: January 2016
+            count: 5
+            url: '#'
+        - item:
+            date: December 2015
+            count: 4
+            url: '#'
+        - item:
+            date: November 2015
+            count: 3
+            url: '#'
+        - item:
+            date: October 2015
+            count: 2
+            url: '#'

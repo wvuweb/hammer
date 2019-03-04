@@ -92,7 +92,8 @@ module Hammer
     error_style= "color: #{error_text_color}; background-color: #{error_background_color}; border-radius: 3px 0 0 3px; padding: 0 3px; font-family: monospace;"
 
     console_error =  "Hammer #{type}: #{message.gsub(/(<[^>]*>)|\n|\t/s) {""}}"
-    puts console_error.colorize(:red)
+
+    # puts console_error.colorize(:red)
 
     error = "<strong style='#{error_style}'>Hammer #{type}:</strong> #{message}"
     if options[:comment]
