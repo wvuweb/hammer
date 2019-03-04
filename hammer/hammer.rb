@@ -1,5 +1,7 @@
 # encoding: utf-8
 require "webrick"
+
+require "../hammer/webrick_override.rb"
 require "../hammer/services/theme_renderer.rb"
 
 module Hammer
@@ -13,14 +15,15 @@ module Hammer
   end
 
   def do_GET(request, response)
-
+    # binding.pry
     request_path(request)
+    map_request
 
-    puts "Handling a request for system path:".colorize(:light_magenta)+" #{map_request.to_s.colorize(:yellow)}\n"
+    puts "Handling a request for system path:".colorize(:light_magenta)+" #{@filesystem_path.to_s.colorize(:yellow)}\n"
 
     if @filesystem_path.directory?
       puts "Path is a Directory\n".colorize(:blue)
-      directory = WEBrick::HTTPServlet::FileHandler.new(@server, @document_root, { :FancyIndexing =>true })
+      directory = WEBrick::HTTPServlet::FileHandler.new(@server, @document_root, { FancyIndexing: true})
       directory.do_GET(request, response)
     else
       if request_radiusable_template?
@@ -36,9 +39,16 @@ module Hammer
         response.body = body
         response.content_type = get_mime_type+'; charset=utf-8'
       else
-        puts "Path is a Static #{get_mime_type} File\n".colorize(:blue)
-        file = WEBrick::HTTPServlet::FileHandler.new(@server, @document_root, { :FancyIndexing =>true })
-        file.do_GET(request, response)
+        if request.path == "/wvuhammer.css"
+          puts "Path is the Hammer CSS File\n".colorize(:light_magenta)
+          css_doc_root  = "../hammer/css"
+          file = WEBrick::HTTPServlet::FileHandler.new(@server, css_doc_root, { FancyIndexing: true })
+          file.do_GET(request, response)
+        else
+          puts "Path is a Static #{get_mime_type} File\n".colorize(:blue)
+          file = WEBrick::HTTPServlet::FileHandler.new(@server, @document_root, { FancyIndexing: true })
+          file.do_GET(request, response)
+        end
       end
     end
 

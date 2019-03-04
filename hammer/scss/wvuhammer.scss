@@ -1,0 +1,19 @@
+// $fa-font-path: "@fortawesome/fontawesome-free/webfonts";
+
+@import 'node_modules/brand-patterns/scss/styles';
+@import 'node_modules/bootstrap/scss/bootstrap';
+
+.table tr.clickable:hover {
+  cursor: pointer;
+}
+
+.table tr.views {
+  background-color: $pms-558-c;
+
+  td {
+    border-top: 1px solid $pms-7476-c;
+  }
+  .fa {
+    color: $pms-7476-c;
+  }
+}

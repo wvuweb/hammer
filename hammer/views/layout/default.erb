@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<!--[if IE 8]> <html class="ie8" lang="en"> <![endif]-->
+<!--[if IE 9]> <html class="ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en"> <!--<![endif]-->
+  <head>
+    <title> <%= html[:title] %> | Hammer </title>
+    <meta name="description" content="Hammer Directory" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link rel="stylesheet" href="/wvuhammer.css" type="text/css" />
+  </head>
+  <body>
+
+  <div class="wvu-masthead">
+    <div class="wvu-masthead__container">
+      <a class="wvu-masthead__logo" href="/">
+        <span class="wvu-masthead__university-name">
+          West Virginia University
+        </span>
+        <span class="wvu-masthead__title">
+          Hammer
+        </span>
+      </a>
+      </div>
+    </div>
+
+    <%= yield %>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript">
+      $(function(){
+          $(document).on('click', 'tr.clickable', function(event, row, $el){
+            url = $(event.target).parent().find('td.name > a').attr('href');
+            window.location = url;
+          })
+      });
+    </script>
+  </body>
+</html>

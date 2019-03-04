@@ -1,0 +1,79 @@
+<div class="wvu-container">
+  <h1><span class="fa fa-folder-open"></span> <%= html[:title] %></h1>
+
+  <% html[:query].sub!(/\A&/, '?') %>
+  <% html[:list].unshift [ "..", File::mtime(html[:local_path]+"/.."), -1 ] %>
+
+  <table class="table table-hover">
+    <tr>
+      <th scope="col">
+        <% nameQuery = "?N=#{html[:d1]}#{html[:query]}" %>
+        <% if html[:d0] == "A" && html[:idx] == 0%>
+          <span class="fa fa-arrow-up" title="Ascending"></span>
+        <% end %>
+        <% if html[:d0] == "D" && html[:idx] == 0%>
+          <span class="fa fa-arrow-down" title="Descending"></span>
+        <% end %>
+        <a href="<%= nameQuery %>">Name</a>
+      </th>
+      <th scope="col">
+        <% dateQuery = "?M=#{html[:d1]}#{html[:query]}" %>
+        <% if html[:d0] == "A" &&html[:idx] == 1%>
+          <span class="fa fa-arrow-up" title="Ascending"></span>
+        <% end %>
+        <% if html[:d0] == "D" &&html[:idx] == 1%>
+          <span class="fa fa-arrow-down" title="Descending"></span>
+        <% end %>
+        <a href="<%= dateQuery %>">Last Modified</a>
+      </th>
+      <th scope="col">
+        <% sizeQuery = "?S=#{html[:d1]}#{html[:query]}" %>
+        <% if html[:d0] == "A" && html[:idx] == 2%>
+          <span class="fa fa-arrow-up" title="Ascending"></span>
+        <% end %>
+        <% if html[:d0] == "D" && html[:idx] == 2%>
+          <span class="fa fa-arrow-down" title="Descending></span>
+        <% end %>
+        <a href="<%= sizeQuery %>">Size</a>
+      </th>
+    </tr>
+    <% html[:list].each do |name, time, size| %>
+      <% if name == ".." %>
+        <% dname = "Parent Directory" %>
+        <% parentDirectoryIcon = true %>
+      <% else %>
+        <% unless size >= 0 %>
+          <% folderIcon = true %>
+        <% end %>
+        <% dname = name %>
+      <% end %>
+
+      <% if dname == 'views/' %>
+        <% viewClass = 'views' %>
+      <% else %>
+        <% viewClass = '' %>
+      <% end %>
+
+      <% if dname == '.DS_Store' %>
+        <% next %>
+      <% end %>
+
+      <tr class="clickable <%= viewClass %>">
+        <td class="name">
+          <% if parentDirectoryIcon %>
+            <span class="far fa-folder-open"></span>
+          <% end %>
+          <% if folderIcon %>
+            <span class="fa fa-folder"></span>
+          <% end %>
+          <a href="<%= "#{CGI.escapeHTML(name)}#{html[:query] if name.end_with?('/')}" %>">
+            <%= dname %>
+          </a>
+        </td>
+        <td class="time"><%= (time ? time.strftime("%Y-%m-%d %H:%M") : "") %></td>
+        <td class="size"><%= (size >= 0 ? size.to_s : "-") %></td>
+      </tr>
+    <% end %>
+
+  </table>
+</div>
