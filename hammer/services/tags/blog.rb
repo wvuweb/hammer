@@ -31,23 +31,26 @@ module Tags
       errors.each do |error|
         content << error
       end
-      content << tag.expand
+      if tag.locals.blog
+        content << tag.expand
+      else
       content.join("")
+      end
     end
 
     tag 'article' do |tag|
-      blog = load_blog(tag)
-      tag.locals.blog ||= blog[:blog]
-      tag.locals.article ||= load_article(tag)
+      article = load_article(tag)
+      tag.locals.article = article[:article]
 
-      errors = blog[:errors]
+      errors = article[:errors]
       content = []
       errors.each do |error|
         content << error
       end
-      content << tag.expand
+      if tag.locals.article
+        content << tag.expand
+      end
       content.join("")
-
     end
 
     tag 'article:id' do |tag|
@@ -225,8 +228,8 @@ module Tags
           count_class: 'cs-blog-archive__count'
         }
       )
-      ActionView::Base.new.content_tag :ul, class: options[:ul_class] do
 
+      ActionView::Base.new.content_tag :ul, class: options[:ul_class] do
         if tag.locals.blog[:archive] && tag.locals.blog[:archive][:monthly] && tag.locals.blog[:archive][:monthly].count > 0
           data = tag.locals.blog[:archive][:monthly]
         else
@@ -261,7 +264,7 @@ module Tags
       # parse the string with DateTime.
       Time.zone = "Eastern Time (US & Canada)"
       Chronic.time_class = Time.zone
-      date = Chronic.parse(str) || DateTime.parse(str) rescue nil
+      Chronic.parse(str) || DateTime.parse(str) rescue nil
     end
 
 
@@ -280,6 +283,8 @@ module Tags
       def load_blog(tag)
         blog_object = {}
         blog_object[:errors] = []
+        blog_object[:blog] = nil
+
         if tag.globals.context.data['page']
           tag.locals.page = tag.globals.context.data['page']
         else
@@ -291,6 +296,7 @@ module Tags
         if tag.globals.context.data['blog']
           blog_object[:errors] << (Hammer.error "Depreciation Notice: <code>blog:</code> key to be renamed <code>blogs:</code> in future release", {comment: true, warning: true})
         end
+
         if blogs
           if blogs.kind_of?(Array)
             if blogs.select{|w| w['id'].to_s == (tag.locals.page['id'].to_s) }.first
@@ -309,7 +315,20 @@ module Tags
       end
 
       def load_article(tag)
-        tag.locals.blog['articles'].sample
+        article_object = {}
+        article_object[:errors] = []
+        article_object[:article] = nil
+
+        if tag.locals.blog
+          if tag.locals.blog['articles']
+            article_object[:article] = tag.locals.blog['articles'].sample
+          else
+            article_object[:errors] << (Hammer.error "Could not find <code>articles:</code> key under <code>blog:</code> in mock_data.yml")
+          end
+        else
+          article_object[:errors] << (Hammer.error "tag.locals.blog is nil")
+        end
+        article_object
       end
 
       def decorated_page(page)
