@@ -16,12 +16,13 @@ module YAML
       erb = ERB.new(yml_path.read, nil, '-')
       erb.result(binding)
     else
-      puts ' '
-      puts 'WARNING:'.red
-      puts '!'.black.on_red * (44 + file_name.length)
-      puts '!    Your theme does not include a '.black.on_red+file_name.black.on_red+' file   !'.black.on_red
-      puts '!'.black.on_red * (44 + file_name.length)
-      puts ' '
+      # puts ' '
+      # puts 'WARNING:'.red
+      # puts '!'.black.on_red * (44 + file_name.length)
+      # puts '!    Your theme does not include a '.black.on_red+file_name.black.on_red+' file   !'.black.on_red
+      # puts '!'.black.on_red * (44 + file_name.length)
+      # puts ' '
+      Hammer.error "Your theme does not include a #{yml_path}"
     end
   end
 end
