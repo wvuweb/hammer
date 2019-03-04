@@ -188,6 +188,7 @@ if options.daemon == 1
 end
 
 httpd = WEBrick::HTTPServer.new(
+  :BindAddress => "0.0.0.0",
   :Port => options.port,
   :DocumentRoot => doc_root,
   :ServerType => options.daemon,
