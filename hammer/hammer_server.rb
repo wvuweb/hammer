@@ -43,7 +43,7 @@ end
 
 options = OpenStruct.new
 options.directory = (Pathname.new(Dir.pwd).parent.parent + "cleanslate_themes").to_s
-options.port = 2000
+options.port = 8080
 options.daemon = WEBrick::SimpleServer
 
 OptionParser.new do |o|
