@@ -58,7 +58,8 @@ class MockData
           result[:errors] << (Hammer.error "Depreciation notice: #{old_template_yml_path} needs to be moved to the /data folder", {warning: true})
         end
       else
-        yml_path = Pathname.new(File.expand_path File.dirname('..')+'/data/mock_data.yml')
+        yml_path = Pathname.new(File.dirname(__FILE__)+'/../data/mock_data.yml')
+        puts yml_path
         erb = ERB.new(yml_path.read, nil, '-')
         data = erb.result(binding)
         yml = HashWithIndifferentAccess.new(YAML::load(data))
