@@ -147,7 +147,7 @@ module Tags
     [:id, :name, :path, :slug, :meta_description, :title, :alternate_name, :depth].each do |attr|
       tag "page:#{attr.to_s}" do |tag|
         # tag.locals.page.send(attr)
-        if defined? tag.locals.page[attr.to_s]
+        if tag.locals.page[attr.to_s]
           tag.locals.page[attr.to_s]
         else
           Hammer.key_missing attr, {parent_key: "page"}
