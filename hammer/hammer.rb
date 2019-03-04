@@ -41,7 +41,7 @@ module Hammer
       else
         if request.path == "/wvuhammer.css"
           puts "Path is the Hammer CSS File\n".colorize(:light_magenta)
-          css_doc_root  = "../hammer/css"
+          css_doc_root  = File.expand_path File.dirname(__FILE__)+"/css"
           file = WEBrick::HTTPServlet::FileHandler.new(@server, css_doc_root, { FancyIndexing: true })
           file.do_GET(request, response)
         else
