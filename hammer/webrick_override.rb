@@ -5,6 +5,7 @@ require 'tilt/erb'
 module WEBrick
   module HTTPServlet
     class FileHandler < AbstractServlet
+
       def set_dir_list(req, res)
         redirect_to_directory_uri(req, res)
         unless @options[:FancyIndexing]
@@ -72,66 +73,13 @@ module WEBrick
           namewidth: namewidth,
           title: title,
           list: list,
+          path: req.path,
           host: req.host,
           port: req.port,
           software: @config[:ServerSoftware]
         }
 
         res.body = format_directory(html)
-
-        # res.body = <<-_end_of_html_
-        #   <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-        #   <HTML>
-        #   <HEAD>
-        #   <TITLE>#{title}</TITLE>
-        #   <style type="text/css">
-        #   <!--
-        #   .name, .mtime { text-align: left; }
-        #   .size { text-align: right; }
-        #   td { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
-        #   table { border-collapse: collapse; }
-        #   tr th { border-bottom: 2px groove; }
-        #   //-->
-        #   </style>
-        #   </HEAD>
-        #   <BODY>
-        #   <H1>HAMMER: #{title}</H1>
-        #
-        #     _end_of_html_
-        #
-        #     res.body << "<TABLE width=\"100%\"><THEAD><TR>\n"
-        #     res.body << "<TH class=\"name\"><A HREF=\"?N=#{d1}#{query}\">Name</A></TH>"
-        #     res.body << "<TH class=\"mtime\"><A HREF=\"?M=#{d1}#{query}\">Last modified</A></TH>"
-        #     res.body << "<TH class=\"size\"><A HREF=\"?S=#{d1}#{query}\">Size</A></TH>\n"
-        #     res.body << "</TR></THEAD>\n"
-        #     res.body << "<TBODY>\n"
-        #
-        #     query.sub!(/\A&/, '?')
-        #     list.unshift [ "..", File::mtime(local_path+"/.."), -1 ]
-        #     list.each{ |name, time, size|
-        #       if name == ".."
-        #         dname = "Parent Directory"
-        #       elsif namewidth and name.size > namewidth
-        #         dname = name[0...(namewidth - 2)] << '..'
-        #       else
-        #         dname = name
-        #       end
-        #       s =  "<TR><TD class=\"name\"><A HREF=\"#{HTTPUtils::escape(name)}#{query if name.end_with?('/')}\">#{HTMLUtils::escape(dname)}</A></TD>"
-        #       s << "<TD class=\"mtime\">" << (time ? time.strftime("%Y/%m/%d %H:%M") : "") << "</TD>"
-        #       s << "<TD class=\"size\">" << (size >= 0 ? size.to_s : "-") << "</TD></TR>\n"
-        #       res.body << s
-        #     }
-        #     res.body << "</TBODY></TABLE>"
-        #     res.body << "<HR>"
-        #
-        #     res.body << <<-_end_of_html_
-        #   <ADDRESS>
-        #   #{HTMLUtils::escape(@config[:ServerSoftware])}<BR>
-        #   at #{req.host}:#{req.port}
-        #   </ADDRESS>
-        #   </BODY>
-        #   </HTML>
-        #     _end_of_html_
       end
 
 

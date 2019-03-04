@@ -21,8 +21,37 @@
           Hammer
         </span>
       </a>
-      </div>
     </div>
+  </div>
+
+  <nav aria-label="Breadcrumbs" class="wvu-breadcrumbs ">
+    <div class="wvu-breadcrumbs__container">
+      <ul class="wvu-breadcrumbs__crumbs">
+        <% current = [] %>
+        <% html[:path].split('/').each do |part| %>
+          <% if part == "" %>
+            <li>
+              <a href="/"><span class="fa fa-hammer"></span> Themes</a>
+            </li>
+          <% else %>
+            <% current << part %>
+          <% end %>
+        <% end %>
+
+        <% current.each_with_index do |part,index| %>
+          <% if current.size == (index + 1) %>
+            <li class="active">
+              <%= part %>
+            </li>
+          <% else %>
+            <li>
+              <a href="/<%= current[(0..index)].join('/') %>"><%= part %></a>
+            </li>
+          <% end %>
+        <% end %>
+      </ul>
+    </div>
+  </nav>
 
     <%= yield %>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>

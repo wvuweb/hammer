@@ -4,6 +4,10 @@
 @import 'node_modules/bootstrap/scss/bootstrap';
 @import 'rwd-table';
 
+.wvu-container {
+  padding: 2em 0 4.3em 0;
+}
+
 .table tr.clickable:hover {
   cursor: pointer;
 }
