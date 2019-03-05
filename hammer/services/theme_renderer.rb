@@ -83,7 +83,7 @@ class ThemeRenderer
   def layout_content
     @layout_content ||= layout_file_path.read
   end
-  
+
   def hammer_nav_content
     hammer_nav_path = Pathname.new(File.expand_path File.dirname('..')+"/views/_hammer_nav.html")
     @hammer_nav_content ||= hammer_nav_path.read
@@ -110,7 +110,7 @@ class ThemeRenderer
       begin
         self.config = YAML.load(match[1])
       rescue => e
-        raise 'Parsing template YAML config failed.'
+        raise 'Parsing template YAML config failed.  Please validate your mock_data.yml file has the correct format: http://www.yamllint.com/'
       end
     end
     self.config ||= {}
@@ -131,7 +131,7 @@ class ThemeRenderer
 
       output = radius_parser.parse(self.layout_content)
       @htmldoc = Nokogiri::HTML::Document.parse(output)
-      
+
       meta = Nokogiri::XML::Node.new "meta", @htmldoc
       meta['http-equiv'] = "Content-Type"
       meta['content'] = "text/html; charset=UTF-8"
@@ -156,7 +156,6 @@ class ThemeRenderer
       #   @htmldoc.at('body').add_child(script)
       #   output = @htmldoc.to_html
       # end
-      
 
 
       if self.data_errors
@@ -167,13 +166,16 @@ class ThemeRenderer
         end
         output = @htmldoc.to_html
       end
-      
+
       @htmldoc = Nokogiri::HTML::Document.parse(output)
       hammer_nav_content
       hammer_nav = radius_parser.parse(self.hammer_nav_content)
-      @htmldoc.at('body').children.first.before(hammer_nav)    
+      @htmldoc.at('body').children.first.before(hammer_nav)
+      css_file_src = Pathname.new(File.expand_path File.dirname('..')+"/css/wvuhammernav.css").read
+      css_file = "<style>"+css_file_src+"</style>"
+      @htmldoc.at('head').add_child(css_file)
       output = @htmldoc.to_html
-      
+
       if self.data && self.data['page'] && self.data['page']['javascript']
 
         @htmldoc = Nokogiri::HTML::Document.parse(output)

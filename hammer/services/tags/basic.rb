@@ -92,10 +92,9 @@ module Tags
     end
 
     tag 'hammer_breadcrumbs' do |tag|
-      tag_style = tag.attr['style']
       current = []
       output = []
-      output << "<ul class='wvu-breadcrumbs__crumbs' style='"+tag_style+"'>"
+      output << "<ul class='wvu-hammer-breadcrumbs__crumbs''>"
       tag.globals.context.request.path.split('/').each do |part|
         if part == ""
           output << "<li><a href='/'>Themes</a></li>"
