@@ -39,7 +39,7 @@ module Hammer
         response.body = body
         response.content_type = get_mime_type+'; charset=utf-8'
       else
-        if request.path == "/wvuhammer.css"
+        if request.path == "/wvu-hammer-dir.css"
           puts "Path is the Hammer CSS File\n".colorize(:light_magenta)
           css_doc_root  = File.expand_path File.dirname(__FILE__)+"/css"
           file = WEBrick::HTTPServlet::FileHandler.new(@server, css_doc_root, { FancyIndexing: true })
@@ -85,21 +85,14 @@ module Hammer
     }.merge(options)
 
     type = options[:warning] ? "Warning" : "Error"
-
-    error_background_color = options[:warning] ? "#9BD3DD" : "red"
-    error_text_color = options[:warning] ? "black" : "white"
-    span_style = "color: #000; border: 1px dashed #{error_background_color}; background-color: #fff; border-radius: 3px; font-family: monospace; padding: 0 3px 0 0;"
-    error_style= "color: #{error_text_color}; background-color: #{error_background_color}; border-radius: 3px 0 0 3px; padding: 0 3px; font-family: monospace;"
-
     console_error =  "Hammer #{type}: #{message.gsub(/(<[^>]*>)|\n|\t/s) {""}}"
-
     puts console_error.colorize(:red)
 
-    error = "<strong style='#{error_style}'>Hammer #{type}:</strong> #{message}"
+    error = "<strong>Hammer #{type}:</strong> #{message}"
     if options[:comment]
       "<!-- #{console_error} #{options[:message]} -->"
     else
-      "<span style='#{span_style}'>#{error} #{options[:message]}</span>"
+      "<span class='wvu-hammer-error wvu-hammer-error__#{type.downcase}'>#{error}#{options[:message]}</span>"
     end
   end
 
@@ -110,11 +103,10 @@ module Hammer
       message: ""
     }.merge(options)
 
-    style = "background-color: #eee; border-radius: 3px; font-family: monospace; padding: 0 3px;"
     if options[:parent_key]
-      error("Missing key <code style='#{style}'>#{key}:</code> under <code style='#{style}'>#{options[:parent_key]}:</code> in mock_data.yml", options)
+      error("Missing key <code>#{key}:</code> under <code>#{options[:parent_key]}:</code> in mock_data.yml", options)
     else
-      error("Missing key <code style='#{style}'>#{key}:</code> in mock_data.yml", options)
+      error("Missing key <code>#{key}:</code> in mock_data.yml", options)
     end
   end
 
