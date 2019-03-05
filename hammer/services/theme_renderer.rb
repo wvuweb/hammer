@@ -85,7 +85,7 @@ class ThemeRenderer
   end
 
   def hammer_nav_content
-    hammer_nav_path = Pathname.new(File.expand_path File.dirname('..')+"/views/_hammer_nav.html")
+    hammer_nav_path = Pathname.new(File.expand_path File.dirname(__FILE__)+"/../views/_hammer_nav.html")
     @hammer_nav_content ||= hammer_nav_path.read
   end
 
@@ -171,7 +171,7 @@ class ThemeRenderer
       hammer_nav_content
       hammer_nav = radius_parser.parse(self.hammer_nav_content)
       @htmldoc.at('body').children.first.before(hammer_nav)
-      css_file_src = Pathname.new(File.expand_path File.dirname('..')+"/css/wvuhammernav.css").read
+      css_file_src = Pathname.new(File.expand_path File.dirname(__FILE__)+"/../css/wvuhammernav.css").read
       css_file = "<style>"+css_file_src+"</style>"
       @htmldoc.at('head').add_child(css_file)
       output = @htmldoc.to_html
