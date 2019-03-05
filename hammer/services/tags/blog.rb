@@ -33,9 +33,8 @@ module Tags
       end
       if tag.locals.blog
         content << tag.expand
-      else
-      content.join("")
       end
+      content.join("")
     end
 
     tag 'article' do |tag|
