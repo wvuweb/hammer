@@ -1,14 +1,18 @@
-.wvu-hammer-breadcrumbs {
+#wvu-hammer-nav.wvu-hammer-breadcrumbs {
   background-color: #dee2e6;
   z-index: 2;
   width: 100%;
 
   h1 {
-    font-size: 2em;
-    padding:0.25em 1em;
+    font-size: 24px;
+    font-weight: inherit;
+    padding:8px 16px;
     margin: 0;
     width: auto;
     display: inline-block;
+    color: inherit;
+    font-family: inherit;
+    line-height: inherit;
   }
   ul {
     padding:0;
@@ -16,17 +20,29 @@
     display: flex;
     align-items: center;
   }
+  ul, li {
+    margin: inherit;
+    padding: inherit;
+  }
+  a {
+    background-color: inherit;
+    color:inherit;
+    font-size: inherit;
+    padding: inherit;
+    margin: inherit;
+    float: inherit;
+  }
 }
 
-.wvu-hammer-breadcrumbs__crumbs {
+#wvu-hammer-nav .wvu-hammer-breadcrumbs__crumbs {
 
-  padding: 0.5em 1em;
+  padding: 8px 16px;
   list-style-type: none;
 
   li {
     float: left;
-    font-size: .8em;
-    margin-right: 0.5em;
+    font-size: 14px;
+    margin: 6px 8px 0 0;
 
     &:after {
       content: ' / ';
@@ -37,6 +53,18 @@
       }
     };
   }
+
+  a {
+    color: #007bff;
+    text-decoration: none;
+    background-color: transparent;
+  }
+
+  a:visited {
+    color: #0033A0;
+    text-decoration: none;
+  }
+
 }
 .wvu-hammer-breadcrumbs__list--white {
   color: white;
