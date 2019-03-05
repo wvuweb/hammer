@@ -38,6 +38,17 @@ module Tags
     end
 
     tag 'article' do |tag|
+
+      unless tag.locals.blog
+        blog = load_blog(tag)
+        tag.locals.blog ||= blog[:blog]
+        errors = blog[:errors]
+        content = []
+        errors.each do |error|
+          content << error
+        end
+      end
+
       article = load_article(tag)
       tag.locals.article = article[:article]
 
@@ -152,7 +163,6 @@ module Tags
     tag 'articles' do |tag|
       content = []
       limit = tag.attr['limit'].to_i
-
       if tag.locals.blog
         if tag.locals.blog['articles']
           if limit
@@ -180,32 +190,18 @@ module Tags
       # cnt = tag.locals.articles.try(:all).try(:count)
       # tag.expand if cnt > 0
 
-      tag.expand if tag.locals.articles.count > 0
+      tag.expand if tag.locals.blog[:articles].count > 0
     end
 
     tag 'articles:if_no_articles' do |tag|
       # cnt = tag.locals.articles.try(:all).try(:count)
       # tag.expand if cnt.nil? or cnt == 0
-      if tag.locals.articles.count.nil? || tag.locals.articles.count == 0
+      if tag.locals.blog[:articles].count.nil? || tag.locals.blog[:articles].count == 0
         tag.expand
       end
     end
 
     tag 'articles:pagination' do |tag|
-      # ar = tag.locals.articles
-      # data = if ar.respond_to?(:current_page)
-      #   {
-      #     param: tag.attr['param'] || 'page',
-      #     current: ar.current_page,
-      #     previous: (ar.first_page? ? nil : ar.current_page - 1),
-      #     next: (ar.last_page? ? nil : ar.current_page + 1),
-      #     total: ar.total_pages
-      #   }
-      # else
-      #   {}
-      # end
-      # tag.locals.article_pagination = data
-      # tag.expand if data[:total] > 1
       tag.expand
       # Hammer.error "articles:pagination tag is not implemented yet"
     end
@@ -313,6 +309,7 @@ module Tags
 
         if blogs
           if blogs.kind_of?(Array)
+            # Match current page id to blog id
             if blogs.select{|w| w['id'].to_s == (tag.locals.page['id'].to_s) }.first
               blog_object[:blog] = blogs.select{|w| w['id'].to_s == (tag.locals.page['id'].to_s) }.first
             else
@@ -320,7 +317,7 @@ module Tags
             end
           else
             blog_object[:errors] << (Hammer.error "Depreciation Notice: in future release <code>blogs:</code> should be an Array in mock_data.yml", {comment: true, warning: true})
-            blog_object[:blog] = tag.globals.context.data['blog']
+            blog_object[:blog] = blogs
           end
         else
           blog_object[:errors] << (Hammer.key_missing "blogs")
