@@ -83,6 +83,11 @@ class ThemeRenderer
   def layout_content
     @layout_content ||= layout_file_path.read
   end
+  
+  def hammer_nav_content
+    hammer_nav_path = Pathname.new(File.expand_path File.dirname('..')+"/views/_hammer_nav.html")
+    @hammer_nav_content ||= hammer_nav_path.read
+  end
 
   def render
     parse_yaml(@content)
@@ -126,6 +131,7 @@ class ThemeRenderer
 
       output = radius_parser.parse(self.layout_content)
       @htmldoc = Nokogiri::HTML::Document.parse(output)
+      
       meta = Nokogiri::XML::Node.new "meta", @htmldoc
       meta['http-equiv'] = "Content-Type"
       meta['content'] = "text/html; charset=UTF-8"
@@ -150,6 +156,8 @@ class ThemeRenderer
       #   @htmldoc.at('body').add_child(script)
       #   output = @htmldoc.to_html
       # end
+      
+
 
       if self.data_errors
         @htmldoc = Nokogiri::HTML::Document.parse(output)
@@ -159,7 +167,13 @@ class ThemeRenderer
         end
         output = @htmldoc.to_html
       end
-
+      
+      @htmldoc = Nokogiri::HTML::Document.parse(output)
+      hammer_nav_content
+      hammer_nav = radius_parser.parse(self.hammer_nav_content)
+      @htmldoc.at('body').children.first.before(hammer_nav)    
+      output = @htmldoc.to_html
+      
       if self.data && self.data['page'] && self.data['page']['javascript']
 
         @htmldoc = Nokogiri::HTML::Document.parse(output)

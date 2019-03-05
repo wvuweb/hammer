@@ -91,6 +91,29 @@ module Tags
       # Hammer.error "current_url tag is not implemented yet"
     end
 
+    tag 'hammer_breadcrumbs' do |tag|
+      tag_style = tag.attr['style']
+      current = []
+      output = []
+      output << "<ul class='wvu-breadcrumbs__crumbs' style='"+tag_style+"'>"
+      tag.globals.context.request.path.split('/').each do |part|
+        if part == ""
+          output << "<li><a href='/'>Themes</a></li>"
+        else
+          current << part
+        end
+      end
+      current.each_with_index do |part,index|
+        if current.size == (index + 1)
+          output << "<li>"+part+"</li>"
+        else
+          output << "<li><a href='/"+current[(0..index)].join('/')+"'>"+part+"</a></li>"
+        end
+      end
+      output << "</ul>"
+      output.join("")
+    end
+
     # Renders an unordered list (<ul>) of HTML links to the pages leading to the current page. If the 'text_only'
     # attribute is 'true', then instead of a list of HTML links, a plain text list will be rendered with the
     # value of the 'separator' attribute used to separate each item. The default separator is ' | '.
