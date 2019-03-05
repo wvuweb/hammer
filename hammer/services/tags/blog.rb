@@ -86,7 +86,16 @@ module Tags
 
     tag 'article:content' do |tag|
       # tag.render 'page:content', tag.attr
-      tag.locals.article[:content]
+      region = tag.attr['name']
+      if tag.locals.article[:content]
+        if tag.locals.article[:content][region]
+          tag.locals.article[:content][region]
+        else
+          Hammer.key_missing region, {parent: 'article:content'}
+        end
+      else
+        Hammer.key_missing 'content', {parent: 'article'}
+      end
     end
 
     tag 'article:tags' do |tag|
