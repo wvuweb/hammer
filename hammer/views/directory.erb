@@ -76,7 +76,18 @@
           </a>
         </td>
         <td class="time" data-th="Last Modified"><%= (time ? time.strftime("%Y-%m-%d %H:%M") : "") %></td>
-        <td class="size" data-th="File Size"><%= (size >= 0 ? size.to_s : "-") %></td>
+        <td class="size" data-th="File Size">
+          <% if size > 0 %>
+            <% if ((size / (1024.0 * 1024.0)) >= 1) %>
+              <% size = size %>
+              <% modifier = "MB" %>
+            <% else %>
+              <% size = (size / 1024.0) %>
+              <% modifier = "KB" %>
+            <% end %>
+          <% end %>
+          <%= (size >= 0 ? "#{'%.2f' % size} #{modifier}" : "-") %>
+        </td>
       </tr>
     <% end %>
 
