@@ -94,7 +94,7 @@ module Tags
       if tag.locals.article['tags'].kind_of?(Array)
         tag.locals.article['tags'].join(',')
       elsif
-        Hammer.error 'Article tags should be an array'
+        Hammer.error 'Article tags should stored as an array in mock_data.yml'
       end
     end
 
@@ -142,9 +142,15 @@ module Tags
 
     tag 'articles' do |tag|
       content = []
-      unless tag.locals.blog.nil?
+      limit = tag.attr['limit'].to_i
+
+      if tag.locals.blog
         if tag.locals.blog['articles']
-          tag.locals.articles = tag.locals.blog['articles']
+          if limit
+            tag.locals.articles = tag.locals.blog['articles'].slice(0, limit)
+          else
+            tag.locals.articles = tag.locals.blog['articles']
+          end
           content << tag.expand
         else
           content << (Hammer.key_missing "articles", {parent_key: "blog"})
