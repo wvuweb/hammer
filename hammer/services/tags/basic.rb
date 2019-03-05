@@ -458,38 +458,41 @@ module Tags
 
     tag 'xslt_transform' do |tag|
       theme = tag.globals.theme
-      url = (tag.attr['url'] || '').strip
+      xml_url = (tag.attr['url'] || '').strip
       source_format = (tag.attr['source_format'] || 'xml').downcase
       xslt_file = tag.attr['xslt_file'].to_s.strip
-      cache_term_minutes = (tag.attr['cache_for'] || '').to_i
-      cache_term_minutes = 15 if cache_term_minutes < 1
 
-      xslt = if tag.double?
-        tag.expand
+      # cache_term_minutes = (tag.attr['cache_for'] || '').to_i
+      # cache_term_minutes = 15 if cache_term_minutes < 1
+
+      if tag.double?
+        xslt = tag.expand
       elsif xslt_file.present?
         file = File.join(tag.globals.context.theme_root, xslt_file)
-
         if File.exists?(file)
-          File.read(file)
+          xslt = File.read(file)
         else
-          Hammer.error "ERROR: Could not load XSLT file: #{xslt_file}"
+          Hammer.error "Could not load XSLT file: #{xslt_file}"
         end
       end
 
-      Hammer.error "ERROR: You must either specify XSLT content for this tag or use the xslt_file attribute." unless xslt.present?
+      unless xslt.present?
+        return Hammer.error "You must either specify XSLT content for this tag or use the xslt_file attribute."
+      end
 
-      # cache [tag.cache_key, tag.globals.site, tag.globals.page], expires_in: cache_term_minutes.minutes do
+      unless xml_url.present?
+        return Hammer.error "The attribute of <code>url</code> must be present on the <code><r:xslt_transform></code> tag."
+      else
         begin
-          uri = URI.parse(url)
+          uri = URI.parse(xml_url)
+          uri.kind_of?(URI::HTTP) || uri.kind_of?(URI::HTTPS)
           response = Net::HTTP.start(uri.host, uri.port,
             :use_ssl => uri.scheme == 'https') do |http|
             request = Net::HTTP::Get.new uri
             http.request request # Net::HTTPResponse object
           end
-
-        #rescue raise(RuntimeTagError, "ERROR: Could not load the XML URL: #{url}")
         rescue => e
-          return Hammer.error "Could not load the XML URL: #{url} due to #{e}"
+          return Hammer.error "Could not load the XML URL: #{e}"
         end
 
         if response.present?
@@ -503,8 +506,10 @@ module Tags
           document = Nokogiri::XML(xml)
           template = Nokogiri::XSLT(xslt)
           template.transform(document)
+        else
         end
-      # end
+      end
+
     end
 
     def self.breadcrumb_list(options)

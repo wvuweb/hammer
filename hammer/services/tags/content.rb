@@ -1,5 +1,6 @@
 require 'active_support/all'
 require 'faker'
+
 require "../hammer/services/theme_partial_renderer.rb"
 
 module Tags
@@ -49,24 +50,6 @@ module Tags
     end
 
     tag 'editable_region' do |tag|
-      # if tag.globals.context.data
-      #   if tag.globals.context.data['editable_region'] && tag.globals.context.data['editable_region'][tag.attr['name']]
-      #     content = tag.globals.context.data['editable_region'][tag.attr['name']]
-      #   else
-      #     content = Hammer.error "Set data for key: <em>#{tag.attr['name']}</em> under <em>editable_region</em> in the mock_data file"
-      #   end
-      # else
-      #   content = Faker::Lorem.paragraph(rand(2..10))
-      # end
-      # if tag.globals.context.data['show_editable_regions']
-      #   if tag.attr['scope'] == "site"
-      #     "<div class='hammer-show-editable' style='outline: 1px dotted orange;'>"+content+"</div>"
-      #   else
-      #     "<div class='hammer-show-editable' style='outline: 1px dotted #09F;'>"+content+"</div>"
-      #   end
-      # else
-      #   content
-      # end
       rname = tag.attr["name"]
       if tag.globals.context.data['editable_region']
         if tag.globals.context.data['editable_region'][rname]
@@ -74,7 +57,9 @@ module Tags
         else
           content = []
           content << (Hammer.key_missing rname, {parent_key: "editable_region", warning: true, message: "auto generated paragraph added below"})
-          content << "<p>#{Faker::Lorem.paragraph(rand(2..10))}</p>"
+          Faker::Lorem.paragraphs(rand(1..3), true).each do |paragraph|
+            content << "<p>#{paragraph}</p>"
+          end
           content.join("")
         end
       else
