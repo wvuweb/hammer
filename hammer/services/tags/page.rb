@@ -12,10 +12,14 @@ module Tags
     end
 
     tag 'root' do |tag|
-      if tag.locals.page['root']
-        tag.expand
+      if tag.locals.page
+        if tag.locals.page['root']
+          tag.expand
+        else
+          Hammer.key_missing "root", {parent_key: "page"}
+        end
       else
-        Hammer.key_missing "root", {parent_key: "page"}
+        Hammer.key_missing "page"
       end
     end
 
