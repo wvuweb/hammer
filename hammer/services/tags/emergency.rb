@@ -43,29 +43,15 @@ module Tags
       tag.expand
     end
 
-    # tag 'event:active' do |tag|
-    #   tag.locals.event[:active]
-    # end
-    #
-    # tag 'event:id' do |tag|
-    #   tag.locals.event['id']
-    # end
-    #
-    # tag 'event:name' do |tag|
-    #   tag.locals.event['name']
-    # end
-    #
-    # tag 'event:title' do |tag|
-    #   tag.locals.event['title']
-    # end
-
-    [:id, :active, :name, :title].each do |method|
+    [:id, :active, :name, :title,:content].each do |method|
       tag "event:#{method}" do |tag|
-        tag.locals.event[method]
+        if tag.locals.event[method]
+          tag.locals.event[method]
+        else
+          Hammer.key_missing method.to_s, {parent: "event"}
+        end
       end
     end
-
-
 
     tag 'event:author' do |tag|
       tag.locals.event['updated_by'].map {|n| n[1]}.join(' ')
@@ -74,15 +60,6 @@ module Tags
     tag 'event:updated_at' do |tag|
       format = (tag.attr['format'] || '%m/%d/%Y').strip
       parse_date(tag.locals.event['updated_at'], format)
-    end
-
-    tag 'event:content' do |tag|
-
-      if tag.locals.event[:content]
-        tag.locals.event[:content]
-      else
-        Hammer.error 'Set key <em>events:event:content</em> in mock_data file'
-      end
     end
 
     tag 'events:each' do |tag|
