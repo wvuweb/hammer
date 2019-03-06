@@ -379,15 +379,23 @@ module Tags
 
       begin
         html = Nokogiri::HTML(content)
-        results = html.css(css_selector.to_s)
-        output = (limit.present? ? results.first(limit.to_i).collect(&:to_s) : results.collect(&:to_s)).join('')
+        result = html.css(css_selector.to_s)
+        # output = (limit.present? ? results.first(limit.to_i).collect(&:to_s) : results.collect(&:to_s)).join('')
+
+        output = []
+        errors = html.css('.wvu-hammer-error')
+        output << errors.collect(&:to_s).join("")
+
+        if limit.present?
+          output << result.first(limit.to_i).collect(&:to_s).join("")
+        else
+          output << result.collect(&:to_s).join("")
+        end
+        output.join("")
       rescue
-        output = "ERROR: Could not parse content."
+        Hammer.error "Could not parse content with <code>select_html</code>"
       end
 
-      output
-      # tag.expand
-      # Hammer.error "select_html tag is not implemented yet"
     end
 
     # This tag allows you to output the value of an HTML element attribute, using a CSS expression. If

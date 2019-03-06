@@ -102,7 +102,16 @@ module Tags
         if tag.locals.article[:content][region]
           tag.locals.article[:content][region]
         else
-          Hammer.key_missing region, {parent: 'article:content'}
+          if region == 'article-body'
+            output = []
+            output << (Hammer.key_missing region, {parent: 'article:content', warning: true, message: 'auto generated paragraphs have been inserted below'})
+            Faker::Lorem.paragraphs(rand(1..3), true).each do |paragraph|
+              output << "<p>#{paragraph}</p>"
+            end
+            output.join("")
+          else
+            Hammer.key_missing region, {parent: 'article:content'}
+          end
         end
       else
         Hammer.key_missing 'content', {parent: 'article'}

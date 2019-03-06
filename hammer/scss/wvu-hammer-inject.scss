@@ -81,6 +81,10 @@
 .wvu-hammer-error {
   border-radius: 3px 0 0 3px;
   font-family: monospace;
+  background-color: #fff;
+  padding: 0 3px 0 0;
+  position:relative;
+  z-index: 9999;
 
   strong {
     padding: 0 5px;
@@ -90,6 +94,7 @@
     border-radius: 3px;
     font-family: monospace;
     padding: 0 3px;
+    background-color: #dfdfdf;
   }
 }
 
