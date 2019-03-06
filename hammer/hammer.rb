@@ -92,7 +92,7 @@ module Hammer
     if options[:comment]
       "<!-- #{console_error} #{options[:message]} -->"
     else
-      "<span class='wvu-hammer-error wvu-hammer-error__#{type.downcase}'>#{error}#{options[:message]}</span>"
+      "<span class='wvu-hammer-error wvu-hammer-error__#{type.downcase}'>#{error} #{options[:message]}</span>"
     end
   end
 
