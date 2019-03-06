@@ -18,8 +18,8 @@ Visit the wiki for more information:
 
 These dependencies are only needed if you are developing against Hammer directly
 
-* Ruby 1.9.3-p484
-
+* Ruby 2.4.*
+* Bundler Gem `gem install bundler`
 
 ### Example Mock Data File
 
