@@ -7,23 +7,17 @@
   h1 {
     font-size: 24px;
     font-weight: inherit;
-    padding:8px 32px;
+    padding: 0px 16px;
     margin: 0;
     width: auto;
     display: inline-block;
     color: inherit;
     font-family: inherit;
     line-height: inherit;
-  }
-  ul {
-    padding:0 ;
-    margin:0;
-    display: flex;
-    align-items: center;
-  }
-  li {
-    margin: inherit;
-    padding: inherit;
+
+    @media only screen and (min-width: 600px) {
+      padding:8px 32px;
+    }
   }
   a {
     background-color: inherit;
@@ -35,14 +29,33 @@
   }
 }
 
-#wvu-hammer-nav .wvu-hammer-breadcrumbs__crumbs {
+.wvu-hammer-breadcrumbs__container {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto;
 
-  padding: 8px 16px;
+  @media only screen and (min-width: 600px) {
+    grid-template-columns: auto 1fr;
+  }
+}
+
+#wvu-hammer-nav ul.wvu-hammer-breadcrumbs__crumbs {
+  padding: 0 8px 5px 8px;
+  margin:0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  @media only screen and (min-width: 600px) {
+    padding: 0;
+  }
+
   list-style-type: none;
 
   li {
     float: left;
     font-size: 14px;
+    padding: inherit;
     margin: 6px 8px 0 0;
     color: #a7a7a7;
 
@@ -58,6 +71,7 @@
   }
 
   a {
+    padding: 0;
     color: #fcfcfc;
     text-decoration: none;
     background-color: transparent;
@@ -72,11 +86,7 @@
   }
 }
 
-.wvu-hammer-breadcrumbs__container {
-  width: 100%;
-  display: grid;
-  grid-template-columns: auto 1fr;
-}
+
 
 .wvu-hammer-error {
   border-radius: 3px 0 0 3px;
