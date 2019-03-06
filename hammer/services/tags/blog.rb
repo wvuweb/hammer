@@ -164,11 +164,11 @@ module Tags
       content = []
       limit = tag.attr['limit'].to_i
       if tag.locals.blog
-        if tag.locals.blog['articles']
-          if limit
-            tag.locals.articles = tag.locals.blog['articles'].slice(0, limit)
+        if tag.locals.blog[:articles]
+          if limit > 0
+            tag.locals.articles = tag.locals.blog[:articles].slice(0, limit)
           else
-            tag.locals.articles = tag.locals.blog['articles']
+            tag.locals.articles = tag.locals.blog[:articles]
           end
           content << tag.expand
         else
@@ -190,13 +190,13 @@ module Tags
       # cnt = tag.locals.articles.try(:all).try(:count)
       # tag.expand if cnt > 0
 
-      tag.expand if tag.locals.blog[:articles].count > 0
+      tag.expand if tag.locals.articles.count > 0
     end
 
     tag 'articles:if_no_articles' do |tag|
       # cnt = tag.locals.articles.try(:all).try(:count)
       # tag.expand if cnt.nil? or cnt == 0
-      if tag.locals.blog[:articles].count.nil? || tag.locals.blog[:articles].count == 0
+      if tag.locals.articles.count.nil? || tag.locals.articles.count == 0
         tag.expand
       end
     end
@@ -331,8 +331,8 @@ module Tags
         article_object[:article] = nil
 
         if tag.locals.blog
-          if tag.locals.blog['articles']
-            article_object[:article] = tag.locals.blog['articles'].sample
+          if tag.locals.blog[:articles]
+            article_object[:article] = tag.locals.blog[:articles].sample
           else
             article_object[:errors] << (Hammer.error "Could not find <code>articles:</code> key under <code>blog:</code> in mock_data.yml")
           end
