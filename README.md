@@ -1,8 +1,8 @@
 # Hammer
 
-Hammer is a theme development tool for the [CleanSlate](http://cleanslate.wvu.edu/ "CleanSlate") CMS template rendering engine. Hammer was created to help you iterate quickly on themes and template markup. Hammer is  NOT for content creation.
+Hammer is a theme development tool for the [CleanSlate](http://cleanslate.wvu.edu/ "CleanSlate") CMS template rendering engine. Hammer was created to help you iterate quickly on themes and template markup. 
 
-Hammer is similar to [Mock Builder](https://github.com/wvuweb/mock_builder "Mock Builder") for [Slate](http://slatecms.wvu.edu/ "Slate"), but has many differences due to the different architecture of [CleanSlate](http://cleanslate.wvu.edu/ "CleanSlate"). If you are familiar with [Mock Builder](https://github.com/wvuweb/mock_builder "Mock Builder") you should be able to quickly get up and running with Hammer.
+Hammer is **NOT** for content creation.
 
 ## Install & Usage
 
@@ -14,14 +14,16 @@ Visit the wiki for more information:
 
 [Hammer Wiki](https://github.com/wvuweb/hammer/wiki)
 
-###Development Dependencies
+### Development Dependencies
 
 These dependencies are only needed if you are developing against Hammer directly
 
-* Ruby 2.4.*
+* Ruby 2.4
 * Bundler Gem `gem install bundler`
 
-### Example Mock Data File
+### Mock Data File
+
+Hammer uses a YAML file to 'mock' content data structures needed for cleanslate templates.
 
 [`mock_data.yml`](https://github.com/wvuweb/hammer/wiki/Mock-Data#example-of-a-mock_datayml-file)
 
