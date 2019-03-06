@@ -15,7 +15,6 @@ module Hammer
   end
 
   def do_GET(request, response)
-    # binding.pry
     request_path(request)
     map_request
 
