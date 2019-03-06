@@ -28,8 +28,8 @@ module Tags
     end
 
     tag 'events' do |tag|
-      if tag.globals.context.data && tag.globals.context.data['events']
-        tag.locals.events = tag.globals.context.data['events']
+      if tag.locals.context.data && tag.locals.context.data['events']
+        tag.locals.events = tag.locals.context.data['events']
       end
       tag.expand
     end
@@ -43,17 +43,29 @@ module Tags
       tag.expand
     end
 
-    tag 'event:id' do |tag|
-      tag.locals.event['id']
+    # tag 'event:active' do |tag|
+    #   tag.locals.event[:active]
+    # end
+    #
+    # tag 'event:id' do |tag|
+    #   tag.locals.event['id']
+    # end
+    #
+    # tag 'event:name' do |tag|
+    #   tag.locals.event['name']
+    # end
+    #
+    # tag 'event:title' do |tag|
+    #   tag.locals.event['title']
+    # end
+
+    [:id, :active, :name, :title].each do |method|
+      tag "event:#{method}" do |tag|
+        tag.locals.event[method]
+      end
     end
 
-    tag 'event:name' do |tag|
-      tag.locals.event['name']
-    end
 
-    tag 'event:title' do |tag|
-      tag.locals.event['title']
-    end
 
     tag 'event:author' do |tag|
       tag.locals.event['updated_by'].map {|n| n[1]}.join(' ')
@@ -92,8 +104,8 @@ module Tags
 
       def count_items(tag, target)
         # filter_events(tag, target).total_count
-        if tag.globals.context.data && tag.globals.context.data['events']
-          tag.globals.context.data['events'].count
+        if tag.locals.context.data && tag.locals.context.data['events']
+          tag.locals.context.data['events'].count
         else
           0
         end
@@ -102,7 +114,6 @@ module Tags
       def loop_over(tag, target)
 
         items = target
-
         output = []
         items.each_with_index do |item, index|
           event = item
@@ -114,8 +125,8 @@ module Tags
       end
 
       def load_site(tag)
-        if tag.globals.context.data && tag.globals.context.data['site']
-          tag.locals.emergency_site = tag.globals.context.data['site']
+        if tag.locals.context.data && tag.locals.context.data['site']
+          tag.locals.emergency_site = tag.locals.context.data['site']
         else
           site = {
             :published_at => Random.rand(11).to_s+ " days ago"
@@ -125,10 +136,10 @@ module Tags
       end
 
       def load_emergency_status(tag)
-        # page = tag.globals.page
+        # page = tag.locals.page
         #page.type == 'ArticlePage' ? decorated_page(page) : nil
-        if tag.globals.context.data && tag.globals.context.data['emergency_status']
-          tag.locals.emergency_status = tag.globals.context.data['emergency_status']
+        if tag.locals.context.data && tag.locals.context.data['emergency_status']
+          tag.locals.emergency_status = tag.locals.context.data['emergency_status']
         else
           emergency_status = {
             :status => [true, false].sample,
@@ -139,10 +150,10 @@ module Tags
       end
 
       def load_event(tag)
-        # page = tag.globals.page
+        # page = tag.locals.page
         #page.type == 'ArticlePage' ? decorated_page(page) : nil
-        if tag.globals.context.data && tag.globals.context.data['events']
-          tag.globals.context.data['events'].first
+        if tag.locals.context.data && tag.locals.context.data['events']
+          tag.locals.context.data['events'].first
         else
           content = <<-CONTENT
             <p>#{Faker::Lorem.paragraph(2)}</p>
