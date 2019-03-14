@@ -75,16 +75,31 @@ latest_tag_cmd = "git describe --tags `git rev-list --tags --max-count=1`"
 
 current_tag = `#{hammer_current_tag_cmd}`
 latest_tag = `#{latest_tag_cmd}`
-current_tag.slice! "v"
-latest_tag.slice! "v"
-if Gem::Version.new(current_tag) < Gem::Version.new(latest_tag)
-  puts "Your Hammer Version #{current_tag} is behind the latest version #{latest_tag}".colorize(:red)
-  puts "Run `vagrant hammer update` to upgrade to the latest version".colorize(:light_green)
+
+if current_tag == ""
+  current_tag = `git describe`
+  current_version_info = current_tag.split('-')
+  puts "\n"
+  puts "You are running a development version of Hammer #{current_version_info[0]}".colorize(:green)
+  puts "You are #{current_version_info[1]} commit ahead at hash #{current_version_info[2]}".colorize(:green)
 else
-  puts "\n"
-  puts "You are running the latest Hammer version: ".colorize(:green)+" v#{current_tag}"
-  puts "\n"
+  current_tag.slice! "v"
+  latest_tag.slice! "v"
+
+  if Gem::Version.new(current_tag) < Gem::Version.new(latest_tag)
+    puts "Your Hammer Version #{current_tag} is behind the latest version #{latest_tag}".colorize(:red)
+    puts "Run `vagrant hammer update` to upgrade to the latest version".colorize(:light_green)
+  else
+    puts "\n"
+    puts "You are running the latest Hammer version: ".colorize(:green)+" v#{current_tag}"
+    puts "\n"
+  end
 end
+
+
+
+
+
 
 # begin
 #   hammer_branch = `#{hammer_branch_cmd}`
