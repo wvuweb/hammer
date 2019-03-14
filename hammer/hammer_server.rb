@@ -81,7 +81,7 @@ if current_tag == ""
   current_version_info = current_tag.split('-')
   puts "\n"
   puts "You are running a development version of Hammer #{current_version_info[0]}".colorize(:green)
-  puts "You are #{current_version_info[1]} commit ahead at hash #{current_version_info[2]}".colorize(:green)
+  puts "You are #{current_version_info[1]} commits ahead at hash #{current_version_info[2]}".colorize(:green)
 else
   current_tag.slice! "v"
   latest_tag.slice! "v"
@@ -95,10 +95,6 @@ else
     puts "\n"
   end
 end
-
-
-
-
 
 
 # begin
