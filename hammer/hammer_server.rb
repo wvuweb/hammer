@@ -158,7 +158,10 @@ puts "    #     HAMMER - Clean Slate Mock Server     #".colorize(:yellow)
 puts "    ############################################".colorize(:yellow)
 puts " "
 puts "    Starting in #{doc_root}...      ".black.on_green
-puts "    Now available at http://localhost:#{options.port}...     ".black.on_green
+# TODO: figure out a good way to display what port the vagrant is running on
+# options.port shows the internal port, not the networked port in the vm which is
+# settable in a ENV file setting.
+# puts "    Now available at http://localhost:#{options.port}...     ".black.on_green
 puts " "
 puts " "
 
