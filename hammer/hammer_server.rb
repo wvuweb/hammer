@@ -87,12 +87,13 @@ else
   latest_tag.slice! "v"
 
   if Gem::Version.new(current_tag) < Gem::Version.new(latest_tag)
-    puts "Your Hammer Version #{current_tag} is behind the latest version #{latest_tag}".colorize(:red)
+    puts "\n".colorize(:red)
+    puts "Your Hammer version #{current_tag.slice!("\n")} is behind the latest version #{latest_tag.slice!("\n")}".colorize(:red)
     puts "Run `vagrant hammer update` to upgrade to the latest version".colorize(:light_green)
   else
-    puts "\n"
+    puts "\n".colorize(:green)
     puts "You are running the latest Hammer version: ".colorize(:green)+" v#{current_tag}"
-    puts "\n"
+    puts "\n".colorize(:green)
   end
 end
 
