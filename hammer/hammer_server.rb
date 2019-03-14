@@ -108,11 +108,9 @@ if File.directory?(code_dir)
     # Add identity files for bitbucket
     File.chmod(0600,"./config/hammer")
     # puts "Adding SSH Identity for Code repository"
-    ssh_ident_cmd = "ssh-agent bash -c 'ssh-add ./config/hammer' &> /dev/null;"
-    `#{ssh_ident_cmd}`
 
-    code_ref_cmd = "cd #{code_dir} && git rev-parse master"
-    code_remote_cmd = "cd #{code_dir} && git ls-remote -q"
+    code_ref_cmd = "ssh-agent bash -c 'ssh-add ./config/hammer &> /dev/null; cd #{code_dir} && git rev-parse master'"
+    code_remote_cmd = "ssh-agent bash -c 'ssh-add ./config/hammer &> /dev/null; cd #{code_dir} && git ls-remote -q'"
 
     code_ref = `#{code_ref_cmd}`
     code_ref = code_ref.delete("\n")
@@ -159,7 +157,8 @@ puts "    ############################################".colorize(:yellow)
 puts "    #     HAMMER - Clean Slate Mock Server     #".colorize(:yellow)
 puts "    ############################################".colorize(:yellow)
 puts " "
-puts "    Starting in #{doc_root}...     ".black.on_green
+puts "    Starting in #{doc_root}...      ".black.on_green
+puts "    Now available at http://localhost:#{options.port}...     ".black.on_green
 puts " "
 puts " "
 
