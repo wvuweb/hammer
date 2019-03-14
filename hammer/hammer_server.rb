@@ -167,10 +167,13 @@ access_log = nil
 
 if options.daemon == 1
   log_file = File.open '/var/log/webrick/error.log', 'a+'
-  log = WEBrick::Log.new log_file
+  log = WEBrick::Log.new(log_file, WEBrick::Log::INFO)
 
   access_file = File.open '/var/log/webrick/error.log', 'a+'
-  access_log = WEBrick::Log.new access_file
+  access_log = WEBrick::Log.new(access_file,WEBrick::AccessLog::COMBINED_LOG_FORMAT)
+else
+  log = WEBrick::Log.new("/dev/null")
+  access_log = WEBrick::Log.new("/dev/null")
 end
 
 httpd = WEBrick::HTTPServer.new(
