@@ -44,6 +44,7 @@ end
 options = OpenStruct.new
 options.directory = (Pathname.new(Dir.pwd).parent.parent + "cleanslate_themes").to_s
 options.port = 8080
+options.host_port = 2000
 options.daemon = WEBrick::SimpleServer
 
 OptionParser.new do |o|
@@ -61,6 +62,10 @@ OptionParser.new do |o|
 
   o.on('-da', '--daemon daemon', Integer, 'If the server should run Daemonized') do |da|
     options.daemon = da == 1 ?  WEBrick::Daemon : WEBrick::SimpleServer
+  end
+
+  o.on('-h', '--host port', Integer, 'Host Port to access hammer server on') do |h|
+    options.host_port = h
   end
 
   o.parse!(ARGV)
@@ -159,10 +164,7 @@ puts "    #     HAMMER - Clean Slate Mock Server     #".colorize(:yellow)
 puts "    ############################################".colorize(:yellow)
 puts " "
 puts "    Starting in #{doc_root}...      ".black.on_green
-# TODO: figure out a good way to display what port the vagrant is running on
-# options.port shows the internal port, not the networked port in the vm which is
-# settable in a ENV file setting.
-# puts "    Now available at http://localhost:#{options.port}...     ".black.on_green
+puts "    Now available at http://localhost:#{options.host_port}...     ".black.on_green
 puts " "
 puts " "
 
