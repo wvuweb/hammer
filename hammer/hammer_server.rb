@@ -43,7 +43,7 @@ end
 
 options = OpenStruct.new
 options.directory = (Pathname.new(Dir.pwd).parent.parent + "cleanslate_themes").to_s
-options.port = 2000
+options.port = 8080
 options.daemon = WEBrick::SimpleServer
 
 OptionParser.new do |o|
@@ -68,77 +68,63 @@ end
 
 
 # g = Git.open("../")
-hammer_branch_cmd = "cd ../ && git symbolic-ref --short HEAD"
+# hammer_branch_cmd = "cd ../ && git branch | grep \* | cut -d ' ' -f2"
 
-begin
-  hammer_branch = `#{hammer_branch_cmd}`
-  hammer_ref_cmd = "cd ../ && git rev-parse #{hammer_branch}"
-  hammer_remote_cmd = "cd ../ && git ls-remote"
-  hammer_ref = `#{hammer_ref_cmd}`
-  hammer_remote = `#{hammer_remote_cmd}`
+hammer_current_tag_cmd = "git describe --exact-match --tags $(git log -n1 --pretty='%h')"
+latest_tag_cmd = "git describe --tags `git rev-list --tags --max-count=1`"
 
-  hammer_branch = hammer_branch.delete("\n")
-  hammer_ref = hammer_ref.delete("\n")
+current_tag = `#{hammer_current_tag_cmd}`
+latest_tag = `#{latest_tag_cmd}`
 
-  hammer_remote = hammer_remote.split("\n").collect{|ref| ref.split("\t")}
-  hammer_remote = hammer_remote.select{|remote| remote[1] == "refs/heads/#{hammer_branch}"}[0][0]
+if current_tag == ""
+  current_tag = `git describe`
+  current_version_info = current_tag.split('-')
+  puts "\n"
+  puts "You are running a development version of Hammer #{current_version_info[0]}".colorize(:green)
+  puts "You are #{current_version_info[1]} commits ahead at hash #{current_version_info[2]}".colorize(:green)
+else
+  current_tag.slice! "v"
+  latest_tag.slice! "v"
 
-  puts "Hammer is on branch: ".colorize(:light_white)+"#{hammer_branch}".colorize(:light_blue)
-  puts "Hammer Local #{hammer_branch} branch ref is at: ".colorize(:light_white)+"#{hammer_ref}".colorize(:light_blue)
-  puts "Hammer Remote #{hammer_branch} branch ref is at: ".colorize(:light_white)+"#{hammer_remote}".colorize(:light_blue)
-
-  # branch = g.lib.send(:command, "symbolic-ref --short HEAD")
-  # ref = g.lib.send(:command, "rev-parse #{branch}")
-  # remote = g.lib.send(:command, "rev-parse origin/#{branch}")
-
-  if hammer_ref != hammer_remote
-    update_url = "https://github.com/wvuweb/hammer/wiki/Update"
-    puts " "
-    puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".colorize(:red)
-    puts "!!!".colorize(:red)+" WARNING YOU ARE BEHIND ON HAMMER VERSIONS".colorize(:light_cyan)+" !!!".colorize(:red)
-    puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".colorize(:red)
-    puts " "
-    puts "Update Hammer by using using the following command: ".colorize(:light_white)
-    puts " "
-    puts "vagrant hammer update".colorize(:light_green)
-    puts " "
-    puts "Hammer will automatically restart after updating itself".colorize(:light_white)
-    puts " "
-    puts " "
+  if Gem::Version.new(current_tag) < Gem::Version.new(latest_tag)
+    puts "\n".colorize(:red)
+    puts "Your Hammer version #{current_tag.slice!("\n")} is behind the latest version #{latest_tag.slice!("\n")}".colorize(:red)
+    puts "Run `vagrant hammer update` to upgrade to the latest version".colorize(:light_green)
+  else
+    puts "\n".colorize(:green)
+    puts "You are running the latest Hammer version: ".colorize(:green)+" v#{current_tag}"
+    puts "\n".colorize(:green)
   end
-rescue => e
-  puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".colorize(:red)
-  puts "!!!".colorize(:red)+" COULD NOT CHECK HAMMER REPOSITORY FOR UPDATES".colorize(:light_cyan)+" !!!".colorize(:red)
-  puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".colorize(:red)
 end
 
 
 doc_root = options.directory
-if File.directory?(doc_root+"/code")
 
-  # code = Git.open(doc_root+"/code")
+code_dir = doc_root+'/code'
 
-  # Add identity files for bitbucket
-  File.chmod(0600,"./config/hammer")
-
-  puts "Adding Identity files to be able to access Code repository in bitbucket"
-  code_ref_cmd = " ssh-agent bash -c 'ssh-add ./config/hammer; cd #{doc_root+'/code'} && git rev-parse master'"
-  code_remote_cmd = "ssh-agent bash -c 'ssh-add ./config/hammer; cd #{doc_root+'/code'} && git ls-remote'"
+if File.directory?(code_dir)
 
   begin
+
+    # Add identity files for bitbucket
+    File.chmod(0600,"./config/hammer")
+    # puts "Adding SSH Identity for Code repository"
+
+    code_ref_cmd = "ssh-agent bash -c 'ssh-add ./config/hammer &> /dev/null; cd #{code_dir} && git rev-parse master'"
+    code_remote_cmd = "ssh-agent bash -c 'ssh-add ./config/hammer &> /dev/null; git ls-remote git@bitbucket.org:wvudigital/code.git master -q'"
 
     code_ref = `#{code_ref_cmd}`
     code_ref = code_ref.delete("\n")
     code_remote = `#{code_remote_cmd}`
     code_remote = code_remote.split("\n").collect{|ref| ref.split("\t")}.select{|remote| remote[1] == "refs/heads/master"}[0][0]
 
-    puts "Code Local repo ref is at: ".colorize(:light_white)+"#{code_ref}".colorize(:light_blue)
-    puts "Code Remote repo ref is at: ".colorize(:light_white)+"#{code_remote}".colorize(:light_blue)
-
     #code_ref = g.lib.send(:command, "rev-parse master")
     #code_remote = g.lib.send(:command, "rev-parse origin/master")
 
     if code_ref.to_s != code_remote.to_s
+      puts "Code Local repo ref is at: ".colorize(:light_white)+"#{code_ref}".colorize(:light_blue)
+      puts "Code Remote repo ref is at: ".colorize(:light_white)+"#{code_remote}".colorize(:light_blue)
+
       puts " "
       puts "WARNING:".colorize(:red)
       puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".colorize(:light_cyan)
@@ -172,15 +158,36 @@ puts "    ############################################".colorize(:yellow)
 puts "    #     HAMMER - Clean Slate Mock Server     #".colorize(:yellow)
 puts "    ############################################".colorize(:yellow)
 puts " "
-puts "    Starting in #{doc_root}...     ".black.on_green
+puts "    Starting in #{doc_root}...      ".black.on_green
+# TODO: figure out a good way to display what port the vagrant is running on
+# options.port shows the internal port, not the networked port in the vm which is
+# settable in a ENV file setting.
+# puts "    Now available at http://localhost:#{options.port}...     ".black.on_green
 puts " "
 puts " "
 
+log = nil
+access_log = nil
+
+if options.daemon == 1
+  log_file = File.open '/var/log/webrick/error.log', 'a+'
+  log = WEBrick::Log.new(log_file, WEBrick::Log::INFO)
+
+  access_file = File.open '/var/log/webrick/error.log', 'a+'
+  access_log = WEBrick::Log.new(access_file,WEBrick::AccessLog::COMBINED_LOG_FORMAT)
+else
+  log = WEBrick::Log.new("/dev/null")
+  access_log = WEBrick::Log.new("/dev/null")
+end
+
 httpd = WEBrick::HTTPServer.new(
+  :BindAddress => "0.0.0.0",
   :Port => options.port,
   :DocumentRoot => doc_root,
   :ServerType => options.daemon,
-  :DirectoryIndex => []
+  :DirectoryIndex => [],
+  :Logger => log,
+  :AccessLog => access_log
 )
 
 httpd.mount("/", HammerServlet, doc_root, true)

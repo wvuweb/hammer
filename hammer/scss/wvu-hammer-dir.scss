@@ -1,0 +1,29 @@
+// $fa-font-path: "@fortawesome/fontawesome-free/webfonts";
+
+@import 'node_modules/brand-patterns/scss/styles';
+@import 'node_modules/bootstrap/scss/bootstrap';
+@import 'rwd-table';
+
+.wvu-container {
+  padding: 2em 0 4.3em 0;
+}
+
+.table tr.clickable:hover {
+  cursor: pointer;
+}
+
+.table tr.views {
+  background-color: $pms-558-c;
+}
+
+th[data-th="Last Modified"],
+th[data-th="File Size"] {
+  width: 15%
+}
+
+@include mq($bp-medium){
+  th[data-th="File Size"],
+  td[data-th="File Size"] {
+    text-align: right;
+  }
+}

@@ -22,6 +22,7 @@ module Tags
       # site.stylesheet_link(tag.attr['name'], tag.globals.mode, { :theme => theme })
 
       doc_root = tag.globals.context.server.config[:DocumentRoot]
+
       output = ""
       if tag.attr['name'].split(',').length > 0
         tag.attr['name'].split(',').each do |t|
@@ -89,11 +90,13 @@ module Tags
     def self.build_css_tag(name, context)
       doc_root = context.globals.context.server.config[:DocumentRoot]
 
-      if doc_root.split('/').last == "cleanslate_themes"
-        url = "/#{context.globals.context.request.path.split('/')[1]}/stylesheets/#{name}.css"
-      else
-        url = "/stylesheets/#{name}.css"
-      end
+      # if doc_root.split('/').last == ("cleanslate_themes" || "emergenc"
+      #  url = "/#{context.globals.context.request.path.split('/')[1]}/stylesheets/#{name}.css"
+      # else
+      #  url = "/stylesheets/#{name}.css"
+      # end
+
+      url = "/#{context.globals.context.request.path.split('/')[1]}/stylesheets/#{name}.css"
 
       %{<link rel="stylesheet" href="#{url}" type="text/css" />}
     end

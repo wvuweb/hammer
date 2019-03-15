@@ -1,8 +1,8 @@
 # Hammer
 
-Hammer is a theme development tool for the [CleanSlate](http://cleanslate.wvu.edu/ "CleanSlate") CMS template rendering engine. Hammer was created to help you iterate quickly on themes and template markup. Hammer is  NOT for content creation.
+Hammer is a theme development tool for the [CleanSlate](http://cleanslate.wvu.edu/ "CleanSlate") CMS template rendering engine. Hammer was created to help you iterate quickly on themes and template markup. 
 
-Hammer is similar to [Mock Builder](https://github.com/wvuweb/mock_builder "Mock Builder") for [Slate](http://slatecms.wvu.edu/ "Slate"), but has many differences due to the different architecture of [CleanSlate](http://cleanslate.wvu.edu/ "CleanSlate"). If you are familiar with [Mock Builder](https://github.com/wvuweb/mock_builder "Mock Builder") you should be able to quickly get up and running with Hammer.
+Hammer is **NOT** for content creation.
 
 ## Install & Usage
 
@@ -14,14 +14,16 @@ Visit the wiki for more information:
 
 [Hammer Wiki](https://github.com/wvuweb/hammer/wiki)
 
-###Development Dependencies
+### Development Dependencies
 
 These dependencies are only needed if you are developing against Hammer directly
 
-* Ruby 1.9.3-p484
+* Ruby 2.4
+* Bundler Gem `gem install bundler`
 
+### Mock Data File
 
-### Example Mock Data File
+Hammer uses a YAML file to 'mock' content data structures needed for cleanslate templates.
 
 [`mock_data.yml`](https://github.com/wvuweb/hammer/wiki/Mock-Data#example-of-a-mock_datayml-file)
 
@@ -53,7 +55,11 @@ site:                                           # site is defined by any attribu
   id: 26                                        # id <r:site:id />            -- accepts an integer
   name: String                                  # name <r:site:name />        -- accepts a string
   domain: example.wvu.edu                       # domain <r:site:domain />    -- accepts a string
-
+  data:                                         # data is defined by any custom data your page would hold in CleanSlate
+    data_key: data_value                        # <r:site:data name="data_key" />
+    data_key_2: data_value_2                    # data_key is the name of the custom data in page properties which is defined
+                                                # in your templates front matter configuration
+                                                # data_value is any value you wish to expose
 root: true                                      # root tag is used to set the context for loops
                                                 # <r:root />                  -- accepts true | false
 
@@ -74,11 +80,12 @@ page:                                           # page is defined by any attribu
                                                 # in your templates front matter configuration
                                                 # data_value is any value you wish to expose
   content:                                      # content attribute is for supporting loops in which a page
-    region_name: String                         # may be dynamically building content from child pages
-
+    region_name: String                         # may be dynamically building content from child pages or <r:get_page />
+                                                # <r:page:if_has_content_for name="region_name" />
+                                                # <r:page:unless_has_content_for name="region_name" />
 pages:                                          # pages allow you to mock addtional pages to be used in page loops
   - id: 2                                       # such as <r:children /> <r:ancestors /> <r:decendants /> <r:siblings />
-    name: String                                # each page set is seperated by a dash
+    name: String                                # each page set is seperated by a dash to create an Array of pages
     ...                                         # pages can contain all the data that the "page" key above can
   - id: 3
     ...
@@ -125,9 +132,16 @@ ancestor_menu: String                           # ancestor_menu allows you to ov
                                                 #     <li><a href="#">Page</a></li>
                                                 #     <li><a href="#">Page</a></li>
                                                 #   </ul>
+                                                
+breadcrumbs: String                             # breadcrumbs takes a string of HTML that outputs breadcrumb structure
+                                                # breadcrumbs: |
+                                                #   <ul class="wvu-breadcrumbs__crumbs">
+                                                #     <li><a href="#">Home</a></li>
+                                                #     <li class="active">Page</li>
+                                                #   </ul>
 
 files:                                          # files contains all the data for any of the <r:files|file /> tags
-  - filename: String  
+  - filename: String                            # files is an Array of files seperated by a dash
     name: String
     title: String
     alt_text: String
@@ -135,8 +149,8 @@ files:                                          # files contains all the data fo
     image_url: String
   - ...
 
-blog:                                           # blog contains all the data for the <r:blog:{method} /> tags
-  - id: Integer
+blogs:                                          # blogs contains all the data for the <r:blog:{method} /> tags
+  - id: Integer                                 # blogs contains an Array of blogs each blog set is seperated by a dash
     name: String                                # <r:blog:name />             -- accepts a string
                                                 # blog articles much like pages are a repeating group of content for each article
     articles:                                   # each article is seperated by a dash  
@@ -146,10 +160,15 @@ blog:                                           # blog contains all the data for
         created_by:                             # <r:article:author_full_name />  -- accepts two other objects  
           first_name: String                    # <r:article:author_first_name /> -- accepts a string
           last_name: String                     # <r:article:author_last_name />  -- acccpts a string
-        content: String                         # <r:article:content />       -- accepts a string or | pipe character followed by HTML
+        content:                                # content attribute is for supporting loops in which a blog article
+          region_name: String                   # may be dynamically built using content regions from the article
+                                                # <r:article:content name="region_name" />  
         published_at: 2 days ago                # <r:article:published_at />  -- accepts a date string
       - article:
         ...
       - article:
         ...
+  - id: 2
+    name: String
+    ...
 ```

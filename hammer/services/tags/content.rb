@@ -1,5 +1,6 @@
 require 'active_support/all'
 require 'faker'
+
 require "../hammer/services/theme_partial_renderer.rb"
 
 module Tags
@@ -14,7 +15,7 @@ module Tags
         tag.globals.content_for[name]
       else
         if tag.globals.yield.empty?
-          Hammer.error "No yield data.  Are you displaying a layout?"
+          Hammer.error "No yield data.  Are you trying to view a layout?"
         else
           tag.globals.yield
         end
@@ -49,24 +50,22 @@ module Tags
     end
 
     tag 'editable_region' do |tag|
-      if tag.globals.context.data
-        if tag.globals.context.data['editable_region'] && tag.globals.context.data['editable_region'][tag.attr['name']]
-          content = tag.globals.context.data['editable_region'][tag.attr['name']]
+      rname = tag.attr["name"]
+      if tag.globals.context.data['editable_region']
+        if tag.globals.context.data['editable_region'][rname]
+          tag.globals.context.data['editable_region'][rname]
         else
-          content = Hammer.error "Set data for key: <em>#{tag.attr['name']}</em> under <em>editable_region</em> in the mock_data file"
+          content = []
+          content << (Hammer.key_missing rname, {parent_key: "editable_region", warning: true, message: "auto generated paragraph added below"})
+          Faker::Lorem.paragraphs(rand(1..3), true).each do |paragraph|
+            content << "<p>#{paragraph}</p>"
+          end
+          content.join("")
         end
       else
-        content = Faker::Lorem.paragraph(rand(2..10))
+        Hammer.key_missing "editable_region"
       end
-      if tag.globals.context.data['show_editable_regions']
-        if tag.attr['scope'] == "site"
-          "<div class='hammer-show-editable' style='outline: 1px dotted orange;'>"+content+"</div>"
-        else
-          "<div class='hammer-show-editable' style='outline: 1px dotted #09F;'>"+content+"</div>"
-        end
-      else
-        content
-      end
+
     end
 
     # The contents of this tag will only be rendered/accessible in the editor. This could be used, for example, to
@@ -75,7 +74,7 @@ module Tags
     # templates, if desired.
     tag 'edit_mode_only' do |tag|
       # if tag.globals.mode == Slate::ViewModes::EDIT
-      if tag.globals.context.data && tag.globals.context.data['edit_mode'] == true
+      if tag.globals.context.data['edit_mode'] == true
         tag.expand
       end
     end

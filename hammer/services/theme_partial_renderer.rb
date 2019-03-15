@@ -17,10 +17,11 @@ class ThemePartialRenderer
     # raise Slate::Errors::TemplateNotFound.new("Could not find partial '#{file_name}' in '#{@theme.name}' theme.") unless file_path.present?
 
     unless file_path.present?
+      style = "background-color: #eee; border-radius: 3px; font-family: monospace; padding: 0 3px;"
       if @theme.nil?
-        content = "Partial Not Found: Could not find partial '#{file_name}' is '#{@opts['theme']}' listed in your mock_data.yml?"
+        content = Hammer.error "Partial Not Found: Could not find partial <code style='#{style}'>'#{file_name}'</code> is the '#{@opts['theme']}' theme listed under <code style='#{style}'>'shared_themes:</code> your mock_data.yml?"
       else
-        content = "Partial Not Found: Could not find partial '#{file_name}' in '#{@theme}' theme."
+        content = Hammer.error "Partial Not Found: Could not find partial <code style='#{style}'>'#{file_name}'</code> in '#{@theme}' theme."
       end
 
     else

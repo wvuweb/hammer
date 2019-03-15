@@ -1,0 +1,48 @@
+.rwd-table {
+  margin: 1em 0 2em 0;
+  min-width: 300px; // adjust to your needs
+  width: 100%;
+
+  tr {
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+  }
+
+  th {
+    display: none; // for accessibility, use a visually hidden method here instead! Thanks, reddit!
+  }
+
+  td {
+    display: block;
+
+    &:before {
+      content: attr(data-th)": "; // who knew you could do this? The internet, that's who.
+      font-weight: bold;
+
+      // optional stuff to make it look nicer
+      width: 6.5em; // magic number :( adjust according to your own content
+      display: inline-block;
+      // end options
+      float: left;
+
+      @include mq($bp-medium) {
+        display: none;
+      }
+    }
+  }
+
+  th, td {
+    text-align: left;
+    border-bottom: 0;
+
+    @include mq($bp-medium) {
+      display: table-cell;
+    }
+
+  }
+}
+
+// override boostrap
+.table > thead > tr > th, .table > thead > tr > td, .table > tbody > tr > th, .table > tbody > tr > td, .table > tfoot > tr > th, .table > tfoot > tr > td {
+  border-top: none;
+}

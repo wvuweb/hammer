@@ -1,8 +1,11 @@
 require 'dentaku'
+require '../hammer/services/dentaku_ext.rb'
 
 module Radius
   class TagBinding
+
     CALCULATOR = Dentaku::Calculator.new
+    CALCULATOR.add_functions(Dentaku::CustomFunctions::FUNCTIONS)
 
     # Evaluates the current tag and returns the rendered contents.
     def expand(newcontext=nil,oldcontext=nil)
@@ -35,7 +38,7 @@ module Radius
         begin
           memo[k] = parse_value(v)
         rescue Exception => e
-          memo[k] = Hammer.error "<strong>Attribute Error</strong> #{name} #{e}"
+          Hammer.error "<strong>Attribute Error</strong> #{k} #{e}"
           #raise AttributeParseError.new(name, k, v, e.backtrace)
         end
 
@@ -111,7 +114,8 @@ module Radius
         memo
       end
     end
-
+    # This method is used to parse tag attributes that may refer to variables or
+    # other tags
     def parse_value(v)
       str = v.to_s.strip
       if str =~ /^{\s*\$(\w+)\s*}$/
@@ -128,5 +132,6 @@ module Radius
         v
       end
     end
+
   end
 end

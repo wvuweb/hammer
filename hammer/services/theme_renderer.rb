@@ -10,7 +10,7 @@ require "../hammer/services/theme_context.rb"
 class ThemeRenderer
 
   attr_accessor :config, :server, :request, :document_root, :filesystem_path, :request_root, :theme_root, :output
-  attr_accessor :content, :layout_file_path, :data
+  attr_accessor :content, :layout_file_path, :data, :data_errors
 
   def initialize(options)
     @server = options[:server]
@@ -20,8 +20,10 @@ class ThemeRenderer
     @request_path = options[:request_path]
     @content_type = options[:content_type]
     @theme_root = theme_root
-    @data = load_data
+    @data = load_data[:yml]
+    @data_errors = load_data[:errors]
     @content = file_contents
+    @htmldoc = ''
     @output = ''
   end
 
@@ -83,6 +85,11 @@ class ThemeRenderer
     @layout_content ||= layout_file_path.read
   end
 
+  def hammer_nav_content
+    hammer_nav_path = Pathname.new(File.expand_path File.dirname(__FILE__)+"/../views/_hammer_nav.html")
+    @hammer_nav_content ||= hammer_nav_path.read
+  end
+
   def render
     parse_yaml(@content)
     unless @content
@@ -103,13 +110,12 @@ class ThemeRenderer
       @content = match.post_match
       begin
         self.config = YAML.load(match[1])
-      rescue => e
-        raise 'Parsing template YAML config failed. Are you sure your YAML is valid?'
+      rescue
+        raise 'Parsing template YAML config failed.  Please validate your mock_data.yml file has the correct format: http://www.yamllint.com/'
       end
     end
     self.config ||= {}
     self.config.merge!(YAML::load(File.open(config_file_path))) if config_file_exists?
-
   end
 
   def render_with_radius
@@ -118,59 +124,79 @@ class ThemeRenderer
     radius_parser.context.globals.layout = false
 
     if has_layout?
-
       radius_parser.context.globals.yield = parsed_content
       radius_parser.context.globals.layout = true
-
       radius_parser.context.globals.layout_file_path = layout_file_path
 
       layout_content
 
-      output = radius_parser.parse(self.layout_content)
+      html = radius_parser.parse(self.layout_content)
+      @htmldoc = Nokogiri::HTML::Document.parse(html)
 
-      @htmldoc = Nokogiri::HTML::Document.parse(output)
+      output = insert_meta_tags
+      if self.data_errors
+        output = insert_errors_tags
+      end
+      output = insert_style_tags
+      if self.data && self.data['page'] && self.data['page']['javascript']
+        output = insert_javascript_tags
+      end
+      self.output << output
+    else
+      self.output << parsed_content
+    end
+  end
+
+  def insert_meta_tags
+    begin
       meta = Nokogiri::XML::Node.new "meta", @htmldoc
       meta['http-equiv'] = "Content-Type"
       meta['content'] = "text/html; charset=UTF-8"
       @htmldoc.at('head').add_child(meta)
-      output = @htmldoc.to_html
-
-      if self.data && self.data['livereload']
-        @htmldoc = Nokogiri::HTML::Document.parse(output)
-        script = Nokogiri::XML::Node.new "script", @htmldoc
-        script['src'] = "http://localhost:35729/livereload.js"
-        script['defer'] = "defer"
-        @htmldoc.at('head').add_child(script)
-        output = @htmldoc.to_html
-      end
-
-      if self.data && self.data['browsersync']
-        @htmldoc = Nokogiri::HTML::Document.parse(output)
-        script = Nokogiri::XML::Node.new "script", @htmldoc
-
-        script.content = self.data['browsersync-data']
-
-        @htmldoc.at('body').add_child(script)
-        output = @htmldoc.to_html
-      end
-
-      if self.data && self.data['page'] && self.data['page']['javascript']
-
-        @htmldoc = Nokogiri::HTML::Document.parse(output)
-        script = Nokogiri::XML::Node.new "script", @htmldoc
-
-        script.content = self.data['page']['javascript']
-
-        @htmldoc.at('body').add_child(script)
-        output = @htmldoc.to_html
-      end
-
-      self.output << output
-
-    else
-      self.output << parsed_content
+      @htmldoc.to_html
+    rescue
+      Hammer.error "Could not insert Hammer meta tags, your <code>head</code> tag may have an issue or doesn't exist."
     end
+  end
 
+  def insert_style_tags
+    begin
+      # @htmldoc = Nokogiri::HTML::Document.parse(output)
+      hammer_nav_content
+      hammer_nav = radius_parser.parse(self.hammer_nav_content)
+
+      @htmldoc.at('body').children.first.before(hammer_nav)
+      css_file_src = Pathname.new(File.expand_path File.dirname(__FILE__)+"/../css/wvu-hammer-inject.css").read
+      css_file = "<style>"+css_file_src+"</style>"
+      @htmldoc.at('head').add_child(css_file)
+      @htmldoc.to_html
+    rescue => e
+      Hammer.error "Could not insert Hammer style tag, your <code>head</code> may have an issue or doesn't exist. #{e}"
+    end
+  end
+
+  def insert_errors_tags
+    begin
+      # @htmldoc = Nokogiri::HTML::Document.parse(output)
+      self.data_errors.each do |error|
+        # @htmldoc.before(@htmldoc.at('body').first).add_child(error)
+        @htmldoc.at('body').children.first.before(error)
+      end
+      @htmldoc.to_html
+    rescue
+      Hammer.error "Could not insert Hammer error tags, your <code>body</code> tag may have an issue or doesn't exist."
+    end
+  end
+
+  def insert_javascript_tags
+    begin
+      script = Nokogiri::XML::Node.new "script", @htmldoc
+      script.content = self.data['page']['javascript']
+      @htmldoc.at('body').add_child(script)
+      @htmldoc.to_html
+    rescue
+      Hammer.error "Could not insert Hammer javascript tags, your <code>body</code> tag may have an issue or doesn't exist."
+    end
   end
 
 end

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<!--[if IE 8]> <html class="ie8" lang="en"> <![endif]-->
+<!--[if IE 9]> <html class="ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en"> <!--<![endif]-->
+  <head>
+    <title> <%= html[:title] %> | Hammer </title>
+    <meta name="description" content="Hammer Directory" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link rel="stylesheet" href="/wvu-hammer-dir.css" type="text/css" />
+  </head>
+  <body>
+
+  <div class="wvu-masthead">
+    <div class="wvu-masthead__container">
+      <a class="wvu-masthead__logo" href="/">
+        <span class="wvu-masthead__university-name">
+          West Virginia University
+        </span>
+        <span class="wvu-masthead__title">
+          Hammer
+        </span>
+      </a>
+    </div>
+  </div>
+
+  <nav aria-label="Breadcrumbs" class="wvu-breadcrumbs ">
+    <div class="wvu-breadcrumbs__container">
+      <ul class="wvu-breadcrumbs__crumbs">
+        <% current = [] %>
+        <% html[:path].split('/').each do |part| %>
+          <% if part == "" %>
+            <li>
+              <a href="/"><span class="fa fa-hammer"></span> Themes</a>
+            </li>
+          <% else %>
+            <% current << part %>
+          <% end %>
+        <% end %>
+
+        <% current.each_with_index do |part,index| %>
+          <% if current.size == (index + 1) %>
+            <li class="active">
+              <%= part %>
+            </li>
+          <% else %>
+            <li>
+              <a href="/<%= current[(0..index)].join('/') %>"><%= part %></a>
+            </li>
+          <% end %>
+        <% end %>
+      </ul>
+    </div>
+  </nav>
+
+    <%= yield %>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript">
+      $(function(){
+          $(document).on('click', 'tr.clickable', function(event, row, $el){
+            url = $(event.target).parent().find('td.name > a').attr('href');
+            window.location = url;
+          })
+      });
+    </script>
+  </body>
+</html>

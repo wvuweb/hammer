@@ -37,22 +37,26 @@ class ThemeContext < ::Radius::Context
   end
 
   def tag_missing(name, attributes, &block)
-    Hammer.error "OH NOES! <em>&lt;r:#{name} /&gt;</em> does not yet exist in hammer.  Be a good samaritan and <a href=\"https://github.com/wvuweb/hammer/issues\">file a Github issue!</a>"
+    style = "background-color: #eee; border-radius: 3px; font-family: monospace; padding: 0 3px;"
+    Hammer.error "OH NOES! Tag or tag method <code style='#{style}'>#{name}</code> does not yet exist in hammer.  Be a good samaritan and <a href=\"https://github.com/wvuweb/hammer/issues\">file a Github issue!</a>"
   end
 
   private
   def load_tags_from(object)
     method_regex = /^tag:/
     tag_methods = object.methods.grep(method_regex).sort
+
     tag_methods.each do |mname|
       tag_method = object.method(mname)
-
       define_tag mname[4..-1] do |tag_binding|
         if tag_method.arity == 0
           tag_method.call
-
         else
-          tag_method.call tag_binding
+          begin
+            tag_method.call tag_binding
+          rescue TypeError => e
+            Hammer.error "Something is wrong with radius #{mname} <strong>Error Message:</strong> #{e}"
+          end
         end
       end
     end

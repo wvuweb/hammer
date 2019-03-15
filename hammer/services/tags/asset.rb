@@ -22,32 +22,19 @@ module Tags
     %w(id title name alt_text description).each do |mthd|
       tag "file:#{mthd}" do |tag|
         tag.locals.asset[mthd.to_sym]
-        #Hammer.error "file:#{mthd} tag is not implemented yet"
       end
     end
 
     tag 'file:filename' do |tag|
-      # tag.locals.asset.try(:filename)
-      asset = tag.locals.asset
-      #Hammer.error "file:filename tag is not implemented yet"
-      asset[:filename]
+      tag.locals.asset[:filename]
     end
 
     tag 'file:download_url' do |tag|
-      asset = tag.locals.asset
-      # asset.public_download_url
-      #Hammer.error "file:download_url tag is not implemented yet"
-      asset[:download_url]
+      tag.locals.asset[:download_url]
     end
 
     tag 'file:image_url' do |tag|
-      asset = tag.locals.asset
-      # size = tag.attr['size']
-      #
-      # if asset.is_a?(ImageAsset)
-      #   asset.image_url(size)
-      # end
-      asset[:image_url]
+      tag.locals.asset[:image_url]
 
     end
 
@@ -59,73 +46,61 @@ module Tags
       %w(id class alt title).each do |opt|
         options[opt.to_sym] = tag.attr[opt] if tag.attr.has_key?(opt)
       end
-      #
-      # if asset.is_a?(ImageAsset)
-      options[:alt] ||= asset[:alt_text]
-      #   asset.image_tag(size, options)
-      # end
-      #Hammer.error "file:image_tag is not implemented yet"
 
-      content_tag :img, { :src=>asset[:image_url], :id => options[:id], :class => options[:class], :alt => options[:alt], :title => options[:title]}
+      options[:alt] ||= asset[:alt_text]
+
+      content_tag :img, {
+          src: asset[:image_url],
+          id: options[:id],
+          class: options[:class],
+          alt: options[:alt],
+          title: options[:title]
+      }
     end
 
-    # <r:files labels="foo,bar" labels_match="any|all|none" by="name|title|size|etc" order="asc|desc"/>
     tag 'files' do |tag|
-      # tag.locals.assets = find_with_options(tag, tag.globals.site.assets)
-      # tag.expand
-      if tag.globals.context.data && tag.globals.context.data['files']
+      if tag.globals.context.data['files']
         tag.expand
+      else
+        Hammer.key_missing "files"
       end
-
-      #Hammer.error "files tag is not implemented yet"
     end
 
     tag 'files:count' do |tag|
-      # count_items tag, tag.locals.assets
-      if tag.globals.context.data && tag.globals.context.data['files']
-        files = tag.globals.context.data['files']
-        loop_over(tag, files, false).count
-      end
+      tag.globals.context.data['files'].count
     end
 
     tag 'files:each' do |tag|
-      # loop_over tag, tag.locals.assets
-      if tag.globals.context.data && tag.globals.context.data['files']
-        #loop_over tag, tag.globals.context.data['files']
-        files = tag.globals.context.data['files']
-        loop_over tag, files
-      end
-
-      #Hammer.error "files:each tag is not implemented yet"
+      loop_over tag, tag.globals.context.data['files']
     end
 
-    # def self.decorated_asset(asset)
-    #   unless asset.is_a? ApplicationDecorator
-    #     AssetDecorator.decorate(asset)
-    #   end
-    # end
+    def self.decorated_asset(asset)
+      # unless asset.is_a? ApplicationDecorator
+      #   AssetDecorator.decorate(asset)
+      # end
+    end
 
     def self.find_with_options(tag, target)
       conditions = tag.attr.symbolize_keys
 
       filter = {
-        :title => conditions[:title],
-        :types => conditions[:types] || [],
-        :tags => conditions[:labels] || [],
-        :tags_op => conditions[:labels_match] || 'any',
-        :order => conditions[:by] || 'name',
-        :reverse_order => conditions[:order] == 'desc' ? '1' : '0',
-        :random => conditions[:random].to_s.to_b,
-        :page => conditions[:offset].present? ? conditions[:offset].to_i : 1,
-        :limit => conditions[:limit].present? ? conditions[:limit].to_i : 50
+        title: conditions[:title],
+        types: conditions[:types] || [],
+        tags: conditions[:labels] || [],
+        tags_op: conditions[:labels_match] || 'any',
+        order: conditions[:by] || 'name',
+        reverse_order: conditions[:order] == 'desc' ? '1' : '0',
+        random: conditions[:random].to_s.to_b,
+        page: conditions[:offset].present? ? conditions[:offset].to_i : 1,
+        limit: conditions[:limit].present? ? conditions[:limit].to_i : 50
       }
 
       # assets = Filter::Assets.new(target, filter).all
     end
 
     def self.count_items(tag, target)
-      items = find_with_options(tag, target)
-      items.reorder(nil).count # Order is irrelevant for counting
+      # items = find_with_options(tag, target)
+      # items.reorder(nil).count # Order is irrelevant for counting
     end
 
     def self.loop_over(tag, target, out=true)

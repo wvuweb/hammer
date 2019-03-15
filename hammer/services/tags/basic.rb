@@ -42,7 +42,7 @@ module Tags
         if tag.globals.context.data && tag.globals.context.data['site'] && tag.globals.context.data['site'][attr.to_s]
           tag.globals.context.data['site'][attr.to_s]
         else
-          Hammer.error "Missing key <em>#{attr}</em> under <em>site:</em>"
+          Hammer.key_missing attr, {parent_key: "site"}
         end
       end
     end
@@ -56,7 +56,7 @@ module Tags
       if tag.globals.context.data && tag.globals.context.data['site'] && tag.globals.context.data['site']['data'] && tag.globals.context.data['site']['data'][attr]
         tag.globals.context.data['site']['data'][attr]
       else
-        Hammer.error "Missing key <em>#{attr}</em> under <em>site:data</em>"
+        Hammer.key_missing attr, {parent_key: "site:data"}
       end
     end
 
@@ -89,6 +89,28 @@ module Tags
             tag.context.globals.context.request.request_uri.to_s
       end
       # Hammer.error "current_url tag is not implemented yet"
+    end
+
+    tag 'hammer_breadcrumbs' do |tag|
+      current = []
+      output = []
+      output << "<ul class='wvu-hammer-breadcrumbs__crumbs''>"
+      tag.globals.context.request.path.split('/').each do |part|
+        if part == ""
+          output << "<li><a href='/'>Themes</a></li>"
+        else
+          current << part
+        end
+      end
+      current.each_with_index do |part,index|
+        if current.size == (index + 1)
+          output << "<li>"+part+"</li>"
+        else
+          output << "<li><a href='/"+current[(0..index)].join('/')+"'>"+part+"</a></li>"
+        end
+      end
+      output << "</ul>"
+      output.join("")
     end
 
     # Renders an unordered list (<ul>) of HTML links to the pages leading to the current page. If the 'text_only'
@@ -349,6 +371,7 @@ module Tags
     #
     #  In the example above, the second <p> tag would be returned.
     tag 'select_html' do |tag|
+
       css_selector = tag.attr['css_selector']
       limit = tag.attr['limit']
       content = tag.expand
@@ -356,15 +379,23 @@ module Tags
 
       begin
         html = Nokogiri::HTML(content)
-        results = html.css(css_selector.to_s)
-        output = (limit.present? ? results.first(limit.to_i).collect(&:to_s) : results.collect(&:to_s)).join('')
+        result = html.css(css_selector.to_s)
+        # output = (limit.present? ? results.first(limit.to_i).collect(&:to_s) : results.collect(&:to_s)).join('')
+
+        output = []
+        errors = html.css('.wvu-hammer-error')
+        output << errors.collect(&:to_s).join("")
+
+        if limit.present?
+          output << result.first(limit.to_i).collect(&:to_s).join("")
+        else
+          output << result.collect(&:to_s).join("")
+        end
+        output.join("")
       rescue
-        output = "ERROR: Could not parse content."
+        Hammer.error "Could not parse content with <code>select_html</code>"
       end
 
-      output
-      # tag.expand
-      # Hammer.error "select_html tag is not implemented yet"
     end
 
     # This tag allows you to output the value of an HTML element attribute, using a CSS expression. If
@@ -372,6 +403,8 @@ module Tags
     #
     # Example: <r:select_html_attr css_selector="a" attr="href"><a href="http://google.com">Google</a></r:select_html_attr>
     tag 'select_html_attr' do |tag|
+
+
       css_selector = tag.attr['css_selector']
       attribute = tag.attr['attr']
       content = tag.expand
@@ -433,38 +466,41 @@ module Tags
 
     tag 'xslt_transform' do |tag|
       theme = tag.globals.theme
-      url = (tag.attr['url'] || '').strip
+      xml_url = (tag.attr['url'] || '').strip
       source_format = (tag.attr['source_format'] || 'xml').downcase
       xslt_file = tag.attr['xslt_file'].to_s.strip
-      cache_term_minutes = (tag.attr['cache_for'] || '').to_i
-      cache_term_minutes = 15 if cache_term_minutes < 1
 
-      xslt = if tag.double?
-        tag.expand
+      # cache_term_minutes = (tag.attr['cache_for'] || '').to_i
+      # cache_term_minutes = 15 if cache_term_minutes < 1
+
+      if tag.double?
+        xslt = tag.expand
       elsif xslt_file.present?
         file = File.join(tag.globals.context.theme_root, xslt_file)
-
         if File.exists?(file)
-          File.read(file)
+          xslt = File.read(file)
         else
-          Hammer.error "ERROR: Could not load XSLT file: #{xslt_file}"
+          Hammer.error "Could not load XSLT file: #{xslt_file}"
         end
       end
 
-      Hammer.error "ERROR: You must either specify XSLT content for this tag or use the xslt_file attribute." unless xslt.present?
+      unless xslt.present?
+        return Hammer.error "You must either specify XSLT content for this tag or use the xslt_file attribute."
+      end
 
-      # cache [tag.cache_key, tag.globals.site, tag.globals.page], expires_in: cache_term_minutes.minutes do
+      unless xml_url.present?
+        return Hammer.error "The attribute of <code>url</code> must be present on the <code><r:xslt_transform></code> tag."
+      else
         begin
-          uri = URI.parse(url)
+          uri = URI.parse(xml_url)
+          uri.kind_of?(URI::HTTP) || uri.kind_of?(URI::HTTPS)
           response = Net::HTTP.start(uri.host, uri.port,
             :use_ssl => uri.scheme == 'https') do |http|
             request = Net::HTTP::Get.new uri
             http.request request # Net::HTTPResponse object
           end
-
-        #rescue raise(RuntimeTagError, "ERROR: Could not load the XML URL: #{url}")
         rescue => e
-          return Hammer.error "Could not load the XML URL: #{url} due to #{e}"
+          return Hammer.error "Could not load the XML URL: #{e}"
         end
 
         if response.present?
@@ -478,8 +514,10 @@ module Tags
           document = Nokogiri::XML(xml)
           template = Nokogiri::XSLT(xslt)
           template.transform(document)
+        else
         end
-      # end
+      end
+
     end
 
     def self.breadcrumb_list(options)

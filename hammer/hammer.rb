@@ -1,5 +1,7 @@
 # encoding: utf-8
 require "webrick"
+
+require "../hammer/webrick_override.rb"
 require "../hammer/services/theme_renderer.rb"
 
 module Hammer
@@ -13,14 +15,14 @@ module Hammer
   end
 
   def do_GET(request, response)
-
     request_path(request)
+    map_request
 
-    puts "Handling a request for system path:".colorize(:light_magenta)+" #{map_request.to_s.colorize(:yellow)}\n"
+    puts "Handling a request for system path:".colorize(:light_magenta)+" #{@filesystem_path.to_s.colorize(:yellow)}\n"
 
     if @filesystem_path.directory?
       puts "Path is a Directory\n".colorize(:blue)
-      directory = WEBrick::HTTPServlet::FileHandler.new(@server, @document_root, { :FancyIndexing =>true })
+      directory = WEBrick::HTTPServlet::FileHandler.new(@server, @document_root, { FancyIndexing: true})
       directory.do_GET(request, response)
     else
       if request_radiusable_template?
@@ -36,9 +38,16 @@ module Hammer
         response.body = body
         response.content_type = get_mime_type+'; charset=utf-8'
       else
-        puts "Path is a Static #{get_mime_type} File\n".colorize(:blue)
-        file = WEBrick::HTTPServlet::FileHandler.new(@server, @document_root, { :FancyIndexing =>true })
-        file.do_GET(request, response)
+        if request.path == "/wvu-hammer-dir.css"
+          puts "Path is the Hammer CSS File\n".colorize(:light_magenta)
+          css_doc_root  = File.expand_path File.dirname(__FILE__)+"/css"
+          file = WEBrick::HTTPServlet::FileHandler.new(@server, css_doc_root, { FancyIndexing: true })
+          file.do_GET(request, response)
+        else
+          puts "Path is a Static #{get_mime_type} File\n".colorize(:blue)
+          file = WEBrick::HTTPServlet::FileHandler.new(@server, @document_root, { FancyIndexing: true })
+          file.do_GET(request, response)
+        end
       end
     end
 
@@ -67,8 +76,37 @@ module Hammer
     WEBrick::HTTPUtils::mime_type(@filesystem_path.to_s, mime_file)
   end
 
-  def self.error(message)
-    "<strong>Hammer Error: </strong> #{message}"
+  def self.error(message, options={})
+    options = {
+      comment: false,
+      message: "",
+      warning: false
+    }.merge(options)
+
+    type = options[:warning] ? "Warning" : "Error"
+    console_error =  "Hammer #{type}: #{message.gsub(/(<[^>]*>)|\n|\t/s) {""}}"
+    puts console_error.colorize(:red)
+
+    error = "<strong>Hammer #{type}:</strong> #{message}"
+    if options[:comment]
+      "<!-- #{console_error} #{options[:message]} -->"
+    else
+      "<span class='wvu-hammer-error wvu-hammer-error__#{type.downcase}'>#{error} #{options[:message]}</span>"
+    end
+  end
+
+  def self.key_missing(key,options={})
+    options = {
+      parent_key: nil,
+      comment: false,
+      message: ""
+    }.merge(options)
+
+    if options[:parent_key]
+      error("Missing key <code>#{key}:</code> under <code>#{options[:parent_key]}:</code> in mock_data.yml", options)
+    else
+      error("Missing key <code>#{key}:</code> in mock_data.yml", options)
+    end
   end
 
 end

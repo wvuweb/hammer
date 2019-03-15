@@ -1,0 +1,26 @@
+{
+  "name": "hammer",
+  "version": "1.0.0",
+  "description": "Hammer Tool",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wvuweb/hammer.git"
+  },
+  "author": "Steven Spriggs",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wvuweb/hammer/issues"
+  },
+  "homepage": "https://github.com/wvuweb/hammer#readme",
+  "devDependencies": {
+    "bootstrap": "^4.3.1",
+    "brand-patterns": "https://github.com/wvuweb/brand-patterns.git#master",
+    "gulp": "^3.9.0",
+    "gulp-sass": "^2.1.1",
+    "yarn": "^1.13.0"
+  }
+}
