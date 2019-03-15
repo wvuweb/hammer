@@ -64,7 +64,7 @@ OptionParser.new do |o|
     options.daemon = da == 1 ?  WEBrick::Daemon : WEBrick::SimpleServer
   end
 
-  o.on('-h', '--host_port port', Integer, 'Host Port to access hammer server on') do |p|
+  o.on('-h', '--host port', Integer, 'Host Port to access hammer server on') do |h|
     options.host_port = h
   end
 
