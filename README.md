@@ -178,4 +178,4 @@ Changelog uses [Github Changelog Generator](https://github.com/github-changelog-
 
 [Generate a token](https://github.com/settings/tokens/new?description=GitHub%20Changelog%20Generator%20token) use in the command below in the project root.
 
-`github_changelog_generator wvuweb/hammer --token {insert your token here}`
+`github_changelog_generator wvuweb/hammer --token {insert your token here} --future-release {release_version}`
