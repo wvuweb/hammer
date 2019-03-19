@@ -1,6 +1,6 @@
 # Hammer
 
-Hammer is a theme development tool for the [CleanSlate](http://cleanslate.wvu.edu/ "CleanSlate") CMS template rendering engine. Hammer was created to help you iterate quickly on themes and template markup. 
+Hammer is a theme development tool for the [CleanSlate](http://cleanslate.wvu.edu/ "CleanSlate") CMS template rendering engine. Hammer was created to help you iterate quickly on themes and template markup.
 
 Hammer is **NOT** for content creation.
 
@@ -132,7 +132,7 @@ ancestor_menu: String                           # ancestor_menu allows you to ov
                                                 #     <li><a href="#">Page</a></li>
                                                 #     <li><a href="#">Page</a></li>
                                                 #   </ul>
-                                                
+
 breadcrumbs: String                             # breadcrumbs takes a string of HTML that outputs breadcrumb structure
                                                 # breadcrumbs: |
                                                 #   <ul class="wvu-breadcrumbs__crumbs">
@@ -172,3 +172,10 @@ blogs:                                          # blogs contains all the data fo
     name: String
     ...
 ```
+
+## Developer notes
+Changelog uses [Github Changelog Generator](https://github.com/github-changelog-generator/github-changelog-generator)
+
+[Generate a token](https://github.com/settings/tokens/new?description=GitHub%20Changelog%20Generator%20token) use in the command below in the project root.
+
+`github_changelog_generator wvuweb/hammer --token {insert your token here}`
