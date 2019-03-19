@@ -97,13 +97,13 @@ else
     puts "\n".colorize(:red)
     puts "Your installed Hammer version: ".colorize(:red)+" #{current_tag} ".colorize(background: :white, color: :black)+" is behind the latest version: ".colorize(:red)+" #{latest_tag} ".colorize(background: :white, color: :black)
     puts "Run `vagrant hammer update` to upgrade to the latest version".colorize(:light_green)
-    puts "View the latest changes at https://github.com/wvuweb/hammer/blob/master/CHANGELOG.md".colorize(:light_green)
   else
     puts "\n".colorize(:green)
     puts "You are running the latest Hammer version: ".colorize(:green)+" v#{current_tag}"
     puts "\n".colorize(:green)
   end
 end
+puts "View the latest changes at https://github.com/wvuweb/hammer/blob/master/CHANGELOG.md".colorize(:light_green)
 
 
 doc_root = options.directory
