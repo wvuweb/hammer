@@ -1,5 +1,19 @@
 # Change Log
 
+## [Unreleased](https://github.com/wvuweb/hammer/tree/HEAD)
+
+[Full Changelog](https://github.com/wvuweb/hammer/compare/v1.0.11...HEAD)
+
+**Fixed bugs:**
+
+- Changelog is incorrectly located [\#61](https://github.com/wvuweb/hammer/issues/61)
+
+## [v1.0.11](https://github.com/wvuweb/hammer/tree/v1.0.11) (2019-03-19)
+[Full Changelog](https://github.com/wvuweb/hammer/compare/v1.0.10...v1.0.11)
+
+## [v1.0.10](https://github.com/wvuweb/hammer/tree/v1.0.10) (2019-03-19)
+[Full Changelog](https://github.com/wvuweb/hammer/compare/v1.0.9...v1.0.10)
+
 ## [v1.0.9](https://github.com/wvuweb/hammer/tree/v1.0.9) (2019-03-19)
 [Full Changelog](https://github.com/wvuweb/hammer/compare/v1.0.8...v1.0.9)
 
