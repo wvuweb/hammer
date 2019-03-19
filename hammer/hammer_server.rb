@@ -76,7 +76,7 @@ end
 # hammer_branch_cmd = "cd ../ && git branch | grep \* | cut -d ' ' -f2"
 
 hammer_current_tag_cmd = "git describe --exact-match --tags $(git log -n1 --pretty='%h')"
-latest_tag_cmd = "git describe --tags `git rev-list --tags --max-count=1`"
+latest_tag_cmd = "git ls-remote --tags origin | cut -d/ -f3- | sort -t. -nk1,2 -k3 | awk '/^[^{]*$/{version=$1}END{print version}'"
 
 current_tag = `#{hammer_current_tag_cmd}`
 latest_tag = `#{latest_tag_cmd}`
@@ -90,10 +90,12 @@ if current_tag == ""
 else
   current_tag.slice! "v"
   latest_tag.slice! "v"
+  current_tag.slice!("\n")
+  latest_tag.slice!("\n")
 
   if Gem::Version.new(current_tag) < Gem::Version.new(latest_tag)
     puts "\n".colorize(:red)
-    puts "Your Hammer version #{current_tag.slice!("\n")} is behind the latest version #{latest_tag.slice!("\n")}".colorize(:red)
+    puts "Your installed Hammer version: ".colorize(:red)+" #{current_tag} ".colorize(background: :white, color: :black)+" is behind the latest version: ".colorize(:red)+" #{latest_tag} ".colorize(background: :white, color: :black)
     puts "Run `vagrant hammer update` to upgrade to the latest version".colorize(:light_green)
   else
     puts "\n".colorize(:green)
