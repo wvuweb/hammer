@@ -115,8 +115,8 @@ if File.directory?(code_dir)
     File.chmod(0600,"./config/hammer")
     # puts "Adding SSH Identity for Code repository"
 
-    code_ref_cmd = "ssh-agent bash -c 'ssh-add ./config/hammer &> /dev/null; cd #{code_dir} && git rev-parse master'"
-    code_remote_cmd = "ssh-agent bash -c 'ssh-add ./config/hammer &> /dev/null; git ls-remote git@bitbucket.org:wvudigital/code.git master -q'"
+    code_ref_cmd = "ssh-agent bash -c 'ssh-add ./config/hammer -o LogLevel=ERROR &> /dev/null; cd #{code_dir} && git rev-parse master'"
+    code_remote_cmd = "ssh-agent bash -c 'ssh-add ./config/hammer -o LogLevel=ERROR &> /dev/null; git ls-remote git@bitbucket.org:wvudigital/code.git master -q'"
 
     code_ref = `#{code_ref_cmd}`
     code_ref = code_ref.delete("\n")
