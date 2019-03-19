@@ -1,11 +1,18 @@
 # Change Log
 
-## [v1.0.11](https://github.com/wvuweb/hammer/tree/v1.0.11) (2019-03-19)
-[Full Changelog](https://github.com/wvuweb/hammer/compare/v1.0.10...v1.0.11)
+## [v1.0.12](https://github.com/wvuweb/hammer/tree/v1.0.12) (2019-03-19)
+[Full Changelog](https://github.com/wvuweb/hammer/compare/v1.0.11...v1.0.12)
+
+**Implemented enhancements:**
+
+- Changelog line should always display [\#62](https://github.com/wvuweb/hammer/issues/62)
 
 **Fixed bugs:**
 
 - Changelog is incorrectly located [\#61](https://github.com/wvuweb/hammer/issues/61)
+
+## [v1.0.11](https://github.com/wvuweb/hammer/tree/v1.0.11) (2019-03-19)
+[Full Changelog](https://github.com/wvuweb/hammer/compare/v1.0.10...v1.0.11)
 
 ## [v1.0.10](https://github.com/wvuweb/hammer/tree/v1.0.10) (2019-03-19)
 [Full Changelog](https://github.com/wvuweb/hammer/compare/v1.0.9...v1.0.10)
