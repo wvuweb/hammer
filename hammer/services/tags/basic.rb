@@ -113,6 +113,12 @@ module Tags
       output.join("")
     end
 
+    tag 'hammer_nav' do |tag|
+      if !tag.globals.context.data['hammer_nav'] || !tag.globals.context.data['hammer_nav']['disabled']
+        tag.expand
+      end
+    end
+
     # Renders an unordered list (<ul>) of HTML links to the pages leading to the current page. If the 'text_only'
     # attribute is 'true', then instead of a list of HTML links, a plain text list will be rendered with the
     # value of the 'separator' attribute used to separate each item. The default separator is ' | '.

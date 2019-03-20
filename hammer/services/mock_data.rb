@@ -38,6 +38,29 @@ class MockData
 
     YAML.set_file_root(theme_root)
 
+    # # Deep Merging of yml files using map reduce
+    # yml_files = []
+    # # Load default mock data
+    # yml << Pathname.new(File.dirname(__FILE__)+'/../data/mock_data.yml')
+    #
+    # # Load Theme Root mock_data.yml
+    # theme_root_yml = theme_root.join(Pathname.new('mock_data.yml'))
+    # if theme_root_yml
+    #   yml_files << theme_root_yml
+    # end
+    #
+    # # Load Template YAML files
+    # template_yml = theme_root.join('data',Pathname.new(File.basename(request_path, ".html")+".yml"))
+    # old_path_template_yml =  theme_root.join(Pathname.new(File.basename(request_path, ".html")+".yml"))
+    # if template_yml.exist?
+    #   yml_files << template_yml
+    # elseif old_path_template_yml.exist?
+    #   yml_files << old_path_template_yml
+    # end
+    # TODO: Parse new yml
+    # combined_yml = yml_files.map{ |file| YAML.load_file(file) }.reduce( {}, :deep_merge!)
+    # TODO: Erb parse new combined YML
+
     if theme_root
       yml_path = theme_root.join(Pathname.new('mock_data.yml'))
       if yml_path.exist?

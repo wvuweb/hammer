@@ -35,6 +35,7 @@ $RECYCLE.BIN/
 # SublimeText project files
 *.sublime-workspace
 
+tmp/
 vendor/
 
 .bundle/

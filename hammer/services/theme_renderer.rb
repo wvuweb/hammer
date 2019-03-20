@@ -134,10 +134,13 @@ class ThemeRenderer
       @htmldoc = Nokogiri::HTML::Document.parse(html)
 
       output = insert_meta_tags
+      output = insert_hammer_nav
+      output = insert_style_tags
+
       if self.data_errors
         output = insert_errors_tags
       end
-      output = insert_style_tags
+
       if self.data && self.data['page'] && self.data['page']['javascript']
         output = insert_javascript_tags
       end
@@ -159,13 +162,22 @@ class ThemeRenderer
     end
   end
 
-  def insert_style_tags
+  def insert_hammer_nav
     begin
-      # @htmldoc = Nokogiri::HTML::Document.parse(output)
       hammer_nav_content
       hammer_nav = radius_parser.parse(self.hammer_nav_content)
 
       @htmldoc.at('body').children.first.before(hammer_nav)
+      @htmldoc.to_html
+    rescue => e
+      Hammer.error "Could not insert Hammer nav into your body tag may not exist. #{e}"
+    end
+  end
+
+  def insert_style_tags
+    begin
+      # @htmldoc = Nokogiri::HTML::Document.parse(output)
+
       css_file_src = Pathname.new(File.expand_path File.dirname(__FILE__)+"/../css/wvu-hammer-inject.css").read
       css_file = "<style>"+css_file_src+"</style>"
       @htmldoc.at('head').add_child(css_file)

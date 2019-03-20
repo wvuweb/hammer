@@ -1,3 +1,6 @@
+hammer_nav:
+  disabled: false
+
 shared_themes:
   "Code":
     "layouts/masthead--v1": "code"
@@ -5,9 +8,6 @@ shared_themes:
     "layouts/footer__credits--v2": "code"
     "layouts/footer__icons--v2": "code"
     "layouts/browser-update-org--v2": "code"
-  "Some Other Theme":
-    "some/other/path/template": "theme-folder-name"
-    "another/path/template": "theme-folder-name"
 
 show_editable_regions: false  #If true a div with `border: 1px dashed red` will be injected into the content of the region
 
