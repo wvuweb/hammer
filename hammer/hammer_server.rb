@@ -171,19 +171,16 @@ puts "    Now available at http://localhost:#{options.host_port}...     ".black.
 puts " "
 puts " "
 
-log = nil
-access_log = nil
-
-if options.daemon == 1
-  log_file = File.open '/var/log/webrick/error.log', 'a+'
-  log = WEBrick::Log.new(log_file, WEBrick::Log::INFO)
-
-  access_file = File.open '/var/log/webrick/error.log', 'a+'
-  access_log = WEBrick::Log.new(access_file,WEBrick::AccessLog::COMBINED_LOG_FORMAT)
-else
-  log = WEBrick::Log.new("/dev/null")
-  access_log = WEBrick::Log.new("/dev/null")
-end
+# if options.daemon == 1
+#   log_file = File.open '/var/log/webrick/error.log', 'a+'
+#   log = WEBrick::Log.new(log_file, WEBrick::Log::INFO)
+#
+#   #access_file = File.open '/var/log/webrick/error.log', 'a+'
+#   #access_log = WEBrick::Log.new(access_file,WEBrick::AccessLog::COMBINED_LOG_FORMAT)
+# else
+#   log = WEBrick::Log.new("../tmp/error.log", WEBrick::Log::DEBUG)
+#   #access_log = WEBrick::Log.new("../tmp/access.log",WEBrick::AccessLog::COMBINED_LOG_FORMAT)
+# end
 
 httpd = WEBrick::HTTPServer.new(
   :BindAddress => "0.0.0.0",
@@ -191,8 +188,8 @@ httpd = WEBrick::HTTPServer.new(
   :DocumentRoot => doc_root,
   :ServerType => options.daemon,
   :DirectoryIndex => [],
-  :Logger => log,
-  :AccessLog => access_log
+  # :Logger => log,
+  # :AccessLog => access_log
 )
 
 httpd.mount("/", HammerServlet, doc_root, true)
