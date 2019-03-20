@@ -1,5 +1,15 @@
 # Change Log
 
+## [v1.0.13](https://github.com/wvuweb/hammer/tree/v1.0.13) (2019-03-20)
+[Full Changelog](https://github.com/wvuweb/hammer/compare/v1.0.12...v1.0.13)
+
+**Implemented enhancements:**
+
+- Add a flag in mock\_data to show/hide the Hammer breadcrumb toolbar [\#65](https://github.com/wvuweb/hammer/issues/65)
+- Change ARIA Label on Hammer \<nav\> element. [\#64](https://github.com/wvuweb/hammer/issues/64)
+- Give a more helpful error message when the blog array in mock data isn't formatted properly [\#59](https://github.com/wvuweb/hammer/issues/59)
+- Add support for attributes to r:files [\#36](https://github.com/wvuweb/hammer/issues/36)
+
 ## [v1.0.12](https://github.com/wvuweb/hammer/tree/v1.0.12) (2019-03-19)
 [Full Changelog](https://github.com/wvuweb/hammer/compare/v1.0.11...v1.0.12)
 
