@@ -30,18 +30,22 @@ Hammer uses a YAML file to 'mock' content data structures needed for cleanslate 
 ### Mock Data Documentation
 
 ```YAML
-edit_mode: true                                 # edit mode                   -- accepts true | false
+hammer_nav:                                     # hammer navigation controls
+  disabled: Boolean                             # disabled                    -- accepts true | false, default: false
+                                                # hides the navigation bar to allow testing for accessibility
+
+edit_mode: Boolean                               # edit mode                   -- accepts true | false
                                                 # edit mode allows you to hide and show content based on context
                                                 # <r:edit_mode_only>
                                                 #   <p>This only shows in the editor mode of CleanSlate</p>
                                                 # </r:edit_mode_only>
 
 shared_themes:                                  # shared_themes are defined by
-  "theme-name":                                 # <r:partial name="file/path" theme="theme-name"/>
-    "file/path": folder                         # theme-name                  -- accepts quoted string
-  "theme-name-2":                               # file/path                   -- accepts quoted file path string
-    "file/path": folder                         # folder                      -- accepts quoted string  
-    "file/path2": folder
+                                                # <r:partial name="file/path" theme="theme-name"/>
+  "theme-name":                                 # theme-name                  -- accepts quote theme name string
+    "file/path": theme                          # file/path                   -- accepts quoted file path string
+  "theme-name-2":                               # theme                       -- accepts string
+    "file/path": theme                                                 
 
 editable_region:                                # editable_region are defined by
   region: String                                # <r:editable_region name="region" />
