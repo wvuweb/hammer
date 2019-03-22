@@ -87,7 +87,6 @@ else
   else
     puts "\n".colorize(:green)
     puts "You are running the latest Hammer version: ".colorize(:green)+" v#{current_tag}"
-    puts "\n".colorize(:green)
   end
 end
 puts "\n"
