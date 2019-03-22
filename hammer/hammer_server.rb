@@ -104,8 +104,6 @@ if File.directory?(code_dir)
 
     # Add identity files for bitbucket
     File.chmod(0600,"./config/hammer")
-    # puts "Adding SSH Identity for Code repository"
-
     code_ref_cmd = "ssh-agent bash -c 'ssh-add ./config/hammer -o LogLevel=ERROR &> /dev/null; cd #{code_dir} && git rev-parse master'"
     code_remote_cmd = "ssh-agent bash -c 'ssh-add ./config/hammer -o LogLevel=ERROR &> /dev/null; git ls-remote git@bitbucket.org:wvudigital/code.git master -q'"
 
@@ -114,13 +112,9 @@ if File.directory?(code_dir)
     code_remote = `#{code_remote_cmd}`
     code_remote = code_remote.split("\n").collect{|ref| ref.split("\t")}.select{|remote| remote[1] == "refs/heads/master"}[0][0]
 
-    #code_ref = g.lib.send(:command, "rev-parse master")
-    #code_remote = g.lib.send(:command, "rev-parse origin/master")
-
     if code_ref.to_s != code_remote.to_s
       puts "Code Local repo ref is at: ".colorize(:light_white)+"#{code_ref}".colorize(:light_blue)
       puts "Code Remote repo ref is at: ".colorize(:light_white)+"#{code_remote}".colorize(:light_blue)
-
       puts " "
       puts "WARNING:".colorize(:red)
       puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".colorize(:light_cyan)
@@ -159,7 +153,6 @@ puts "    Now available at http://localhost:#{options.host_port}...   ".black.on
 puts " "
 puts " "
 
-
 if options.daemon == WEBrick::Daemon
   access_log_stream = File.open('/var/log/webrick/access.log', 'w')
   access_log = [ [ access_log_stream, WEBrick::AccessLog::COMBINED_LOG_FORMAT ] ]
@@ -171,7 +164,6 @@ else
     server_logger = WEBrick::Log.new('../tmp/error.log')
   end
 end
-
 
 httpd = WEBrick::HTTPServer.new(
   :BindAddress => "0.0.0.0",
