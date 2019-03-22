@@ -67,6 +67,10 @@ OptionParser.new do |o|
   o.on('-h', '--host port', Integer, 'Host Port to access hammer server on') do |h|
     options.host_port = h
   end
+  
+  o.on('-de', '--debug value', Integer, 'Debug mode shows logging in console, only works in standard mode') do |de|
+    options.debug = de == 1 ? true : false
+  end
 
   o.parse!(ARGV)
 end
@@ -182,14 +186,27 @@ puts " "
 #   #access_log = WEBrick::Log.new("../tmp/access.log",WEBrick::AccessLog::COMBINED_LOG_FORMAT)
 # end
 
+if options.daemon == 1
+  access_log_stream = File.open('/var/log/webrick/access.log', 'w')
+  access_log = [ [ access_log_stream, WEBrick::AccessLog::COMBINED_LOG_FORMAT ] ]
+  server_logger = Log.new('/var/log/webrick/error.log')
+else
+  unless options.debug
+    access_log_stream = File.open('../tmp/access.log', 'w')
+    access_log = [ [ access_log_stream, WEBrick::AccessLog::COMBINED_LOG_FORMAT ] ]
+    server_logger = WEBrick::Log.new('../tmp/error.log')
+  end
+end
+
+
 httpd = WEBrick::HTTPServer.new(
   :BindAddress => "0.0.0.0",
   :Port => options.port,
   :DocumentRoot => doc_root,
   :ServerType => options.daemon,
   :DirectoryIndex => [],
-  # :Logger => log,
-  # :AccessLog => access_log
+  :Logger => server_logger,
+  :AccessLog => access_log
 )
 
 httpd.mount("/", HammerServlet, doc_root, true)
