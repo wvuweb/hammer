@@ -1,5 +1,14 @@
 # Change Log
 
+## [v1.0.14](https://github.com/wvuweb/hammer/tree/v1.0.14) (2019-03-22)
+[Full Changelog](https://github.com/wvuweb/hammer/compare/v1.0.13...v1.0.14)
+
+**Implemented enhancements:**
+
+- Add environment for loading only development dependencies [\#68](https://github.com/wvuweb/hammer/issues/68)
+- When hammer is run in daemon mode, log errors [\#67](https://github.com/wvuweb/hammer/issues/67)
+- Hammer version check reports fatal error with git describe in dev mode [\#66](https://github.com/wvuweb/hammer/issues/66)
+
 ## [v1.0.13](https://github.com/wvuweb/hammer/tree/v1.0.13) (2019-03-20)
 [Full Changelog](https://github.com/wvuweb/hammer/compare/v1.0.12...v1.0.13)
 
