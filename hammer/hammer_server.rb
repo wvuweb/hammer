@@ -60,27 +60,26 @@ OptionParser.new do |o|
 end
 
 
-# g = Git.open("../")
-# hammer_branch_cmd = "cd ../ && git branch | grep \* | cut -d ' ' -f2"
-
-hammer_current_tag_cmd = "git describe --exact-match --tags $(git log -n1 --pretty='%h')"
+hammer_current_tag_cmd = "git describe --always"
 latest_tag_cmd = "git ls-remote --tags origin | cut -d/ -f3- | sort -t. -nk1,2 -k3 | awk '/^[^{]*$/{version=$1}END{print version}'"
 
+# Execute command on bash
 current_tag = `#{hammer_current_tag_cmd}`
 latest_tag = `#{latest_tag_cmd}`
 
-if current_tag == ""
-  current_tag = `git describe`
+current_tag.slice!("v")
+current_tag.slice!("\n")
+latest_tag.slice!("v")
+latest_tag.slice!("\n")
+
+# Split on tag with dash
+# Example dev version tag from describe v1.0.13-6-a234agh
+if current_tag.split('-')[1] != nil
   current_version_info = current_tag.split('-')
   puts "\n"
-  puts "You are running a development version of Hammer #{current_version_info[0]}".colorize(:green)
+  puts "You are running a development version of Hammer v#{current_version_info[0]}".colorize(:green)
   puts "You are #{current_version_info[1]} commits ahead at hash #{current_version_info[2]}".colorize(:green)
 else
-  current_tag.slice! "v"
-  latest_tag.slice! "v"
-  current_tag.slice!("\n")
-  latest_tag.slice!("\n")
-
   if Gem::Version.new(current_tag) < Gem::Version.new(latest_tag)
     puts "\n".colorize(:red)
     puts "Your installed Hammer version: ".colorize(:red)+" #{current_tag} ".colorize(background: :white, color: :black)+" is behind the latest version: ".colorize(:red)+" #{latest_tag} ".colorize(background: :white, color: :black)
@@ -91,8 +90,9 @@ else
     puts "\n".colorize(:green)
   end
 end
-puts "View the latest changes at https://github.com/wvuweb/hammer/blob/master/CHANGELOG.md".colorize(:light_green)
-
+puts "\n"
+puts "View the latest changes at:"
+puts "https://github.com/wvuweb/hammer/blob/master/CHANGELOG.md".colorize(:light_cyan)
 
 doc_root = options.directory
 
@@ -154,8 +154,8 @@ puts "    ############################################".colorize(:yellow)
 puts "    #     HAMMER - Clean Slate Mock Server     #".colorize(:yellow)
 puts "    ############################################".colorize(:yellow)
 puts " "
-puts "    Starting in #{doc_root}...      ".black.on_green
-puts "    Now available at http://localhost:#{options.host_port}...     ".black.on_green
+puts "    Starting in #{doc_root}...   ".black.on_green
+puts "    Now available at http://localhost:#{options.host_port}...   ".black.on_green
 puts " "
 puts " "
 
