@@ -2,20 +2,25 @@
 
 require 'rubygems'
 require 'bundler/setup'
-require 'rbconfig'
+require 'dotenv'
+Dotenv.load('../.env')
+
+if ENV['ENVIRONMENT'] == "development"
+  Bundler.require(:default, :development)
+  require 'pry'
+else
+  Bundler.require(:default)
+end
 
 require 'webrick'
 require 'radius'
-require 'pry'
 require 'chronic'
 require 'htmlentities'
 require 'nokogiri'
 require 'sanitize'
 require 'colorize'
-
 require 'optparse'
 require 'ostruct'
-require 'git'
 
 require './hammer'
 
