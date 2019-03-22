@@ -159,16 +159,6 @@ puts "    Now available at http://localhost:#{options.host_port}...   ".black.on
 puts " "
 puts " "
 
-# if options.daemon == 1
-#   log_file = File.open '/var/log/webrick/error.log', 'a+'
-#   log = WEBrick::Log.new(log_file, WEBrick::Log::INFO)
-#
-#   #access_file = File.open '/var/log/webrick/error.log', 'a+'
-#   #access_log = WEBrick::Log.new(access_file,WEBrick::AccessLog::COMBINED_LOG_FORMAT)
-# else
-#   log = WEBrick::Log.new("../tmp/error.log", WEBrick::Log::DEBUG)
-#   #access_log = WEBrick::Log.new("../tmp/access.log",WEBrick::AccessLog::COMBINED_LOG_FORMAT)
-# end
 
 if options.daemon == WEBrick::Daemon
   access_log_stream = File.open('/var/log/webrick/access.log', 'w')
