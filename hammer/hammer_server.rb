@@ -24,6 +24,7 @@ require 'ostruct'
 
 require './hammer'
 
+# Set Options defaults
 options = OpenStruct.new
 options.directory = (Pathname.new(Dir.pwd).parent.parent + "cleanslate_themes").to_s
 options.port = 8080
@@ -50,7 +51,7 @@ OptionParser.new do |o|
   o.on('-h', '--host port', Integer, 'Host Port to access hammer server on') do |h|
     options.host_port = h
   end
-  
+
   o.on('-de', '--debug value', Integer, 'Debug mode shows logging in console, only works in standard mode') do |de|
     options.debug = de == 1 ? true : false
   end
@@ -169,7 +170,7 @@ puts " "
 #   #access_log = WEBrick::Log.new("../tmp/access.log",WEBrick::AccessLog::COMBINED_LOG_FORMAT)
 # end
 
-if options.daemon == 1
+if options.daemon == WEBrick::Daemon
   access_log_stream = File.open('/var/log/webrick/access.log', 'w')
   access_log = [ [ access_log_stream, WEBrick::AccessLog::COMBINED_LOG_FORMAT ] ]
   server_logger = Log.new('/var/log/webrick/error.log')
