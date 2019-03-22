@@ -173,7 +173,7 @@ puts " "
 if options.daemon == WEBrick::Daemon
   access_log_stream = File.open('/var/log/webrick/access.log', 'w')
   access_log = [ [ access_log_stream, WEBrick::AccessLog::COMBINED_LOG_FORMAT ] ]
-  server_logger = Log.new('/var/log/webrick/error.log')
+  server_logger = WEBrick::Log.new('/var/log/webrick/error.log')
 else
   unless options.debug
     access_log_stream = File.open('../tmp/access.log', 'w')
