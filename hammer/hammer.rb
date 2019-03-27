@@ -79,12 +79,22 @@ module Hammer
     options = {
       comment: false,
       message: "",
-      warning: false
+      warning: false,
+      depreciation: false
     }.merge(options)
 
     type = options[:warning] ? "Warning" : "Error"
+    if options[:depreciation]
+      type = "Depreciation"
+    end
+
     console_error =  "Hammer #{type}: #{message.gsub(/(<[^>]*>)|\n|\t/s) {""}}"
-    puts console_error.colorize(:red)
+    console_color = options[:warning] ? :yellow : :red
+    if options[:depreciation]
+      console_color = :light_magenta
+    end
+
+    puts console_error.colorize(console_color)
 
     error = "<strong>Hammer #{type}:</strong> #{message}"
     if options[:comment]
