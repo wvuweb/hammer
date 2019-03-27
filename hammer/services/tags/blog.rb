@@ -24,9 +24,8 @@ module Tags
     }
 
     tag 'blog' do |tag|
-      blog = load_blog(tag)
-      tag.locals.blog ||= blog[:blog]
-      errors = blog[:errors]
+      tag.locals.blog ||= load_blog(tag)
+      errors = tag.locals.blog_errors
       content = []
       errors.each do |error|
         content << error
@@ -38,24 +37,11 @@ module Tags
     end
 
     tag 'article' do |tag|
-
-      unless tag.locals.blog
-        blog = load_blog(tag)
-        tag.locals.blog ||= blog[:blog]
-        errors = blog[:errors]
-        content = []
-        errors.each do |error|
+      content = []
+      if tag.locals.article_errors
+        tag.locals.article_errors.each do |error|
           content << error
         end
-      end
-
-      article = load_article(tag)
-      tag.locals.article = article[:article]
-
-      errors = article[:errors]
-      content = []
-      errors.each do |error|
-        content << error
       end
       if tag.locals.article
         content << tag.expand
@@ -170,21 +156,9 @@ module Tags
     end
 
     tag 'articles' do |tag|
-      content = []
-      limit = tag.attr['limit'].to_i
-      if tag.locals.blog
-        if tag.locals.blog[:articles]
-          if limit > 0
-            tag.locals.articles = tag.locals.blog[:articles].slice(0, limit)
-          else
-            tag.locals.articles = tag.locals.blog[:articles]
-          end
-          content << tag.expand
-        else
-          content << (Hammer.key_missing "articles", {parent_key: "blog"})
-        end
-      end
-      content.join("")
+      load_blog(tag)
+      tag.locals.articles = filter_articles(tag, tag.locals.blog[:articles])
+      tag.expand
     end
 
     tag 'articles:each' do |tag|
@@ -300,100 +274,93 @@ module Tags
       end
 
       def load_blog(tag)
-        blog_object = {}
-        blog_object[:errors] = []
-        blog_object[:blog] = nil
+        tag.locals.blog = []
+        tag.locals.blog_errors = []
 
         if tag.globals.context.data['page']
           tag.locals.page = tag.globals.context.data['page']
         else
-          blog_object[:errors] << (Hammer.key_missing "page")
+          tag.locals.blog_errors << (Hammer.key_missing "page")
         end
 
         blogs = tag.globals.context.data['blogs'] || tag.globals.context.data['blog']
 
         if tag.globals.context.data['blog']
-          blog_object[:errors] << (Hammer.error "Depreciation Notice: <code>blog:</code> key to be renamed <code>blogs:</code> in future release", {comment: true, warning: true})
+          tag.locals.blog_errors << (Hammer.error "In future releases <code>blog:</code> key will be renamed <code>blogs:</code> and be of type Array ", {comment: true, depreciation: true})
         end
 
         if blogs
           if blogs.kind_of?(Array)
             # Match current page id to blog id
             if blogs.select{|w| w['id'].to_s == (tag.locals.page['id'].to_s) }.first
-              blog_object[:blog] = blogs.select{|w| w['id'].to_s == (tag.locals.page['id'].to_s) }.first
+              tag.locals.blog = blogs.select{|w| w['id'].to_s == (tag.locals.page['id'].to_s) }.first
             else
-              blog_object[:errors] << (Hammer.error "Could not find blog with id: #{tag.locals.page['id'].to_s} in mock_data.yml")
+              tag.locals.blog_errors << (Hammer.error "Could not find blog with id: #{tag.locals.page['id'].to_s} in mock_data.yml")
             end
           else
-            blog_object[:errors] << (Hammer.error "Depreciation Notice: in future release <code>blogs:</code> should be an Array in mock_data.yml", {comment: true, warning: true})
-            blog_object[:blog] = blogs
+            tag.locals.blog_errors << (Hammer.error "In future releases <code>blog:</code> key will be renamed <code>blogs:</code> and be of type Array", {comment: true, depreciation: true})
+            tag.locals.blog = blogs
           end
         else
-          blog_object[:errors] << (Hammer.key_missing "blogs")
+          tag.locals.blog_errors << (Hammer.key_missing "blogs")
         end
-        blog_object
-      end
-
-      def load_article(tag)
-        article_object = {}
-        article_object[:errors] = []
-        article_object[:article] = nil
-
-        if tag.locals.blog
-          if tag.locals.blog[:articles]
-            article_object[:article] = tag.locals.blog[:articles].sample
-          else
-            article_object[:errors] << (Hammer.error "Could not find <code>articles:</code> key under <code>blog:</code> in mock_data.yml")
-          end
-        else
-          article_object[:errors] << (Hammer.error "tag.locals.blog is nil")
-        end
-        article_object
-      end
-
-      def decorated_page(page)
-        page.decorated? ? page : PageDecorator.decorate(page)
       end
 
       def filter_articles(tag, target)
-        # Only allow filtering once
-        return target if tag.attr.empty? || target.is_a?(Filter::Articles)
-        Filter::Articles.new(target, tag.attr.symbolize_keys)
+        if tag.attributes && tag.attributes['tags'] && !tag.attributes['tags'].empty?
+          # split tags on comma
+          tags = tag.attributes['tags'].split(',')
+          tagged_items = []
+
+          if tag.attributes['tags_op'] && tag.attributes['tags_op'] == 'none'
+            reverse = true
+          end
+
+          # get all articles that include any of the tags
+          target.each do |art|
+            # artile tag in mock_data.yml may not exist if
+            # just return empty array if that is the case
+            article_tags = art[:tags] || []
+            if article_tags
+              # if the tags_ops is none then you want all articles without tags
+              if reverse
+                if (tags & article_tags).empty?
+                  tagged_items << art
+                end
+              else
+                unless (tags & article_tags).empty?
+                  tagged_items << art
+                end
+              end
+            end
+          end
+          target = tagged_items
+        end
+        # limit should be last
+        if tag.attributes && tag.attributes['limit']
+          limit = tag.attributes['limit'].to_i - 1
+          target = target[0..limit]
+        end
+        target
       end
 
       def count_items(tag, target)
-
-        # filter_articles(tag, target).total_count
-        if tag.globals.context.data['blog'].kind_of?(Array)
-          tag.globals.context.data['blog'].first['articles'].count
-        else
-          5
-        end
-
+        tag.locals.blog[:articles].count
       end
 
       def loop_over(tag, target)
-        if tag.attributes
-          if tag.attributes['limit']
-            limit = tag.attributes['limit'].to_i - 1
-            items = target[0..limit]
-          else
-            items = target
-          end
-        else
-          items = target
-        end
+        items = filter_articles(tag, target)
 
         output = []
+
         items.each_with_index do |item, index|
-          page = item
-          tag.locals.page = page
-          tag.locals.article = page
+          tag.locals.index = index + 1
+          tag.locals.page = item
+          tag.locals.article = item
           output << tag.expand
         end
 
         output.flatten.join('')
-
       end
 
       def url_for_page(tag, key)
