@@ -1,5 +1,16 @@
 # Change Log
 
+## [v1.1.0](https://github.com/wvuweb/hammer/tree/v1.1.0) (2019-03-27)
+[Full Changelog](https://github.com/wvuweb/hammer/compare/v1.0.14...v1.1.0)
+
+**Implemented enhancements:**
+
+- Add the ability to use tag attribute on blogs [\#70](https://github.com/wvuweb/hammer/issues/70)
+
+**Fixed bugs:**
+
+- \<r:article:id /\> outputs duplicate ID's in a loop [\#69](https://github.com/wvuweb/hammer/issues/69)
+
 ## [v1.0.14](https://github.com/wvuweb/hammer/tree/v1.0.14) (2019-03-22)
 [Full Changelog](https://github.com/wvuweb/hammer/compare/v1.0.13...v1.0.14)
 
