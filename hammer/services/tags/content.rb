@@ -15,7 +15,7 @@ module Tags
         tag.globals.content_for[name]
       else
         if tag.globals.yield.empty?
-          Hammer.error "No yield data.  Are you trying to view a layout?"
+          Hammer.error "No yield data. Are you viewing a layout?", {warning: true}
         else
           tag.globals.yield
         end
