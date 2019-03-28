@@ -1,5 +1,13 @@
 # Change Log
 
+## [v1.1.1](https://github.com/wvuweb/hammer/tree/v1.1.1) (2019-03-28)
+[Full Changelog](https://github.com/wvuweb/hammer/compare/v1.1.0...v1.1.1)
+
+**Fixed bugs:**
+
+- Blog tags if comma delimited attribute contains a space [\#72](https://github.com/wvuweb/hammer/issues/72)
+- Hammer not reporting correct version. [\#71](https://github.com/wvuweb/hammer/issues/71)
+
 ## [v1.1.0](https://github.com/wvuweb/hammer/tree/v1.1.0) (2019-03-27)
 [Full Changelog](https://github.com/wvuweb/hammer/compare/v1.0.14...v1.1.0)
 
