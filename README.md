@@ -167,6 +167,9 @@ blogs:                                          # blogs contains all the data fo
         content:                                # content attribute is for supporting loops in which a blog article
           region_name: String                   # may be dynamically built using content regions from the article
                                                 # <r:article:content name="region_name" />  
+        tags:                                   # <r:articles tags="tag1,tag2" tags_op="any|none">
+          - String                              # tags takes an array of String values
+          - String
         published_at: 2 days ago                # <r:article:published_at />  -- accepts a date string
       - article:
         ...
