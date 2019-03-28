@@ -6,7 +6,7 @@ module Tags
         tag.globals.context.data['site_menu']
       else
         <<-MENU
-        #{Hammer.key_missing "site_menu", { message: "auto generated menu inserted below"}}
+        #{Hammer.key_missing "site_menu", { message: "auto-generated menu inserted below"}}
         <ul>
           <li class="active"><a href="#">Page 1</a></li>
           <li><a href="#">Page 2</a></li>
@@ -24,7 +24,7 @@ module Tags
       else
 
         <<-MENU
-        #{Hammer.key_missing "sub_menu", { message: "auto generated menu inserted below"}}
+        #{Hammer.key_missing "sub_menu", { message: "auto-generated menu inserted below"}}
         <ul>
           <li class="active"><a href="#">Sub Page 1</a></li>
           <li><a href="#">Sub Page 2</a></li>
@@ -41,7 +41,7 @@ module Tags
         tag.globals.context.data['ancestor_menu']
       else
         <<-MENU
-        #{Hammer.key_missing "ancestor_menu", { message: "auto generated menu inserted below"}}
+        #{Hammer.key_missing "ancestor_menu", { message: "auto-generated menu inserted below"}}
         <ul>
           <li class="active"><a href="#">Sub Page 1</a></li>
           <li><a href="#">Sub Page 2</a></li>

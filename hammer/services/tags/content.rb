@@ -56,7 +56,7 @@ module Tags
           tag.globals.context.data['editable_region'][rname]
         else
           content = []
-          content << (Hammer.key_missing rname, {parent_key: "editable_region", warning: true, message: "auto generated paragraph added below"})
+          content << (Hammer.key_missing rname, {parent_key: "editable_region", warning: true, message: "auto-generated paragraph added below"})
           Faker::Lorem.paragraphs(rand(1..3), true).each do |paragraph|
             content << "<p>#{paragraph}</p>"
           end

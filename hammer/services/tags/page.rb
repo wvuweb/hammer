@@ -168,7 +168,7 @@ module Tags
           tag.locals.page[attr.to_s]
         else
           content = []
-          content << (Hammer.key_missing attr.to_s, {parent_key: "page", message: "Auto generated date inserted below", comment: true, warning: true})
+          content << (Hammer.key_missing attr.to_s, {parent_key: "page", message: "auto-generated date inserted below", comment: true, warning: true})
           content << Random.rand(11).to_s+ " days ago"
           content.join("")
         end
@@ -180,7 +180,7 @@ module Tags
         tag.locals.page['url']
       else
         # TODO: Figure out how to inject error messages as DOM based, if in pure HTML its fine, but in an attribute it breaks
-        # Hammer.key_missing 'url', {parent_key: "page", message: "Auto generated url inserted below"}
+        # Hammer.key_missing 'url', {parent_key: "page", message: "auto-generated url inserted below"}
         tag.context.globals.context.request.path
       end
     end

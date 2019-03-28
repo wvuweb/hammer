@@ -48,7 +48,7 @@ module Tags
         if tag.locals.event[method]
           tag.locals.event[method]
         else
-          Hammer.key_missing method.to_s, {parent: "event"}
+          Hammer.key_missing method.to_s, {parent_key: "event"}
         end
       end
     end
