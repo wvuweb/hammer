@@ -1,5 +1,16 @@
 # Change Log
 
+## [v1.1.2](https://github.com/wvuweb/hammer/tree/v1.1.2) (2019-03-28)
+[Full Changelog](https://github.com/wvuweb/hammer/compare/v1.1.1...v1.1.2)
+
+**Implemented enhancements:**
+
+- Tag feature needs documented [\#74](https://github.com/wvuweb/hammer/issues/74)
+
+**Fixed bugs:**
+
+- Blog article content missing key does not display parent key [\#73](https://github.com/wvuweb/hammer/issues/73)
+
 ## [v1.1.1](https://github.com/wvuweb/hammer/tree/v1.1.1) (2019-03-28)
 [Full Changelog](https://github.com/wvuweb/hammer/compare/v1.1.0...v1.1.1)
 
