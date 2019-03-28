@@ -61,7 +61,7 @@ end
 
 
 hammer_current_tag_cmd = "git describe --always"
-latest_tag_cmd = "git ls-remote --tags origin | cut -d/ -f3- | sort -t. -nk1,2 -k3 | awk '/^[^{]*$/{version=$1}END{print version}'"
+latest_tag_cmd = "git ls-remote --tags origin | cut -d/ -f3- | sort -t '/' -k3 -V | awk '/^[^{]*$/{version=$1}END{print version}'"
 
 # Execute command on bash
 current_tag = `#{hammer_current_tag_cmd}`
