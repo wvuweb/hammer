@@ -308,8 +308,8 @@ module Tags
 
       def filter_articles(tag, target)
         if tag.attributes && tag.attributes['tags'] && !tag.attributes['tags'].empty?
-          # split tags on comma
-          tags = tag.attributes['tags'].split(',')
+          # split tags on comma and remove whitespace from each item
+          tags = tag.attributes['tags'].split(',').collect{|x| x.strip }
           tagged_items = []
 
           if tag.attributes['tags_op'] && tag.attributes['tags_op'] == 'none'
@@ -320,7 +320,10 @@ module Tags
           target.each do |art|
             # artile tag in mock_data.yml may not exist if
             # just return empty array if that is the case
+
             article_tags = art[:tags] || []
+            # remote whitespace that may exist in mock data
+            article_tags = article_tags.collect{|x| x.strip }
             if article_tags
               # if the tags_ops is none then you want all articles without tags
               if reverse
