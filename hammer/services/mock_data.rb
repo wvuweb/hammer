@@ -70,7 +70,7 @@ class MockData
 
         # Check for older shared_themes syntax
         if !yml['shared_themes'].nil? && yml['shared_themes'].first[1].class == HashWithIndifferentAccess
-          result[:errors] << (Hammer.error "The mock data syntax you are using for <code>shared_themes:</code> is being depreciated, please see <a href='https://github.com/wvuweb/hammer/wiki/Mock-Data#shared-themes-syntax'>Hammer wiki</a> for more information.", {depreciation: true})
+          result[:errors] << (Hammer.error "The mock data syntax you are using for <code>shared_themes:</code> is being depreciated, please see <a href='https://github.com/wvuweb/hammer/wiki/Mock-Data#shared-themes-syntax'>Shared Theme Syntax in the Hammer wiki</a> for more information.", {depreciation: true})
         end
 
         template_yml_name = File.basename(request_path, ".html")+".yml"
@@ -79,7 +79,7 @@ class MockData
         old_template_yml_path = theme_root.join(Pathname.new(template_yml_name))
 
         if old_template_yml_path.exist?
-          result[:errors] << (Hammer.error "<code>#{old_template_yml_path}</code> location for this template yml file is being depreciated, please see <a href='https://github.com/wvuweb/hammer/wiki/Mock-Data#template-yml-override-file-location'>Hammer wiki</a> for more information.", {depreciation: true})
+          result[:errors] << (Hammer.error "<code>#{old_template_yml_path}</code> location for this template yml file is being depreciated, please see <a href='https://github.com/wvuweb/hammer/wiki/Mock-Data#template-yml-override-file-location'>Template override Location in the Hammer wiki</a> for more information.", {depreciation: true})
           template_erb = ERB.new(old_template_yml_path.read, nil, '-')
           template_data = template_erb.result(binding)
           template_yml = HashWithIndifferentAccess.new(YAML::load(template_data))

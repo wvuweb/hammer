@@ -87,7 +87,7 @@ module Tags
           return Hammer.key_missing "shared_themes", {message: "can't load shared partial: <code>#{name}</code>"}
         end
         if tag.globals.context.data['shared_themes']["#{theme}"].nil?
-          return Hammer.key_missing "shared_themes:#{theme}", {message: "can't load shared partial: <code>#{name}</code>"}
+          return Hammer.key_missing "#{theme}", {parent_key: 'shared_themes', message: "failed to load shared partial: <code>#{name}</code>"}
         end
       end
       ThemePartialRenderer.new(tag).render

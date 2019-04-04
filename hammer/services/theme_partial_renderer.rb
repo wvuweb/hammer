@@ -24,10 +24,11 @@ class ThemePartialRenderer
     file_path = find_partial(file_name)
 
     unless file_path.present?
-      if @theme.nil?
-        content = Hammer.error "Partial Not Found: Could not find partial <code>#{file_name}</code> is the #{@opts['theme']} theme listed under <code>shared_themes:</code> your mock_data.yml?"
+      #if @theme.nil?
+      unless @opts[:theme].nil?
+        content = Hammer.error "Partial Not Found: <code>#{file_name}</code>. Is the <code>#{@opts['theme']}</code> included <code>shared_themes:</code> in your mock_data.yml? Is the format correct? Check the <a href='https://github.com/wvuweb/hammer/wiki/Mock-Data#shared-themes'>Hammer Wiki</a> for more help."
       else
-        content = Hammer.error "Partial Not Found: Could not find partial <code>#{file_name}</code> in #{@theme} theme."
+        content = Hammer.error "Partial Not Found: <code>#{file_name}</code> in <code>#{@tag.globals.context.theme_root}</code> theme.  Is the format correct? Check the <a href='https://github.com/wvuweb/hammer/wiki/Mock-Data#shared-themes'>Hammer Wiki</a> for more help."
       end
     else
       content = File.read file_path
