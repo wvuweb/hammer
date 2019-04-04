@@ -55,7 +55,7 @@ class ThemeContext < ::Radius::Context
           begin
             tag_method.call tag_binding
           rescue TypeError => e
-            Hammer.error "Something is wrong with radius #{mname} <strong>Error Message:</strong> #{e}"
+            Hammer.error "Something is wrong with radius #{mname} <strong>Error Message:</strong> #{e} #{e.backtrace.first}"
           end
         end
       end

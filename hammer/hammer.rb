@@ -108,7 +108,8 @@ module Hammer
     options = {
       parent_key: nil,
       comment: false,
-      message: ""
+      message: "",
+      warning: true
     }.merge(options)
 
     if options[:parent_key]
