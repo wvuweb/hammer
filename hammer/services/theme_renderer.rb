@@ -20,11 +20,12 @@ class ThemeRenderer
     @request_path = options[:request_path]
     @content_type = options[:content_type]
     @theme_root = theme_root
-    @data = load_data[:yml]
-    @data_errors = load_data[:errors]
+    @data = nil
+    @data_errors = nil
     @content = file_contents
     @htmldoc = ''
     @output = ''
+    load_data
   end
 
   def config_file
@@ -48,10 +49,6 @@ class ThemeRenderer
 
   def config_file_path
     return theme_root.join(config_file)
-  end
-
-  def load_data
-    MockData.load(@theme_root,@request_path)
   end
 
   def file_contents
@@ -209,6 +206,13 @@ class ThemeRenderer
     rescue
       Hammer.error "Could not insert Hammer javascript tags, your <code>body</code> tag may have an issue or doesn't exist."
     end
+  end
+
+  private
+  def load_data
+    mock_data = MockData.load(@theme_root,@request_path)
+    @data = mock_data[:yml]
+    @data_errors = mock_data[:errors]
   end
 
 end
