@@ -7,11 +7,12 @@ class ThemePartialRenderer
     @init_error = nil
     # if it is a shared theme partial
     unless @opts[:theme].nil?
-      if tag.globals.context.data['version'] == 2
-        @theme = Pathname.new([tag.globals.context.document_root, tag.globals.context.data['shared_themes']["#{tag.attr['theme']}"]].join('/'))
-      else
-        @theme = Pathname.new([tag.globals.context.document_root, @tag.globals.context.data['shared_themes'][@opts[:theme]][@opts[:name]]].join('/'))
-        @init_error = Hammer.error "This mock data format for <code>shared_themes</code> is being depreciated, please see <a href='https://github.com/wvuweb/hammer/wiki'>Hammer wiki</a> for version 2 information.", {warning: true}
+      unless tag.globals.context.data['shared_themes'].nil?
+        unless tag.globals.context.data['shared_themes'].first[1].class == HashWithIndifferentAccess
+          @theme = Pathname.new([tag.globals.context.document_root, tag.globals.context.data['shared_themes']["#{tag.attr['theme']}"]].join('/'))
+        else
+          @theme = Pathname.new([tag.globals.context.document_root, @tag.globals.context.data['shared_themes'][@opts[:theme]][@opts[:name]]].join('/'))
+        end
       end
     else
       @theme = tag.globals.context.theme_root
@@ -30,7 +31,6 @@ class ThemePartialRenderer
       end
     else
       content = File.read file_path
-      content << @init_error unless @init_error.nil?
     end
     @tag.globals.context.radius_parser.parse content
   end

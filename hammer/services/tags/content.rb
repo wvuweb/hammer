@@ -80,6 +80,16 @@ module Tags
     end
 
     tag 'partial' do |tag|
+      name = tag.attr[:name]
+      theme = tag.attr[:theme]
+      if tag.attr[:theme]
+        if tag.globals.context.data['shared_themes'].nil?
+          return Hammer.key_missing "shared_themes", {message: "can't load shared partial: <code>#{name}</code>"}
+        end
+        if tag.globals.context.data['shared_themes']["#{theme}"].nil?
+          return Hammer.key_missing "shared_themes:#{theme}", {message: "can't load shared partial: <code>#{name}</code>"}
+        end
+      end
       ThemePartialRenderer.new(tag).render
     end
   end

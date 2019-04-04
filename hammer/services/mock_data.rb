@@ -68,21 +68,33 @@ class MockData
         data = erb.result(binding)
         yml = HashWithIndifferentAccess.new(YAML::load(data))
 
+        # Check for older shared_themes syntax
+        if !yml['shared_themes'].nil? && yml['shared_themes'].first[1].class == HashWithIndifferentAccess
+          result[:errors] << (Hammer.error "The mock data syntax you are using for <code>shared_themes:</code> is being depreciated, please see <a href='https://github.com/wvuweb/hammer/wiki/Mock-Data#shared-themes-syntax'>Hammer wiki</a> for more information.", {depreciation: true})
+        end
+
         template_yml_name = File.basename(request_path, ".html")+".yml"
+
         template_yml_path = theme_root.join('data',Pathname.new(template_yml_name))
         old_template_yml_path = theme_root.join(Pathname.new(template_yml_name))
+
+        if old_template_yml_path.exist?
+          result[:errors] << (Hammer.error "<code>#{old_template_yml_path}</code> location for this template yml file is being depreciated, please see <a href='https://github.com/wvuweb/hammer/wiki/Mock-Data#template-yml-override-file-location'>Hammer wiki</a> for more information.", {depreciation: true})
+          template_erb = ERB.new(old_template_yml_path.read, nil, '-')
+          template_data = template_erb.result(binding)
+          template_yml = HashWithIndifferentAccess.new(YAML::load(template_data))
+          yml = yml.deep_merge template_yml
+        end
 
         if template_yml_path.exist?
           template_erb = ERB.new(template_yml_path.read, nil, '-')
           template_data = template_erb.result(binding)
           template_yml = HashWithIndifferentAccess.new(YAML::load(template_data))
           yml = yml.deep_merge template_yml
-        elsif old_template_yml_path.exist?
-          result[:errors] << (Hammer.error "Depreciation notice: #{old_template_yml_path} needs to be moved to the /data folder", {warning: true})
         end
+
       else
         yml_path = Pathname.new(File.dirname(__FILE__)+'/../data/mock_data.yml')
-        puts yml_path
         erb = ERB.new(yml_path.read, nil, '-')
         data = erb.result(binding)
         yml = HashWithIndifferentAccess.new(YAML::load(data))
