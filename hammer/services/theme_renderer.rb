@@ -10,7 +10,7 @@ require "../hammer/services/theme_context.rb"
 class ThemeRenderer
 
   attr_accessor :config, :server, :request, :document_root, :filesystem_path, :request_root, :theme_root, :output
-  attr_accessor :content, :layout_file_path, :data, :data_errors
+  attr_accessor :content, :layout_file_path, :data, :data_errors, :version
 
   def initialize(options)
     @server = options[:server]
@@ -25,6 +25,7 @@ class ThemeRenderer
     @content = file_contents
     @htmldoc = ''
     @output = ''
+    load_version(options)
     load_data
   end
 
@@ -215,4 +216,11 @@ class ThemeRenderer
     @data_errors = mock_data[:errors]
   end
 
+  def load_version(options)
+    if options[:version].split('-')[1] != nil
+      @version = options[:version].split('-')
+    else
+      @version = options[:version]
+    end
+  end
 end

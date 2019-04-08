@@ -119,6 +119,14 @@ module Tags
       end
     end
 
+    tag 'hammer_version' do |tag|
+      if tag.globals.context.version.class == Array
+        tag.globals.context.version[0] + " - <span data-commit-hash="+tag.globals.context.version[2]+"> " + tag.globals.context.version[1] + " ahead</span>"
+      else
+        tag.globals.context.version
+      end
+    end
+
     # Renders an unordered list (<ul>) of HTML links to the pages leading to the current page. If the 'text_only'
     # attribute is 'true', then instead of a list of HTML links, a plain text list will be rendered with the
     # value of the 'separator' attribute used to separate each item. The default separator is ' | '.

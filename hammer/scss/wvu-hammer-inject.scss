@@ -1,55 +1,60 @@
-#wvu-hammer-nav.wvu-hammer-breadcrumbs {
+#wvu-hammer-nav {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto;
+  column-gap: 32px;
+  padding: 8px 0;
   background-image: linear-gradient(to bottom, #353533 0%, #2e2e2e 55%, #282828 57%, #242424 98%, #1d1d1b 100%);
   z-index: 2;
   width: 100%;
   color: #a7a7a7;
 
+  @media only screen and (min-width: 900px) {
+    grid-template-columns: auto 1fr auto;
+  }
+
   h1 {
     font-size: 24px;
     font-weight: inherit;
-    padding: 0px 16px;
+    padding: 0 0 0 16px;
     margin: 0;
     width: auto;
     display: inline-block;
     color: inherit;
     font-family: inherit;
     line-height: inherit;
-
-    @media only screen and (min-width: 600px) {
-      padding:8px 32px;
-    }
   }
+
   a {
-    background-color: inherit;
-    color:inherit;
-    font-size: inherit;
-    padding: inherit;
-    margin: inherit;
-    float: inherit;
+    padding: 0;
+    font-size: 1em;
+    color: #fcfcfc;
+    text-decoration: none;
+    background-color: transparent;
+    &:visited {
+      color: #fcfcfc;
+      text-decoration: none;
+    }
+    &:hover {
+      color: #fcfcfc;
+      text-decoration: underline;
+    }
   }
 }
 
 .wvu-hammer-breadcrumbs__container {
-  width: 100%;
-  display: grid;
-  grid-template-columns: auto;
-
-  @media only screen and (min-width: 600px) {
-    grid-template-columns: auto 1fr;
-  }
-}
-
-#wvu-hammer-nav ul.wvu-hammer-breadcrumbs__crumbs {
-  padding: 0 8px 5px 8px;
-  margin:0;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  padding: 0 16px;
+}
 
-  @media only screen and (min-width: 600px) {
-    padding: 0;
-  }
-
+#wvu-hammer-nav ul.wvu-hammer-breadcrumbs__crumbs {
+  margin:0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   list-style-type: none;
 
   li {
@@ -71,22 +76,26 @@
   }
 
   a {
-    padding: 0;
-    color: #fcfcfc;
-    text-decoration: none;
-    background-color: transparent;
-    &:visited {
-      color: #fcfcfc;
-      text-decoration: none;
-    }
-    &:hover {
-      color: #fcfcfc;
-      text-decoration: underline;
-    }
+
   }
 }
 
+.wvu-hammer-version {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 20px 16px;
+  font-size: 0.8em;
+  color: #fcfcfc;
 
+  @media only screen and (min-width: 900px) {
+    position: static;
+    padding: 0 16px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+}
 
 .wvu-hammer-error {
   border-radius: 3px 0 0 3px;

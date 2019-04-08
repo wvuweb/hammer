@@ -174,7 +174,7 @@ httpd = WEBrick::HTTPServer.new(
   :AccessLog => access_log
 )
 
-httpd.mount("/", HammerServlet, doc_root, true)
+httpd.mount("/", HammerServlet, {version: current_tag})
 
 trap(:INT){ httpd.shutdown }
 httpd.start
