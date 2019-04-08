@@ -1,5 +1,15 @@
 # Change Log
 
+## [v1.1.3](https://github.com/wvuweb/hammer/tree/v1.1.3) (2019-04-08)
+[Full Changelog](https://github.com/wvuweb/hammer/compare/v1.1.2...v1.1.3)
+
+**Implemented enhancements:**
+
+- Include better error backtracing when there is a partial error [\#80](https://github.com/wvuweb/hammer/issues/80)
+- Better syntax surrounding shared\_theme partials [\#79](https://github.com/wvuweb/hammer/issues/79)
+- Add better depreciation notices [\#78](https://github.com/wvuweb/hammer/issues/78)
+- Add version to hammer toolbar [\#75](https://github.com/wvuweb/hammer/issues/75)
+
 ## [v1.1.2](https://github.com/wvuweb/hammer/tree/v1.1.2) (2019-03-28)
 [Full Changelog](https://github.com/wvuweb/hammer/compare/v1.1.1...v1.1.2)
 
