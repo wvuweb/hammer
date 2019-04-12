@@ -12,15 +12,8 @@ module Tags
     end
 
     tag 'root' do |tag|
-      if tag.locals.page
-        if tag.locals.page['root']
-          tag.expand
-        else
-          Hammer.key_missing "root", {parent_key: "page"}
-        end
-      else
-        Hammer.key_missing "page"
-      end
+      tag.locals.page ||= tag.globals.context.data['page']
+      tag.expand
     end
 
     # Reset the page context to the current (global) page.
@@ -122,7 +115,11 @@ module Tags
 
     tag 'page' do |tag|
       # tag.locals.page ||= decorated_page(tag.globals.page)
-      tag.locals.page ||= tag.globals.context.data['page']
+      if tag.globals.context.data['page']
+        tag.locals.page ||= tag.globals.context.data['page']
+      else
+        Hammer.key_missing "page"
+      end
       tag.expand
     end
 
@@ -149,6 +146,7 @@ module Tags
     end
 
     [:id, :name, :path, :slug, :meta_description, :title, :alternate_name, :depth].each do |attr|
+
       tag "page:#{attr.to_s}" do |tag|
         # tag.locals.page.send(attr)
         if tag.locals.page[attr.to_s]
@@ -297,6 +295,7 @@ module Tags
 
     # Page tree navigation tags
     [:descendants, :ancestors, :children, :siblings].each do |method|
+
       tag method.to_s do |tag|
         tag.expand
       end
