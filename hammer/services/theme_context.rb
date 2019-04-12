@@ -56,6 +56,8 @@ class ThemeContext < ::Radius::Context
             tag_method.call tag_binding
           rescue TypeError => e
             Hammer.error "Something is wrong with radius #{mname} <strong>Error Message:</strong> #{e} #{e.backtrace.first}"
+          rescue NoMethodError => e
+            Hammer.error "#{mname} did not correclty load, it is most likely missing data in mock_data.yml: #{e}"
           end
         end
       end
