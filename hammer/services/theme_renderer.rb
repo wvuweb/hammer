@@ -117,7 +117,9 @@ class ThemeRenderer
   end
 
   def render_with_radius
+
     context = ThemeContext.new(self)
+
     parsed_content = radius_parser(context).parse(@content)
     radius_parser.context.globals.layout = false
 
@@ -135,16 +137,16 @@ class ThemeRenderer
       output = insert_hammer_nav
       output = insert_style_tags
 
-      if self.data_errors
+      if @data_errors
         output = insert_errors_tags
       end
 
-      if self.data && self.data['page'] && self.data['page']['javascript']
+      if @data && @data['page'] && self.data['page']['javascript']
         output = insert_javascript_tags
       end
-      self.output << output
+      @output << output
     else
-      self.output << parsed_content
+      @output << parsed_content
     end
   end
 
@@ -188,7 +190,7 @@ class ThemeRenderer
   def insert_errors_tags
     begin
       # @htmldoc = Nokogiri::HTML::Document.parse(output)
-      self.data_errors.each do |error|
+      @data_errors.each do |error|
         # @htmldoc.before(@htmldoc.at('body').first).add_child(error)
         @htmldoc.at('body').children.first.before(error)
       end

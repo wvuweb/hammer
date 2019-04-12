@@ -2,6 +2,9 @@
 require 'erb'
 require 'active_support/all'
 
+class YamlIncludeError < StandardError
+end
+
 module YAML
   @@file_root = ''
   def self.set_file_root(x)
@@ -16,13 +19,7 @@ module YAML
       erb = ERB.new(yml_path.read, nil, '-')
       erb.result(binding)
     else
-      # puts ' '
-      # puts 'WARNING:'.red
-      # puts '!'.black.on_red * (44 + file_name.length)
-      # puts '!    Your theme does not include a '.black.on_red+file_name.black.on_red+' file   !'.black.on_red
-      # puts '!'.black.on_red * (44 + file_name.length)
-      # puts ' '
-      Hammer.error "Your theme does not include a #{yml_path}"
+      raise YamlIncludeError, "You are trying to include a yml partial in your mock_data.yml file that is not included in your theme: #{yml_path}.  Please create the file or delete the include."
     end
   end
 end
@@ -66,8 +63,15 @@ class MockData
       if yml_path.exist?
         erb = ERB.new(yml_path.read, nil, '-')
         data = erb.result(binding)
-        yml = HashWithIndifferentAccess.new(YAML::load(data))
-
+        begin
+          yml = HashWithIndifferentAccess.new(YAML::load(data))
+        rescue Psych::SyntaxError => e
+          line_message = e.message.to_s
+          if line_message.include?("at line")
+            line_message = line_message.partition('at line')[-2] + line_message.partition('at line')[-1]
+          end
+          raise YamlIncludeError, "There is an error in your mock_data.yml file #{line_message} (line # includes any included partial YAML files)"
+        end
         # Check for older shared_themes syntax
         if !yml['shared_themes'].nil? && yml['shared_themes'].first[1].class == HashWithIndifferentAccess
           result[:errors] << (Hammer.error "The mock data syntax you are using for <code>shared_themes:</code> is being depreciated, please see <a href='https://github.com/wvuweb/hammer/wiki/Mock-Data#shared-themes-syntax'>Shared Theme Syntax in the Hammer wiki</a> for more information.", {depreciation: true})
