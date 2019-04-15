@@ -8,17 +8,9 @@ module Radius
     CALCULATOR.add_functions(Dentaku::CustomFunctions::FUNCTIONS)
 
     # Evaluates the current tag and returns the rendered contents.
-    def expand(newcontext=nil,oldcontext=nil)
-      unless oldcontext.nil? && newcontext.nil?
-        globals.context.data['page'] = newcontext
-      end
-      double? ? block.call : ''
+    def expand
       if double?
-        output = block.call
-        unless oldcontext.nil? && newcontext.nil?
-          globals.context.data['page'] = oldcontext
-        end
-        output
+        block.call
       else
         ''
       end
