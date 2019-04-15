@@ -18,15 +18,15 @@ module Hammer
     request_path(request)
     map_request
 
-    puts "Handling a request for system path:".colorize(:light_magenta)+" #{@filesystem_path.to_s.colorize(:yellow)}\n"
+    puts "➜ #{@filesystem_path.to_s.colorize(:yellow)}\n"
 
     if @filesystem_path.directory?
-      puts "Path is a Directory\n".colorize(:blue)
+      puts "⬅︎  Directory\n".colorize(:light_green)
       directory = WEBrick::HTTPServlet::FileHandler.new(@server, @document_root, { FancyIndexing: true})
       directory.do_GET(request, response)
     else
       if request_radiusable_template?
-        puts "Path is a #{get_mime_type} file\n".colorize(:blue)
+        puts "⬅︎  #{get_mime_type} file\n".colorize(:light_green)
         body = ThemeRenderer.new({
               :server => @server,
               :request => request,
@@ -40,12 +40,12 @@ module Hammer
         response.content_type = get_mime_type+'; charset=utf-8'
       else
         if request.path == "/wvu-hammer-dir.css"
-          puts "Path is the Hammer CSS File\n".colorize(:light_magenta)
+          puts "⬅︎  Hammer CSS File\n".colorize(:light_green)
           css_doc_root  = File.expand_path File.dirname(__FILE__)+"/css"
           file = WEBrick::HTTPServlet::FileHandler.new(@server, css_doc_root, { FancyIndexing: true })
           file.do_GET(request, response)
         else
-          puts "Path is a Static #{get_mime_type} File\n".colorize(:blue)
+          puts "⬅︎  #{get_mime_type} File\n".colorize(:light_green)
           file = WEBrick::HTTPServlet::FileHandler.new(@server, @document_root, { FancyIndexing: true })
           file.do_GET(request, response)
         end
@@ -104,6 +104,26 @@ module Hammer
     else
       "<span class='wvu-hammer-error wvu-hammer-error__#{type.downcase}'>#{error} #{options[:message]}</span>"
     end
+  end
+
+  def self.warning(message, options={})
+    options = {
+      comment: false,
+      message: "",
+      warning: true,
+      depreciation: false
+    }.merge(options)
+    error(message, options)
+  end
+
+  def self.depreciation(message, options={})
+    options = {
+      comment: false,
+      message: "",
+      warning: false,
+      depreciation: true
+    }.merge(options)
+    error(message, options)
   end
 
   def self.key_missing(key,options={})
