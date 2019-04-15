@@ -365,6 +365,32 @@ module Tags
 
     def self.loop_over(tag, target)
       if tag.attributes
+        if tag.attributes['tags'] && !tag.attributes['tags'].empty?
+          tags = tag.attributes['tags'].split(',').collect{|x| x.strip }
+          tagged_items = []
+
+          if tag.attributes['tags_op'] && tag.attributes['tags_op'] == 'none'
+            reverse = true
+          end
+
+          target.each do |page|
+            page_tags = page[:tags] || []
+            page_tags = page_tags.collect{|x| x.strip }
+            if page_tags
+              if reverse
+                if (tags & page_tags).empty?
+                  tagged_items << page
+                end
+              else
+                unless (tags & page_tags).empty?
+                  tagged_items << page
+                end
+              end
+            end
+          end
+          target = tagged_items
+        end
+
         if tag.attributes['limit']
           limit = tag.attributes['limit'].to_i - 1
           items = target[0..limit]
