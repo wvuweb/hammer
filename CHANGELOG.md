@@ -1,5 +1,14 @@
 # Change Log
 
+## [v1.1.4](https://github.com/wvuweb/hammer/tree/v1.1.4) (2019-04-15)
+[Full Changelog](https://github.com/wvuweb/hammer/compare/v1.1.3...v1.1.4)
+
+**Fixed bugs:**
+
+- r:root incorrectly looks for a page context [\#83](https://github.com/wvuweb/hammer/issues/83)
+- r:if and r:content\_for cause duplicate output [\#82](https://github.com/wvuweb/hammer/issues/82)
+- Calling a missing yaml partial causes white screen of death without a helpful error message. [\#81](https://github.com/wvuweb/hammer/issues/81)
+
 ## [v1.1.3](https://github.com/wvuweb/hammer/tree/v1.1.3) (2019-04-08)
 [Full Changelog](https://github.com/wvuweb/hammer/compare/v1.1.2...v1.1.3)
 
