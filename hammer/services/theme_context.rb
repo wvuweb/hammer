@@ -57,7 +57,7 @@ class ThemeContext < ::Radius::Context
           rescue TypeError => e
             Hammer.error "Something is wrong with radius #{mname} <strong>Error Message:</strong> #{e} #{e.backtrace.first}"
           rescue NoMethodError => e
-            Hammer.error "#{mname} did not correclty load, it is most likely missing data in mock_data.yml: #{e}"
+            Hammer.error "#{mname} did not load, it is most likely missing data in mock_data.yml: #{e}"
           end
         end
       end
