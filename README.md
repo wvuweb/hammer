@@ -78,6 +78,9 @@ page:                                           # page is defined by any attribu
   updated_at: Jan 1st 2015 2:30PM               # <r:page:updated_at />       -- accepts a date string
   created_at: two weeks ago                     # <r:page:created_at />       -- accepts a date string
   published_at: now                             # <r:page:published_at />     -- accepts a date string
+  tags:                                         # <r:page:children:each tags="tag1,tag2" tag_op="=" />
+    - String                                    # Tags accepts an Array of Strings
+    - String
   data:                                         # data is defined by any custom data your page would hold in CleanSlate
     data_key: data_value                        # <r:data name="data_key" />
     data_key_2: data_value_2                    # data_key is the name of the custom data in page properties which is defined
