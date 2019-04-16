@@ -1,5 +1,12 @@
 # Change Log
 
+## [v1.1.5](https://github.com/wvuweb/hammer/tree/v1.1.5) (2019-04-16)
+[Full Changelog](https://github.com/wvuweb/hammer/compare/v1.1.4...v1.1.5)
+
+**Implemented enhancements:**
+
+- Support tags on pages [\#86](https://github.com/wvuweb/hammer/issues/86)
+
 ## [v1.1.4](https://github.com/wvuweb/hammer/tree/v1.1.4) (2019-04-15)
 [Full Changelog](https://github.com/wvuweb/hammer/compare/v1.1.3...v1.1.4)
 
