@@ -40,7 +40,7 @@ module Tags
     tag 'stylesheet_content' do |tag|
       css_name = tag.attr['name'].strip
       css_name += '.css' unless css_name.ends_with?('.css')
-      pipe = ThemeAssetPipeline::Style.new(tag.globals.context.theme_root, css_name)
+      pipe = ThemeAssetPipeline::Style.new(tag.globals.context.theme_root_path, css_name)
       pipe.content
     end
 

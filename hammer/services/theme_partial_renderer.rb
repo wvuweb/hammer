@@ -15,7 +15,7 @@ class ThemePartialRenderer
         end
       end
     else
-      @theme = tag.globals.context.theme_root
+      @theme = tag.globals.context.theme_root_path
     end
   end
 
@@ -28,7 +28,7 @@ class ThemePartialRenderer
       unless @opts[:theme].nil?
         content = Hammer.error "Partial Not Found: <code>#{file_name}</code>. Is the <code>#{@opts['theme']}</code> included <code>shared_themes:</code> in your mock_data.yml? Is the format correct? Check the <a href='https://github.com/wvuweb/hammer/wiki/Mock-Data#shared-themes'>Hammer Wiki</a> for more help."
       else
-        content = Hammer.error "Partial Not Found: <code>#{file_name}</code> in <code>#{@tag.globals.context.theme_root}</code> theme.  Is the format correct? Check the <a href='https://github.com/wvuweb/hammer/wiki/Mock-Data#shared-themes'>Hammer Wiki</a> for more help."
+        content = Hammer.error "Partial Not Found: <code>#{file_name}</code> in <code>#{@tag.globals.context.theme_root_path}</code> theme.  Is the format correct? Check the <a href='https://github.com/wvuweb/hammer/wiki/Mock-Data#shared-themes'>Hammer Wiki</a> for more help."
       end
     else
       content = File.read file_path

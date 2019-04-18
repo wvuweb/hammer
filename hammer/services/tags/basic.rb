@@ -19,16 +19,15 @@ module Tags
     # Site tags
     tag 'site_name' do |tag|
       # tag.globals.site.name
-      if tag.globals.context.data
-        if tag.globals.context.data['site'] && tag.globals.context.data['site']['name']
-          tag.globals.context.data['site']['name']
-        elsif tag.globals.context.data['site_name']
-          tag.globals.context.data['site_name']
-        else
-          Hammer.error "<strong>Depreciated</strong> tag please use <r:site:name />."
-        end
+      if tag.globals.context.data['site'] && tag.globals.context.data['site']['name']
+        tag.globals.context.data['site']['name']
       else
-        "Site Name"
+        content = []
+        content << (Hammer.depreciation "<code>site_name</code> is depreciated please use <code>site:name</code>")
+        if tag.globals.context.data['site_name']
+          content << tag.globals.context.data['site_name']
+        end
+        content.join("")
       end
     end
 
@@ -99,7 +98,7 @@ module Tags
       output << "<ul class='wvu-hammer-breadcrumbs__crumbs''>"
       tag.globals.context.request.path.split('/').each do |part|
         if part == ""
-          output << "<li><a href='/'>Themes</a></li>"
+          output << "<li><a class='wvu-hammer-link' href='/'>Themes</a></li>"
         else
           current << part
         end
@@ -108,7 +107,7 @@ module Tags
         if current.size == (index + 1)
           output << "<li>"+part+"</li>"
         else
-          output << "<li><a href='/"+current[(0..index)].join('/')+"'>"+part+"</a></li>"
+          output << "<li><a class='wvu-hammer-link' href='/"+current[(0..index)].join('/')+"'>"+part+"</a></li>"
         end
       end
       output << "</ul>"
@@ -492,7 +491,7 @@ module Tags
       if tag.double?
         xslt = tag.expand
       elsif xslt_file.present?
-        file = File.join(tag.globals.context.theme_root, xslt_file)
+        file = File.join(tag.globals.context.theme_root_path, xslt_file)
         if File.exists?(file)
           xslt = File.read(file)
         else

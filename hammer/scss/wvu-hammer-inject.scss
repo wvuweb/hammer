@@ -25,7 +25,7 @@
     line-height: inherit;
   }
 
-  a {
+  a.wvu-hammer-link {
     padding: 0;
     font-size: 1em;
     color: #fcfcfc;
@@ -96,6 +96,27 @@
     align-items: center;
   }
 }
+.wvu-hammer-version--title {
+  margin-right: 8px;
+}
+
+.wvu-hammer-btn{
+  text-decoration:none;
+  color: #fcfcfc !important;
+  font-size:12px;
+  font-weight:bold;
+  padding:0 9px;
+  line-height:18px;
+  height: auto;
+  display:inline-block;
+  text-align:center;
+  background-color:#ea6360;
+}
+.wvu-hammer-pill{
+  border-radius: 15px;
+}
+
+
 
 .wvu-hammer-error {
   border-radius: 3px 0 0 3px;
@@ -118,9 +139,11 @@
 }
 
 .wvu-hammer-error__error {
-  color: #721c24;
+  color: #721c24 !important;
   border: 1px dashed #dc3545;
-
+  a {
+    color: inherit !important;
+  }
   strong {
     background-color: #dc3545;
     color: #fff;
@@ -128,9 +151,11 @@
 }
 
 .wvu-hammer-error__warning {
-  color: #004085;
+  color: #004085  !important;
   border: 1px dashed #b8daff;
-
+  a {
+    color: inherit !important;
+  }
   strong {
     background-color: #cce5ff;
     color: #004085;
@@ -138,9 +163,11 @@
 }
 
 .wvu-hammer-error__depreciation {
-  color: #560085;
+  color: #560085  !important;
   border: 1px dashed #e6c2f9;
-
+  a {
+    color: inherit !important;
+  }
   strong {
     background-color: #e6c2f9;
     color: #560085;

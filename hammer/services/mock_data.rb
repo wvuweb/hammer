@@ -27,13 +27,22 @@ end
 
 class MockData
 
-  def self.load(theme_root, request_path)
-    result = {}
-    result[:yml] = nil
-    result[:errors] = []
-    @request_path = request_path
+  attr_reader :yml, :errors
 
-    YAML.set_file_root(theme_root)
+  def initialize(theme_root_path, request_path)
+    @theme_root_path = theme_root_path
+    @yml_path = @theme_root_path.join(Pathname.new('mock_data.yml'))
+    @request_path = request_path
+    @errors = []
+    @yml = ""
+    load
+  end
+
+  protected
+
+
+
+  def load
 
     # # Deep Merging of yml files using map reduce
     # yml_files = []
@@ -41,14 +50,14 @@ class MockData
     # yml << Pathname.new(File.dirname(__FILE__)+'/../data/mock_data.yml')
     #
     # # Load Theme Root mock_data.yml
-    # theme_root_yml = theme_root.join(Pathname.new('mock_data.yml'))
+    # theme_root_yml = theme_root_path.join(Pathname.new('mock_data.yml'))
     # if theme_root_yml
     #   yml_files << theme_root_yml
     # end
     #
     # # Load Template YAML files
-    # template_yml = theme_root.join('data',Pathname.new(File.basename(request_path, ".html")+".yml"))
-    # old_path_template_yml =  theme_root.join(Pathname.new(File.basename(request_path, ".html")+".yml"))
+    # template_yml = theme_root_path.join('data',Pathname.new(File.basename(request_path, ".html")+".yml"))
+    # old_path_template_yml =  theme_root_path.join(Pathname.new(File.basename(request_path, ".html")+".yml"))
     # if template_yml.exist?
     #   yml_files << template_yml
     # elseif old_path_template_yml.exist?
@@ -58,59 +67,82 @@ class MockData
     # combined_yml = yml_files.map{ |file| YAML.load_file(file) }.reduce( {}, :deep_merge!)
     # TODO: Erb parse new combined YML
 
-    if theme_root
-      yml_path = theme_root.join(Pathname.new('mock_data.yml'))
-      if yml_path.exist?
-        erb = ERB.new(yml_path.read, nil, '-')
-        data = erb.result(binding)
-        begin
-          yml = HashWithIndifferentAccess.new(YAML::load(data))
-        rescue Psych::SyntaxError => e
-          line_message = e.message.to_s
-          if line_message.include?("at line")
-            line_message = line_message.partition('at line')[-2] + line_message.partition('at line')[-1]
-          end
-          raise YamlIncludeError, "There is an error in your mock_data.yml file #{line_message} (line # includes any included partial YAML files)"
+    YAML.set_file_root(@theme_root_path)
+
+    if @yml_path.exist?
+      # Parse ERB
+      erb_data = parse_erb(@yml_path)
+      begin
+        @yml = HashWithIndifferentAccess.new(YAML::load(erb_data))
+      rescue Psych::SyntaxError => e
+        line_message = e.message.to_s
+        if line_message.include?("at line")
+          line_message = line_message.partition('at line')[-2] + line_message.partition('at line')[-1]
         end
-        # Check for older shared_themes syntax
-        if !yml['shared_themes'].nil? && yml['shared_themes'].first[1].class == HashWithIndifferentAccess
-          result[:errors] << (Hammer.error "The mock data syntax you are using for <code>shared_themes:</code> is being depreciated, please see <a href='https://github.com/wvuweb/hammer/wiki/Mock-Data#shared-themes-syntax'>Shared Theme Syntax in the Hammer wiki</a> for more information.", {depreciation: true})
-        end
-
-        template_yml_name = File.basename(request_path, ".html")+".yml"
-
-        template_yml_path = theme_root.join('data',Pathname.new(template_yml_name))
-        old_template_yml_path = theme_root.join(Pathname.new(template_yml_name))
-
-        if old_template_yml_path.exist?
-          result[:errors] << (Hammer.error "<code>#{old_template_yml_path}</code> location for this template yml file is being depreciated, please see <a href='https://github.com/wvuweb/hammer/wiki/Mock-Data#template-yml-override-file-location'>Template override Location in the Hammer wiki</a> for more information.", {depreciation: true})
-          template_erb = ERB.new(old_template_yml_path.read, nil, '-')
-          template_data = template_erb.result(binding)
-          template_yml = HashWithIndifferentAccess.new(YAML::load(template_data))
-          yml = yml.deep_merge template_yml
-        end
-
-        if template_yml_path.exist?
-          template_erb = ERB.new(template_yml_path.read, nil, '-')
-          template_data = template_erb.result(binding)
-          template_yml = HashWithIndifferentAccess.new(YAML::load(template_data))
-          yml = yml.deep_merge template_yml
-        end
-
-      else
-        yml_path = Pathname.new(File.dirname(__FILE__)+'/../data/mock_data.yml')
-        erb = ERB.new(yml_path.read, nil, '-')
-        data = erb.result(binding)
-        yml = HashWithIndifferentAccess.new(YAML::load(data))
-        result[:errors] << (Hammer.error "Your theme does not include a mock_data.yml")
+        raise YamlIncludeError, "There is an error in your mock_data.yml file #{line_message} (line # includes any included partial YAML files)"
       end
-      result[:yml] = yml
+      # Merge Template YAML
+      @yml.deep_merge template_yml_load
     else
-      result[:errors] << (Hammer.error "Your theme does not include a config.yml")
+      yml_path = Pathname.new(File.dirname(__FILE__)+'/../data/mock_data.yml')
+      data = parse_erb(yml_path)
+      @yml = HashWithIndifferentAccess.new(YAML::load(data))
+      @errors << (Hammer.error "Your theme does not include a mock_data.yml")
     end
-    result
+    depreciation_check
+    @yml
+
 
   end
 
+  def template_yml_load
+    template_yml_file = File.basename(@request_path, ".html")+".yml"
+
+    # check old path
+    if old_template_yml_path(template_yml_file).exist?
+      return load_old_template_path
+    end
+
+    # check data/ path
+    if template_yml_path(template_yml_file).exist?
+      return load_new_template_path
+    end
+
+    HashWithIndifferentAccess.new
+  end
+
+  def load_old_template_path
+    @errors << (Hammer.error "<code>#{old_template_yml_path}</code> location for this template yml file is being depreciated, please see <a href='https://github.com/wvuweb/hammer/wiki/Mock-Data#template-yml-override-file-location'>Template override Location in the Hammer wiki</a> for more information.", {depreciation: true})
+    template_erb = ERB.new(old_template_yml_path.read, nil, '-')
+    template_data = template_erb.result(binding)
+    HashWithIndifferentAccess.new(YAML::load(template_data))
+  end
+
+  def load_template_path
+    template_erb = ERB.new(template_yml_path.read, nil, '-')
+    template_data = template_erb.result(binding)
+    HashWithIndifferentAccess.new(YAML::load(template_data))
+  end
+
+  def depreciation_check
+    # Check for older shared_themes syntax
+    if !@yml['shared_themes'].nil? && @yml['shared_themes'].first[1].class == HashWithIndifferentAccess
+      @errors << (Hammer.error "The mock data syntax you are using for <code>shared_themes:</code> is being depreciated, please see <a href='https://github.com/wvuweb/hammer/wiki/Mock-Data#shared-themes-syntax'>Shared Theme Syntax in the Hammer wiki</a> for more information.", {depreciation: true})
+    end
+  end
+
+  def template_yml_path(template_yml_file)
+    @theme_root_path.join('data',Pathname.new(template_yml_file))
+  end
+
+  def old_template_yml_path(template_yml_file)
+    @theme_root_path.join('data',Pathname.new(template_yml_file))
+  end
+
+  def parse_erb(path)
+    # Parse ERB
+    erb = ERB.new(path.read, nil, '-')
+    erb.result(binding)
+  end
 
 end

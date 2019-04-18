@@ -7,10 +7,14 @@ require 'chronic'
 require_relative "mock_data.rb"
 require_relative "theme_context.rb"
 
+
+class ThemeRendererError < StandardError
+end
+
 class ThemeRenderer
 
-  attr_accessor :config, :server, :request, :document_root, :filesystem_path, :request_root, :theme_root, :output
-  attr_accessor :content, :layout_file_path, :data, :data_errors, :version
+  attr_accessor :server, :request, :document_root, :filesystem_path, :request_root, :theme_root_path
+  attr_accessor :config, :config_file_path, :output, :content, :layout_file_path, :data, :data_errors, :version
 
   def initialize(options)
     @server = options[:server]
@@ -19,54 +23,70 @@ class ThemeRenderer
     @filesystem_path = options[:filesystem_path]
     @request_path = options[:request_path]
     @content_type = options[:content_type]
-    @theme_root = theme_root
+    @theme_root_path = nil
+    @config_file_path = find_config_file
+    @config = load_config_file
+    @theme_root_path = theme_root
+    @theme_context = nil
     @data = nil
     @data_errors = nil
-    @content = file_contents
+    @content = read_file_contents
     @htmldoc = ''
     @output = ''
-    load_version(options)
-    load_data
+    @version = load_version(options)
+
+    load_mock_data
   end
 
-  def config_file
-    Pathname.new('config.yml')
+  def render
+    @output = parse_radius_tags
   end
+
+  def radius_parser
+    @theme_context = ThemeContext.new(self)
+    @radius_parser ||= Radius::Parser.new(@theme_context, :tag_prefix => 'r')
+  end
+
+  protected
 
   def theme_root
+    @config_file_path.parent
+  end
+
+  def find_config_file
+    config_file = Pathname.new 'config.yml'
     @filesystem_path.ascend { |parent|
       if parent.directory?
         if parent.join(config_file).exist?
-          # puts "Theme directory: ".colorize(:light_magenta)+parent.to_s.split('/').last.to_s.colorize(:light_blue)
-          return parent
+          return parent.join(config_file)
         end
       end
     }
   end
 
-  def config_file_exists?
-    File.exists? theme_root.join(config_file)
+  def load_config_file
+    if @config_file_path == nil || !@config_file_path.exist?
+      raise ThemeRendererError, "The theme does not include a config.yml file"
+    else
+      return YAML::load(File.open(@config_file_path))
+    end
   end
 
-  def config_file_path
-    return theme_root.join(config_file)
-  end
-
-  def file_contents
-    @filesystem_path.read
+  def read_file_contents
+    @content ||= @filesystem_path.read
   end
 
   def has_layout?
-    self.config['layout']
+    @config['layout'] ? true : false
   end
 
   def layout_file_path
-    file = self.config['layout']+'.html'
+    file = @config['layout']+'.html'
     folder = 'views/layouts'
     parts = [folder, file]
     layout_config_path = Pathname.new(parts.join('/'))
-    if @theme_root.is_a?(Pathname)
-      layout_file_path = @theme_root.join(layout_config_path)
+    if @theme_root_path.is_a?(Pathname)
+      layout_file_path = @theme_root_path.join(layout_config_path)
     else
       raise 'Config File does not exist in theme see example: https://github.com/wvuweb/cleanslate-toolkit/blob/master/config.yml'
     end
@@ -74,12 +94,12 @@ class ThemeRenderer
       layout_file_path.exist?
       layout_file_path
     rescue => e
-      raise 'Layout File does not exist '+layout_file_path.to_s
+      raise 'Layout file does not exist '+layout_file_path.to_s+" #{e}"
     end
 
   end
 
-  def layout_content
+  def set_layout_content
     @layout_content ||= layout_file_path.read
   end
 
@@ -88,66 +108,59 @@ class ThemeRenderer
     @hammer_nav_content ||= hammer_nav_path.read
   end
 
-  def render
-    parse_yaml(@content)
-    unless @content
-      @content = file_contents
+
+  def parse_frontmatter(content)
+    begin
+      regex = /^(---\s*\n.*?\n?)^(---\s*$\n?)/m
+      match = regex.match(content)
+      if match
+        @content = match.post_match
+        @config = @config.merge! YAML.load(match[1])
+      end
+    rescue
+      raise 'Parsing template YAML config failed.  Please validate your template frontmatter YAML has the correct format: http://www.yamllint.com/'
     end
-    render_with_radius
   end
 
-  def radius_parser(context = {})
-    @radius_parser ||= Radius::Parser.new(context, :tag_prefix => 'r')
-  end
+  def parse_radius_tags
+    # Parse radius tag content
+    parse_frontmatter(@content)
+    content = radius_parser.parse(@content)
+    radius_parser.context.globals.layout = has_layout?
+    if @content_type == 'text/html'
 
-  protected
-  def parse_yaml(content)
-    regex = /^(---\s*\n.*?\n?)^(---\s*$\n?)/m
-    match = regex.match(content)
-    if match
-      @content = match.post_match
-      begin
-        self.config = YAML.load(match[1])
-      rescue
-        raise 'Parsing template YAML config failed.  Please validate your mock_data.yml file has the correct format: http://www.yamllint.com/'
+      if has_layout?
+        set_layout_content
+        # Set the fragment content to yield
+        radius_parser.context.globals.yield = content
+        content = radius_parser.parse(@layout_content)
       end
-    end
-    self.config ||= {}
-    self.config.merge!(YAML::load(File.open(config_file_path))) if config_file_exists?
-  end
-
-  def render_with_radius
-
-    context = ThemeContext.new(self)
-
-    parsed_content = radius_parser(context).parse(@content)
-    radius_parser.context.globals.layout = false
-
-    if has_layout?
-      radius_parser.context.globals.yield = parsed_content
-      radius_parser.context.globals.layout = true
-      radius_parser.context.globals.layout_file_path = layout_file_path
-
-      layout_content
-
-      html = radius_parser.parse(self.layout_content)
-      @htmldoc = Nokogiri::HTML::Document.parse(html)
-
-      output = insert_meta_tags
-      output = insert_hammer_nav
-      output = insert_style_tags
-
-      if @data_errors
-        output = insert_errors_tags
-      end
-
-      if @data && @data['page'] && self.data['page']['javascript']
-        output = insert_javascript_tags
-      end
-      @output << output
+      @htmldoc = nokogiri_parse(content)
+      # If the file is not html content just return the original parsed content
+      post_process
     else
-      @output << parsed_content
+      # Return parsed document
+      content
     end
+  end
+
+  def nokogiri_parse(html)
+    Nokogiri::HTML::Document.parse(html)
+  end
+
+  def post_process
+    # If the request is an html document
+    insert_meta_tags
+    insert_style_tags
+    insert_hammer_nav
+
+    if @data_errors.count > 0
+      insert_errors_tags
+    end
+    if @data && @data['page'] && @data['page']['javascript']
+      insert_javascript_tags
+    end
+    @output = @htmldoc.to_html
   end
 
   def insert_meta_tags
@@ -165,7 +178,7 @@ class ThemeRenderer
   def insert_hammer_nav
     begin
       hammer_nav_content
-      hammer_nav = radius_parser.parse(self.hammer_nav_content)
+      hammer_nav = radius_parser.parse(@hammer_nav_content)
 
       @htmldoc.at('body').children.first.before(hammer_nav)
       @htmldoc.to_html
@@ -176,8 +189,6 @@ class ThemeRenderer
 
   def insert_style_tags
     begin
-      # @htmldoc = Nokogiri::HTML::Document.parse(output)
-
       css_file_src = Pathname.new(File.expand_path File.dirname(__FILE__)+"/../css/wvu-hammer-inject.css").read
       css_file = "<style>"+css_file_src+"</style>"
       @htmldoc.at('head').add_child(css_file)
@@ -189,21 +200,22 @@ class ThemeRenderer
 
   def insert_errors_tags
     begin
-      # @htmldoc = Nokogiri::HTML::Document.parse(output)
+      @htmldoc.at_css('.wvu-hammer-version').add_child("<a href='#wvu-hammer-errors' class='wvu-hammer-btn wvu-hammer-pill' title='#{@data_errors.count.to_s} Hammer Messages'></a>")
+      @htmldoc.at_css('.wvu-hammer-btn').content = @data_errors.count.to_s
+      @htmldoc.at_css('#wvu-hammer-nav').after("<div id='wvu-hammer-errors'></div>")
       @data_errors.each do |error|
-        # @htmldoc.before(@htmldoc.at('body').first).add_child(error)
-        @htmldoc.at('body').children.first.before(error)
+        @htmldoc.at_css('#wvu-hammer-errors').add_child(error)
       end
       @htmldoc.to_html
-    rescue
-      Hammer.error "Could not insert Hammer error tags, your <code>body</code> tag may have an issue or doesn't exist."
+    rescue => e
+      Hammer.error "Could not insert Hammer error tags, your <code>body</code> tag may have an issue or doesn't exist. #{e} #{e.backtrace.first}"
     end
   end
 
   def insert_javascript_tags
     begin
       script = Nokogiri::XML::Node.new "script", @htmldoc
-      script.content = self.data['page']['javascript']
+      script.content = @data['page']['javascript']
       @htmldoc.at('body').add_child(script)
       @htmldoc.to_html
     rescue
@@ -211,18 +223,17 @@ class ThemeRenderer
     end
   end
 
-  private
-  def load_data
-    mock_data = MockData.load(@theme_root,@request_path)
-    @data = mock_data[:yml]
-    @data_errors = mock_data[:errors]
+  def load_mock_data
+    mock_data = MockData.new(@theme_root_path,@request_path)
+    @data = mock_data.yml
+    @data_errors = mock_data.errors
   end
 
   def load_version(options)
     if options[:version].split('-')[1] != nil
-      @version = options[:version].split('-')
+      options[:version].split('-')
     else
-      @version = options[:version]
+      options[:version]
     end
   end
 end
