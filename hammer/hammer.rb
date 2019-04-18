@@ -1,7 +1,7 @@
 # encoding: utf-8
 require "webrick"
-require "../hammer/webrick_override.rb"
-require "../hammer/services/theme_renderer.rb"
+require_relative "../hammer/webrick_override.rb"
+require_relative "../hammer/services/theme_renderer.rb"
 
 module Hammer
 

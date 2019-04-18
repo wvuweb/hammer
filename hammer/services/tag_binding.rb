@@ -1,5 +1,5 @@
 require 'dentaku'
-require '../hammer/services/dentaku_ext.rb'
+require_relative 'dentaku_ext.rb'
 
 module Radius
   class TagBinding

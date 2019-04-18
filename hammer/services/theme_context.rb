@@ -1,32 +1,41 @@
 # encoding: utf-8
-require "../hammer/services/tag_container.rb"
-require "../hammer/services/tag_binding.rb"
 
-Dir["../hammer/services/tags/*.rb"].each {|file|
-  require file
-}
+require_relative "tag_binding.rb"
+
+
+require_relative 'tags/theme_asset.rb'
+require_relative 'tags/basic.rb'
+require_relative 'tags/menus.rb'
+require_relative 'tags/page.rb'
+require_relative 'tags/content.rb'
+require_relative 'tags/blog.rb'
+require_relative 'tags/asset.rb'
+require_relative 'tags/emergency.rb'
 
 class ThemeContext < ::Radius::Context
+
+  attr_accessor :errors
 
   def initialize(data = {})
     super
     @context = data
+    @errors = []
 
     unless @context == {}
 
       globals.context = @context
       globals.vars = @context.request.query || {}
 
-      load_tags_from Tags::ThemeAsset
-      load_tags_from Tags::Basic
-      load_tags_from Tags::Menus
-      load_tags_from Tags::Page
-      load_tags_from Tags::Content
-      load_tags_from Tags::Blog
-      load_tags_from Tags::Asset
+      load_tags_from ::Tags::ThemeAsset
+      load_tags_from ::Tags::Basic
+      load_tags_from ::Tags::Menus
+      load_tags_from ::Tags::Page
+      load_tags_from ::Tags::Content
+      load_tags_from ::Tags::Blog
+      load_tags_from ::Tags::Asset
 
       if @context.config["theme_type"] == "Emergency"
-        load_tags_from Tags::Emergency
+        load_tags_from ::Tags::Emergency
       end
     end
   end
@@ -37,8 +46,9 @@ class ThemeContext < ::Radius::Context
   end
 
   def tag_missing(name, attributes, &block)
-    style = "background-color: #eee; border-radius: 3px; font-family: monospace; padding: 0 3px;"
-    Hammer.error "OH NOES! Tag or tag method <code style='#{style}'>#{name}</code> does not yet exist in hammer.  Be a good samaritan and <a href=\"https://github.com/wvuweb/hammer/issues\">file a Github issue!</a>"
+    error = Hammer.error "Tag or tag method <code>#{name}</code> does not exist.  If this is a real tag, be a good samaritan and <a href=\"https://github.com/wvuweb/hammer/issues\">file a Github issue!</a>"
+    @errors << error
+    error
   end
 
   private
@@ -55,9 +65,9 @@ class ThemeContext < ::Radius::Context
           begin
             tag_method.call tag_binding
           rescue TypeError => e
-            Hammer.error "Something is wrong with radius #{mname} <strong>Error Message:</strong> #{e} #{e.backtrace.first}"
+            @errors << (Hammer.error "Something is wrong with tag <code>#{mname}</code> <strong>Trace:</strong> #{e} #{e.backtrace.first}")
           rescue NoMethodError => e
-            Hammer.error "#{mname} did not load, it is most likely missing data in mock_data.yml: #{e}"
+            @errors << (Hammer.error "Tag <code>#{mname}</code> did not load, it is likely missing data in mock_data.yml <strong>Trace:</strong> #{e}")
           end
         end
       end

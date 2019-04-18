@@ -7,6 +7,8 @@ require 'httparty'
 require "net/http"
 require "uri"
 
+require_relative "../tag_container.rb"
+
 module Tags
   class Basic < TagContainer
     tag 'comment' do |tag|

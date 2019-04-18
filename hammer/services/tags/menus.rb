@@ -1,3 +1,4 @@
+require_relative "../tag_container.rb"
 module Tags
   class Menus < TagContainer
 

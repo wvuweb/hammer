@@ -3,11 +3,11 @@
 require 'action_view'
 require 'active_support/core_ext/string/output_safety'
 
-require '../hammer/services/theme_asset_pipeline/parser.rb'
-require '../hammer/services/theme_asset_pipeline/image.rb'
-require '../hammer/services/theme_asset_pipeline/javascript.rb'
-require '../hammer/services/theme_asset_pipeline/resource.rb'
-require '../hammer/services/theme_asset_pipeline/style.rb'
+require_relative 'theme_asset_pipeline/parser.rb'
+require_relative 'theme_asset_pipeline/image.rb'
+require_relative 'theme_asset_pipeline/javascript.rb'
+require_relative 'theme_asset_pipeline/resource.rb'
+require_relative 'theme_asset_pipeline/style.rb'
 
 class TagContainer
 

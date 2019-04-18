@@ -1,5 +1,7 @@
 require 'active_support/core_ext/string/output_safety'
 
+require_relative "../tag_container.rb"
+
 module Tags
 
   class ThemeAsset < TagContainer

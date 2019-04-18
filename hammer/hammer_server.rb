@@ -22,7 +22,7 @@ require 'colorize'
 require 'optparse'
 require 'ostruct'
 
-require './hammer'
+require_relative './hammer'
 
 # Set Options defaults
 options = OpenStruct.new

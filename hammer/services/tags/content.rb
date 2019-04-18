@@ -1,7 +1,7 @@
 require 'active_support/all'
 require 'faker'
-
-require "../hammer/services/theme_partial_renderer.rb"
+require_relative "../tag_container.rb"
+require_relative "../theme_partial_renderer.rb"
 
 module Tags
   class Content < TagContainer

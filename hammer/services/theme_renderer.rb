@@ -4,8 +4,8 @@ require 'yaml'
 require 'webrick'
 require 'chronic'
 
-require "../hammer/services/mock_data.rb"
-require "../hammer/services/theme_context.rb"
+require_relative "mock_data.rb"
+require_relative "theme_context.rb"
 
 class ThemeRenderer
 
