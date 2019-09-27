@@ -40,6 +40,13 @@
       text-decoration: underline;
     }
   }
+  .wvu-hammer-link__warning {
+    color: #dc3545;
+    &:visited {
+      color: #dc3545;
+      text-decoration: none;
+    }
+  }
 }
 
 .wvu-hammer-breadcrumbs__container {

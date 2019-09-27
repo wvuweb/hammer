@@ -14,7 +14,7 @@ end
 class ThemeRenderer
 
   attr_accessor :server, :request, :document_root, :filesystem_path, :request_root, :theme_root_path
-  attr_accessor :config, :config_file_path, :output, :content, :layout_file_path, :data, :data_errors, :version
+  attr_accessor :config, :config_file_path, :output, :content, :layout_file_path, :data, :data_errors, :version, :version_behind
 
   def initialize(options)
     @server = options[:server]
@@ -33,8 +33,8 @@ class ThemeRenderer
     @content = read_file_contents
     @htmldoc = ''
     @output = ''
-    @version = load_version(options)
 
+    load_version(options)
     load_mock_data
   end
 
@@ -231,9 +231,10 @@ class ThemeRenderer
 
   def load_version(options)
     if options[:version].split('-')[1] != nil
-      options[:version].split('-')
+      @version = options[:version].split('-')
     else
-      options[:version]
+      @version = options[:version]
     end
+    @version_behind = options[:version_behind]
   end
 end

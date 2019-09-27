@@ -11,6 +11,7 @@ require_relative 'tags/content.rb'
 require_relative 'tags/blog.rb'
 require_relative 'tags/asset.rb'
 require_relative 'tags/emergency.rb'
+require_relative 'tags/hammer.rb'
 
 class ThemeContext < ::Radius::Context
 
@@ -26,6 +27,7 @@ class ThemeContext < ::Radius::Context
       globals.context = @context
       globals.vars = @context.request.query || {}
 
+      load_tags_from ::Tags::HammerTag
       load_tags_from ::Tags::ThemeAsset
       load_tags_from ::Tags::Basic
       load_tags_from ::Tags::Menus

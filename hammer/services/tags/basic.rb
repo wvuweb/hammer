@@ -92,41 +92,7 @@ module Tags
       # Hammer.error "current_url tag is not implemented yet"
     end
 
-    tag 'hammer_breadcrumbs' do |tag|
-      current = []
-      output = []
-      output << "<ul class='wvu-hammer-breadcrumbs__crumbs''>"
-      tag.globals.context.request.path.split('/').each do |part|
-        if part == ""
-          output << "<li><a class='wvu-hammer-link' href='/'>Themes</a></li>"
-        else
-          current << part
-        end
-      end
-      current.each_with_index do |part,index|
-        if current.size == (index + 1)
-          output << "<li>"+part+"</li>"
-        else
-          output << "<li><a class='wvu-hammer-link' href='/"+current[(0..index)].join('/')+"'>"+part+"</a></li>"
-        end
-      end
-      output << "</ul>"
-      output.join("")
-    end
 
-    tag 'hammer_nav' do |tag|
-      if !tag.globals.context.data['hammer_nav'] || !tag.globals.context.data['hammer_nav']['disabled']
-        tag.expand
-      end
-    end
-
-    tag 'hammer_version' do |tag|
-      if tag.globals.context.version.class == Array
-        tag.globals.context.version[0] + " - <span data-commit-hash="+tag.globals.context.version[2]+"> " + tag.globals.context.version[1] + " ahead</span>"
-      else
-        tag.globals.context.version
-      end
-    end
 
     # Renders an unordered list (<ul>) of HTML links to the pages leading to the current page. If the 'text_only'
     # attribute is 'true', then instead of a list of HTML links, a plain text list will be rendered with the

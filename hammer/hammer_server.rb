@@ -72,6 +72,8 @@ current_tag.slice!("\n")
 latest_tag.slice!("v")
 latest_tag.slice!("\n")
 
+version_behind = false
+
 # Split on tag with dash
 # Example dev version tag from describe v1.0.13-6-a234agh
 if current_tag.split('-')[1] != nil
@@ -81,6 +83,7 @@ if current_tag.split('-')[1] != nil
   puts "You are #{current_version_info[1]} commits ahead at hash #{current_version_info[2]}".colorize(:green)
 else
   if Gem::Version.new(current_tag) < Gem::Version.new(latest_tag)
+    version_behind = true
     puts "\n".colorize(:red)
     puts "Your installed Hammer version: ".colorize(:red)+" #{current_tag} ".colorize(background: :white, color: :black)+" is behind the latest version: ".colorize(:red)+" #{latest_tag} ".colorize(background: :white, color: :black)
     puts "Run `vagrant hammer update` to upgrade to the latest version".colorize(:light_green)
@@ -174,7 +177,7 @@ httpd = WEBrick::HTTPServer.new(
   :AccessLog => access_log
 )
 
-httpd.mount("/", HammerServlet, {version: current_tag})
+httpd.mount("/", HammerServlet, {version: current_tag, version_behind: version_behind})
 
 trap(:INT){ httpd.shutdown }
 httpd.start

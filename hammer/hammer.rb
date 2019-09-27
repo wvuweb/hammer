@@ -11,7 +11,9 @@ module Hammer
     @document_root = document_root
     @filesystem_path = {}
     @request_path = {}
+
     @version = options.first[:version]
+    @version_behind = options.first[:version_behind]
   end
 
   def do_GET(request, response)
@@ -34,7 +36,8 @@ module Hammer
               :filesystem_path => @filesystem_path,
               :request_path => @request_path,
               :content_type => get_mime_type,
-              :version => @version
+              :version => @version,
+              :version_behind => @version_behind
             }).render
         response.body = body
         response.content_type = get_mime_type+'; charset=utf-8'
