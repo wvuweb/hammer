@@ -11,6 +11,7 @@ require_relative "../tag_container.rb"
 
 module Tags
   class Basic < TagContainer
+
     tag 'comment' do |tag|
       # Do nothing.
       nil
@@ -446,6 +447,7 @@ module Tags
     end
 
     tag 'xslt_transform' do |tag|
+
       theme = tag.globals.theme
       xml_url = (tag.attr['url'] || '').strip
       source_format = (tag.attr['source_format'] || 'xml').downcase
@@ -453,52 +455,61 @@ module Tags
 
       # cache_term_minutes = (tag.attr['cache_for'] || '').to_i
       # cache_term_minutes = 15 if cache_term_minutes < 1
-
-      if tag.double?
-        xslt = tag.expand
-      elsif xslt_file.present?
-        file = File.join(tag.globals.context.theme_root_path, xslt_file)
-        if File.exists?(file)
-          xslt = File.read(file)
-        else
-          Hammer.error "Could not load XSLT file: #{xslt_file}"
-        end
-      end
-
-      unless xslt.present?
-        return Hammer.error "You must either specify XSLT content for this tag or use the xslt_file attribute."
-      end
-
-      unless xml_url.present?
-        return Hammer.error "The attribute of <code>url</code> must be present on the <code><r:xslt_transform></code> tag."
-      else
-        begin
-          uri = URI.parse(xml_url)
-          uri.kind_of?(URI::HTTP) || uri.kind_of?(URI::HTTPS)
-          response = Net::HTTP.start(uri.host, uri.port,
-            :use_ssl => uri.scheme == 'https') do |http|
-            request = Net::HTTP::Get.new uri
-            http.request request # Net::HTTPResponse object
-          end
-        rescue => e
-          return Hammer.error "Could not load the XML URL: #{e}"
-        end
-
-        if response.present?
-          # If the source is JSON, we transform it into XML, which can then be transformed via XSLT.
-          xml = if source_format == 'json'
-            JSON.parse(response.body).to_xml(root: :xml) rescue raise(RuntimeTagError, "ERROR: Could not parse JSON source data.")
+      begin
+        xslt = if tag.double?
+          tag.expand
+        elsif xslt_file.present?
+          file = File.join(tag.globals.context.theme_root_path, xslt_file)
+          if File.exists?(file)
+            # xslt = File.read(file)
+            File.open(file, 'rb')
           else
-            response.body
+            Hammer.error "Could not load XSLT file: #{xslt_file}"
+          end
+        end
+
+        unless xslt.present?
+          return Hammer.error "You must either specify XSLT content for this tag or use the xslt_file attribute."
+        end
+
+        output = ""
+        unless xml_url.present?
+          return Hammer.error "The attribute of <code>url</code> must be present on the <code><r:xslt_transform></code> tag."
+        else
+          begin
+            uri = URI.parse(xml_url)
+            uri.kind_of?(URI::HTTP) || uri.kind_of?(URI::HTTPS)
+
+            response = Net::HTTP.start(uri.host, uri.port,
+              :use_ssl => uri.scheme == 'https') do |http|
+              request = Net::HTTP::Get.new uri
+              http.request request # Net::HTTPResponse object
+            end
+          rescue => e
+            return Hammer.error "Could not load the XML URL: #{e}"
           end
 
-          document = Nokogiri::XML(xml)
-          template = Nokogiri::XSLT(xslt)
-          template.transform(document)
-        else
+          if response.present?
+            # If the source is JSON, we transform it into XML, which can then be transformed via XSLT.
+            xml = if source_format == 'json'
+              JSON.parse(response.body).to_xml(root: :xml) rescue raise(Exception, "ERROR: Could not parse JSON source data.")
+            else
+              response.body
+            end
+            document = Nokogiri::XML(xml)
+            template = Nokogiri::XSLT(xslt)
+            output = template.transform(document).to_s
+          end
         end
-      end
 
+      rescue Exception => e
+        # We don't want to include absolute theme paths in error messages for security. So we
+        # strip out any absolute paths.
+        return Hammer.error e.message
+      ensure
+        file.close if file && file.is_a?(File)
+      end
+      output
     end
 
     def self.breadcrumb_list(options)

@@ -12,7 +12,20 @@ module WEBrick
           raise HTTPStatus::Forbidden, "no access permission to `#{req.path}'"
         end
         local_path = res.filename
-        list = Dir::entries(local_path).collect{|name|
+
+        subdirs = Dir::entries(local_path).collect{|name|
+          next if name == "." || name == ".."
+          next if nondisclosure_name?(name)
+          next if windows_ambiguous_name?(name)
+          st = (File::stat(File.join(local_path, name)) rescue nil)
+          if st.directory?
+            [ name + "/", st.mtime, -1 ]
+          else
+            next
+          end
+        }
+
+        files = Dir::entries(local_path).collect{|name|
           next if name == "." || name == ".."
           next if nondisclosure_name?(name)
           next if windows_ambiguous_name?(name)
@@ -20,12 +33,14 @@ module WEBrick
           if st.nil?
             [ name, nil, -1 ]
           elsif st.directory?
-            [ name + "/", st.mtime, -1 ]
+            next
           else
             [ name, st.mtime, st.size ]
           end
         }
-        list.compact!
+
+        subdirs.compact!
+        files.compact!
 
         query = req.query
         d0 = nil
@@ -41,10 +56,14 @@ module WEBrick
         d1 = (d0 == "A") ? "D" : "A"
 
         if d0 == "A"
-          list.sort!{|a,b| a[idx] <=> b[idx] }
+          files.sort!{|a,b| a[idx] <=> b[idx] }
+          subdirs.sort!{|a,b| a[idx] <=> b[idx] }
         else
-          list.sort!{|a,b| b[idx] <=> a[idx] }
+          files.sort!{|a,b| b[idx] <=> a[idx] }
+          subdirs.sort!{|a,b| b[idx] <=> a[idx] }
         end
+
+        list = subdirs + files
 
         namewidth = query["NameWidth"]
         if namewidth == "*"
