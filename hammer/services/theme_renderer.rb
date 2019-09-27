@@ -200,7 +200,7 @@ class ThemeRenderer
 
   def insert_errors_tags
     begin
-      @htmldoc.at_css('.wvu-hammer-version').add_child("<a href='#wvu-hammer-errors' class='wvu-hammer-btn wvu-hammer-pill' title='#{@data_errors.count.to_s} Hammer Messages'></a>")
+      @htmldoc.at_css('.wvu-hammer-version').add_child("<a href='#wvu-hammer-errors' class='wvu-hammer-btn wvu-hammer-pill' title='#{@data_errors.count.to_s} Hammer Error Messages'></a>")
       @htmldoc.at_css('.wvu-hammer-btn').content = @data_errors.count.to_s
       @htmldoc.at_css('#wvu-hammer-nav').after("<div id='wvu-hammer-errors'></div>")
       @data_errors.each do |error|
