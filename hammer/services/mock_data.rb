@@ -100,7 +100,7 @@ class MockData
 
     # check old path
     if old_template_yml_path(template_yml_file).exist?
-      return load_old_template_path
+      return load_old_template_path(template_yml_file)
     end
 
     # check data/ path
@@ -111,9 +111,9 @@ class MockData
     HashWithIndifferentAccess.new
   end
 
-  def load_old_template_path
-    @errors << (Hammer.error "<code>#{old_template_yml_path}</code> location for this template yml file is being depreciated, please see <a href='https://github.com/wvuweb/hammer/wiki/Mock-Data#template-yml-override-file-location'>Template override Location in the Hammer wiki</a> for more information.", {depreciation: true})
-    template_erb = ERB.new(old_template_yml_path.read, nil, '-')
+  def load_old_template_path(template_yml_file)
+    @errors << (Hammer.error "<code>#{old_template_yml_path(template_yml_file)}</code> location for this template yml file is depreciated and will be removed in the next version of hammer, please see <a href='https://github.com/wvuweb/hammer/wiki/Mock-Data#template-yml-override-file-location'>Template override Location in the Hammer wiki</a> for more information on how to update.", {depreciation: true})
+    template_erb = ERB.new(old_template_yml_path(template_yml_file).read, nil, '-')
     template_data = template_erb.result(binding)
     HashWithIndifferentAccess.new(YAML::load(template_data))
   end
@@ -127,7 +127,7 @@ class MockData
   def depreciation_check
     # Check for older shared_themes syntax
     if !@yml['shared_themes'].nil? && @yml['shared_themes'].first[1].class == HashWithIndifferentAccess
-      @errors << (Hammer.error "The mock data syntax you are using for <code>shared_themes:</code> is being depreciated, please see <a href='https://github.com/wvuweb/hammer/wiki/Mock-Data#shared-themes-syntax'>Shared Theme Syntax in the Hammer wiki</a> for more information.", {depreciation: true})
+      @errors << (Hammer.error "The mock data syntax you are using for <code>shared_themes:</code> is depreciated amd will be removed in the next version of hammer, please see <a href='https://github.com/wvuweb/hammer/wiki/Mock-Data#shared-themes-syntax'>Shared Theme Syntax in the Hammer wiki</a> for more information on how to upgrade.", {depreciation: true})
     end
   end
 
