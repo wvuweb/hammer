@@ -57,8 +57,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script type="text/javascript">
       $(function(){
-          $(document).on('click', 'tr.clickable', function(event, row, $el){
-            url = $(event.target).parent().find('td.name > a').attr('href');
+          $(document).on('click', 'tr.clickable > *', function(event, row, $el){
+            url = $(this).parent('tr').find('td.name > a').first().attr('href');
             window.location = url;
           })
       });
